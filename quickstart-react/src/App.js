@@ -30,6 +30,9 @@ class App extends React.Component {
       <h3>
         What's up bitches? You're gonna choke on this node graph.
       </h3>
+
+      <div> please help me </div>
+
       </div>
     );
   }
