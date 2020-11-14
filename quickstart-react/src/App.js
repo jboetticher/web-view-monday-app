@@ -2,6 +2,10 @@ import React from "react";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
 import Card from "./components/Card.js";
+import LinearProgressBar from "monday-ui-react-core/dist/LinearProgressBar.js";
+
+import Button from "monday-ui-react-core/dist/Button.js";
+import "monday-ui-react-core/dist/Button.css";
 
 const monday = mondaySdk();
 
@@ -39,14 +43,17 @@ class App extends React.Component {
     return (
       <div
         className="App"
-        style={{ background: (this.state.settings.background) }}>
+        style={{ display:"block", background: (this.state.settings.background) }}
+        >
+        
         <Card content={JSON.stringify(this.state.boardData, null, 2)} />
         <Card content={"What's up bitches? You're gonna choke on this node graph."} />
         <Card content={"please help me"} />
-        <p>
-          dear lord above, i pray
-      </p>
+        <p>dear lord above, i pray</p>
 
+        <Button>
+          This is a button.
+        </Button>
       </div >
     );
   }
