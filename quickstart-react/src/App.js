@@ -2,7 +2,6 @@ import React from "react";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
 import Card from "./components/Card.js";
-import LinearProgressBar from "monday-ui-react-core/dist/LinearProgressBar.js";
 
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
