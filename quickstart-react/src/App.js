@@ -3,6 +3,8 @@ import "./App.css";
 import mondaySdk from "monday-sdk-js";
 import Card from "./components/Card.js";
 
+import ItemNode from "./nodes/ItemNode.js";
+
 import ReactFlow from 'react-flow-renderer';
 
 import Button from "monday-ui-react-core/dist/Button.js";
@@ -43,10 +45,20 @@ class App extends React.Component {
 
   render() {
 
+    const nodeTypes = {
+      itmNode: ItemNode,
+    };
+
     const elements = [
       { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
       // you can also pass a React component as a label
-      { id: '2', data: { label: <div>Node 2</div> }, position: { x: 100, y: 100 } },
+      { id: '2', data: { label: <input type="text" name="name"/> }, position: { x: 100, y: 100 } },
+      { id: '3',
+        type: 'itmNode',
+        /*data: { onChange: onChange, color: initBgColor },*/
+        style: { border: '1px solid #777', padding: 10 },
+        position: { x: 300, y: 50 },
+      },
       { id: 'e1-2', source: '1', target: '2', animated: true },
     ];
 
@@ -64,7 +76,7 @@ class App extends React.Component {
         <Button>
           This is a button.
         </Button>
-        <ReactFlow elements={elements} />
+        <ReactFlow elements={elements} nodeTypes={nodeTypes}/>
       </div >
     );
   }
