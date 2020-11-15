@@ -3,6 +3,8 @@ import "./App.css";
 import mondaySdk from "monday-sdk-js";
 import Card from "./components/Card.js";
 
+import ReactFlow from 'react-flow-renderer';
+
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
 
@@ -38,13 +40,22 @@ class App extends React.Component {
 
   }
 
+
   render() {
+
+    const elements = [
+      { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
+      // you can also pass a React component as a label
+      { id: '2', data: { label: <div>Node 2</div> }, position: { x: 100, y: 100 } },
+      { id: 'e1-2', source: '1', target: '2', animated: true },
+    ];
+
     return (
       <div
         className="App"
-        style={{ display:"block", background: (this.state.settings.background) }}
-        >
-        
+        style={{ display: "block", background: (this.state.settings.background) }}
+      >
+
         <Card content={JSON.stringify(this.state.boardData, null, 2)} />
         <Card content={"What's up bitches? You're gonna choke on this node graph."} />
         <Card content={"please help me"} />
@@ -53,6 +64,7 @@ class App extends React.Component {
         <Button>
           This is a button.
         </Button>
+        <ReactFlow elements={elements} />
       </div >
     );
   }
