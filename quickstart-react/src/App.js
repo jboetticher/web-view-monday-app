@@ -4,6 +4,7 @@ import mondaySdk from "monday-sdk-js";
 import Card from "./components/Card.js";
 
 import ItemNode from "./nodes/ItemNode.js";
+import PrettyNode from "./nodes/PrettyNode_proto.js"
 
 import ReactFlow from 'react-flow-renderer';
 
@@ -47,6 +48,7 @@ class App extends React.Component {
 
     const nodeTypes = {
       itmNode: ItemNode,
+      prettyNode: PrettyNode
     };
 
     const elements = [
@@ -58,6 +60,10 @@ class App extends React.Component {
         /*data: { onChange: onChange, color: initBgColor },*/
         style: { border: '1px solid #777', padding: 10 },
         position: { x: 300, y: 50 },
+      },
+      {
+        id: '4', type: "prettyNode", data: { label: 'Pretty Node' }, position: { x: 150, y: 150 } ,
+        style: { padding:"16px", borderRadius:"8px", background:"var(--color-egg_yolk)", maxWidth:"200px" }
       },
       { id: 'e1-2', source: '1', target: '2', animated: true },
     ];
