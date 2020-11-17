@@ -68,22 +68,32 @@ class App extends React.Component {
       { id: 'e1-2', source: '1', target: '2', animated: true },
     ];
 
-    //console.log(this.state.boardData);
-    let boardElements = [];
-    //Goes into each board element in the JSON data
-    this.state.boardData?.forEach(board => function(){
+    // Only execute once board data has loaded
+    if (this.state.boardData != null){
 
-      //Goes into each item element in the JSON data
-      board['items'].forEach(item => function(){
-        let labelName = item['group']['title'] + '>' + item['name'];
-        let curY = 150;
-        boardElements.push({id: item['id'], data: { label: labelName }, position: {x: 100, y: curY} });
+      //converts strange JSON data into usable array
+      var bdata = Object.entries(this.state.boardData);
 
-        curY += 50;
+      console.log(bdata);
+      var boardElements = [];
+
+      //console.log(bdata[0][1]);
+
+      //Goes into each board element in the JSON data
+      //bdata[0][1] is where the list of boards are after the Object.entries conversion
+      bdata[0][1].forEach(function(board, bIndex){    
+        //Goes into each item element in the JSON data
+        board['items'].forEach(function(item, itIndex){
+          let labelName = item['group']['title'] + '>' + item['name'];
+          boardElements.push({id: item['id'], data: { label: labelName }, position: {x: 200*bIndex, y: 100*itIndex} });
+
+        });
+        
       });
-      
-    });
-    console.log(boardElements);
+      //console.log(boardElements);
+    } 
+    
+
 
     return (
       <div
