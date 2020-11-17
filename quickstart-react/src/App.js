@@ -11,6 +11,7 @@ import Background from 'react-flow-renderer';
 
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
+import PrettyItemNode from "./nodes/PrettyItemNode.js";
 
 const monday = mondaySdk();
 
@@ -64,6 +65,21 @@ class App extends React.Component {
         case "Done": return "var(--color-success)";
         case "Working on it": return "var(--color-egg_yolk)";
         default: return "var(--color-ui_grey)";
+      }
+    }
+
+    // what to do when the user clicks on an element
+    function onElementClick(event, element) {
+      if(typeof(element) === typeof(PrettyItemNode))
+      {
+        // monday.com FUCKING SUCKS BECAUSE THEIR API IS FUCKING BROKEN SINCE AUGUST AND THIS DOESN'T FUCKING WORK
+        //monday.execute('openItemCard', { itemId: element["id"], kind: 'columns' });
+
+        monday.execute('openItemCard', { itemId: element["id"], kind: 'updates' });
+      }
+      else
+      {
+        alert("OH");
       }
     }
 
@@ -151,7 +167,11 @@ class App extends React.Component {
         style={{ display: "block", background: (this.state.settings.background) }}
       >
 
-        <ReactFlow elements={boardElements} nodeTypes={nodeTypes} >
+        <ReactFlow 
+          elements={boardElements} 
+          nodeTypes={nodeTypes} 
+          onElementClick={onElementClick}
+          >
           
         </ReactFlow>
       </div >
