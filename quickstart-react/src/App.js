@@ -4,9 +4,10 @@ import mondaySdk from "monday-sdk-js";
 import Card from "./components/Card.js";
 
 import ItemNode from "./nodes/ItemNode.js";
-import PrettyNode from "./nodes/PrettyNode_proto.js"
+import PrettyNode from "./nodes/PrettyItemNode.js"
 
 import ReactFlow from 'react-flow-renderer';
+import Background from 'react-flow-renderer';
 
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
@@ -44,8 +45,28 @@ class App extends React.Component {
 
   }
 
-
   render() {
+
+    // determines the color of a node
+    function statusColor(columnValues) {
+
+      // gets the status from the column values
+      var status = "";
+      columnValues?.forEach(function (column, cIndex) {
+        if (column['title'] === "Status") {
+          status = column['text'];
+        }
+      });
+
+      // returns the right color css
+      // TODO: Make sure that this is based on monday.com's tags, not just memorized keys. IT CAN ALL CHANGE BASED ON THE USER!
+      switch (status) {
+        case "Done": return "var(--color-success)";
+        case "Working on it": return "var(--color-egg_yolk)";
+        default: return "var(--color-ui_grey)";
+      }
+    }
+
 
     const nodeTypes = {
       itmNode: ItemNode,
@@ -55,21 +76,22 @@ class App extends React.Component {
     const elements = [
       { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
       // you can also pass a React component as a label
-      { id: '2', data: { label: 'node 2'}, position: { x: 100, y: 100 } },
-      { id: '3',
+      { id: '2', data: { label: 'node 2' }, position: { x: 100, y: 100 } },
+      {
+        id: '3',
         type: 'itmNode',
         style: { border: '1px solid #777', padding: 10 },
         position: { x: 300, y: 50 },
       },
       {
-        id: '4', type: "prettyNode", data: { label: 'Pretty Node' }, position: { x: 150, y: 150 } ,
-        style: { padding:"16px", borderRadius:"8px", background:"var(--color-egg_yolk)", maxWidth:"200px" }
+        id: '4', type: "prettyNode", data: { label: 'Pretty Node' }, position: { x: 150, y: 150 },
+        style: { padding: "16px", borderRadius: "8px", background: "var(--color-egg_yolk)", maxWidth: "200px" }
       },
       { id: 'e1-2', source: '1', target: '2', animated: true },
     ];
 
     // Only execute once board data has loaded
-    if (this.state.boardData != null){
+    if (this.state.boardData != null) {
 
       //converts strange JSON data into usable array
       var bdata = Object.entries(this.state.boardData);
@@ -81,27 +103,57 @@ class App extends React.Component {
 
       //Goes into each board element in the JSON data
       //bdata[0][1] is where the list of boards are after the Object.entries conversion
-      bdata[0][1].forEach(function(board, bIndex){    
-        //Goes into each item element in the JSON data
-        board['items'].forEach(function(item, itIndex){
-          let labelName = item['group']['title'] + '>' + item['name'];
-          boardElements.push({id: item['id'], data: { label: labelName }, position: {x: 200*bIndex, y: 100*itIndex} });
+      bdata[0][1].forEach(function (board, bIndex) {
 
+        var previousNodeId = -1;
+
+        //Goes into each item element in the JSON data
+        board['items'].forEach(function (item, itIndex) {
+
+          let groupName = item['group']['title'];
+          let titleName = item['name'];
+
+          // adds a node
+          boardElements.push(
+            {
+              id: item['id'],
+              type: "prettyNode",
+              data: { title: titleName, group: groupName },
+              style: { padding: "16px", borderRadius: "8px", background: statusColor(item['column_values']) },
+              position: { x: 200 * bIndex, y: 200 * itIndex }
+            }
+          );
+
+          // adds an animated connector to the next one
+          if (previousNodeId > 0) {
+            boardElements.push(
+              {
+                id: 'e' + previousNodeId + '-' + item['id'],
+                source: previousNodeId,
+                target: item['id'],
+                animated: true
+              }
+            )
+          }
+
+          previousNodeId = item['id'];
         });
-        
       });
       //console.log(boardElements);
-    } 
-    
+    }
 
 
+
+    // note: adding a background threw a shit ton of errors for some reason whoops
     return (
       <div
         className="App"
         style={{ display: "block", background: (this.state.settings.background) }}
       >
 
-        <ReactFlow elements={boardElements} nodeTypes={nodeTypes}/>
+        <ReactFlow elements={boardElements} nodeTypes={nodeTypes} >
+          
+        </ReactFlow>
       </div >
     );
   }
