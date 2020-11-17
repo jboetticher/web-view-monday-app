@@ -33,7 +33,8 @@ class App extends React.Component {
     monday.listen("context", res => {
       this.setState({ context: res.data });
       console.log(res.data);
-      monday.api(`query ($boardIds: [Int]) { boards (ids:$boardIds) { name items(limit:1) { name column_values { title text } } } }`,
+      /*monday.api(`query ($boardIds: [Int]) { boards (ids:$boardIds) { name items { name column_values { title text } } } }`,*/
+      monday.api(`query ($boardIds: [Int]) { boards (ids:$boardIds) { name items { id name group {title} column_values { title text } } } }`,
         { variables: { boardIds: this.state.context.boardIds } }
       )
         .then(res => {
@@ -54,10 +55,9 @@ class App extends React.Component {
     const elements = [
       { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
       // you can also pass a React component as a label
-      { id: '2', data: { label: <input type="text" name="name"/> }, position: { x: 100, y: 100 } },
+      { id: '2', data: { label: 'node 2'}, position: { x: 100, y: 100 } },
       { id: '3',
         type: 'itmNode',
-        /*data: { onChange: onChange, color: initBgColor },*/
         style: { border: '1px solid #777', padding: 10 },
         position: { x: 300, y: 50 },
       },
@@ -68,21 +68,30 @@ class App extends React.Component {
       { id: 'e1-2', source: '1', target: '2', animated: true },
     ];
 
+    //console.log(this.state.boardData);
+    let boardElements = [];
+    //Goes into each board element in the JSON data
+    this.state.boardData?.forEach(board => function(){
+
+      //Goes into each item element in the JSON data
+      board['items'].forEach(item => function(){
+        let labelName = item['group']['title'] + '>' + item['name'];
+        let curY = 150;
+        boardElements.push({id: item['id'], data: { label: labelName }, position: {x: 100, y: curY} });
+
+        curY += 50;
+      });
+      
+    });
+    console.log(boardElements);
+
     return (
       <div
         className="App"
         style={{ display: "block", background: (this.state.settings.background) }}
       >
 
-        <Card content={JSON.stringify(this.state.boardData, null, 2)} />
-        <Card content={"What's up bitches? You're gonna choke on this node graph."} />
-        <Card content={"please help me"} />
-        <p>dear lord above, i pray</p>
-
-        <Button>
-          This is a button.
-        </Button>
-        <ReactFlow elements={elements} nodeTypes={nodeTypes}/>
+        <ReactFlow elements={boardElements} nodeTypes={nodeTypes}/>
       </div >
     );
   }
