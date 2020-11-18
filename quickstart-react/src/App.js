@@ -73,7 +73,16 @@ class App extends React.Component {
           }
         });
 
-        console.log(statusSettings);
+        statusColors = {};
+        var statusInfoJson = JSON.parse(statusSettings);
+        Object.entries(statusInfoJson['labels']).forEach(function(labelData) {
+          var localID = labelData[0];
+          var name = labelData[1];
+          statusColors[name] = statusInfoJson['labels_colors'][localID]['color'];
+        });
+
+        console.log(statusInfoJson);
+        console.log(statusColors);
       }
 
       // gets the status from the column values
@@ -85,12 +94,8 @@ class App extends React.Component {
       });
 
       // returns the right color css
-      // TODO: Make sure that this is based on monday.com's tags, not just memorized keys. IT CAN ALL CHANGE BASED ON THE USER!
-      switch (status) {
-        case "Done": return "var(--color-success)";
-        case "Working on it": return "var(--color-egg_yolk)";
-        default: return "var(--color-ui_grey)";
-      }
+      if(status in statusColors) return statusColors[status];
+      else { return "var(--color-ui_grey)"; }
     }
 
     // what to do when the user clicks on an element
