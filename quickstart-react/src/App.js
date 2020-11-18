@@ -34,26 +34,51 @@ class App extends React.Component {
 
     monday.listen("context", res => {
       this.setState({ context: res.data });
-      console.log(res.data);
-      /*monday.api(`query ($boardIds: [Int]) { boards (ids:$boardIds) { name items { name column_values { title text } } } }`,*/
-      monday.api(`query ($boardIds: [Int]) { boards (ids:$boardIds) { name items { id name group {title color} column_values { title text } } } }`,
-        { variables: { boardIds: this.state.context.boardIds } }
-      )
-        .then(res => {
-          this.setState({ boardData: res.data });
-        });
-    })
 
+      // board info query
+      monday.api(`query ($boardIds: [Int]) 
+      { 
+        boards (ids:$boardIds) { 
+          name 
+          items { id name group {title color} column_values { title text } } 
+          columns {
+            title
+            settings_str
+          }
+        } 
+      }`,
+        { variables: { boardIds: this.state.context.boardIds } }
+      ).then(res => {
+        this.setState({ boardData: res.data });
+        console.log(res);
+      });
+    });
   }
 
   render() {
 
     // determines the color of a node
-    function statusColor(columnValues) {
+    var statusColors = null;
+    function statusColor(itemColumnValues, boardColumnData) {
+
+      // retrieves the status colors if not done already
+      if(statusColors == null)
+      {
+
+        var statusSettings = "pog";
+        boardColumnData?.forEach(function (column, cIndex) {
+          if(column['title'] == "Status")
+          {
+            statusSettings = column['settings_str'];
+          }
+        });
+
+        console.log(statusSettings);
+      }
 
       // gets the status from the column values
       var status = "";
-      columnValues?.forEach(function (column, cIndex) {
+      itemColumnValues?.forEach(function (column, cIndex) {
         if (column['title'] === "Status") {
           status = column['text'];
         }
@@ -70,15 +95,13 @@ class App extends React.Component {
 
     // what to do when the user clicks on an element
     function onElementClick(event, element) {
-      if(typeof(element) === typeof(PrettyItemNode))
-      {
+      if (typeof (element) === typeof (PrettyItemNode)) {
         // monday.com FUCKING SUCKS BECAUSE THEIR API IS FUCKING BROKEN SINCE AUGUST AND THIS DOESN'T FUCKING WORK
         //monday.execute('openItemCard', { itemId: element["id"], kind: 'columns' });
 
         monday.execute('openItemCard', { itemId: element["id"], kind: 'updates' });
       }
-      else
-      {
+      else {
         alert("OH");
       }
     }
@@ -112,7 +135,10 @@ class App extends React.Component {
       //converts strange JSON data into usable array
       var bdata = Object.entries(this.state.boardData);
 
-      console.log(bdata);
+      // retrieves column data FOR JUST THE FIRST BOARD
+      var columnData = bdata[0][1][0]['columns'];
+
+      //console.log(bdata);
       var boardElements = [];
 
       //console.log(bdata[0][1]);
@@ -135,7 +161,11 @@ class App extends React.Component {
               id: item['id'],
               type: "prettyNode",
               data: { title: titleName, group: groupName },
-              style: { padding: "16px", borderRadius: "8px", border: "2px solid", borderColor: item['group']['color'], background: statusColor(item['column_values']) },
+              style: { 
+                padding: "16px", 
+                borderRadius: "8px", border: "2px solid", borderColor: item['group']['color'], 
+                background: statusColor(item['column_values'], columnData) 
+              },
               position: { x: 200 * bIndex, y: 200 * itIndex }
             }
           );
@@ -167,12 +197,12 @@ class App extends React.Component {
         style={{ display: "block", background: (this.state.settings.background) }}
       >
 
-        <ReactFlow 
-          elements={boardElements} 
-          nodeTypes={nodeTypes} 
+        <ReactFlow
+          elements={boardElements}
+          nodeTypes={nodeTypes}
           onElementClick={onElementClick}
-          >
-          
+        >
+
         </ReactFlow>
       </div >
     );
