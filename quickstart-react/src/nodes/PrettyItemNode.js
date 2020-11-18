@@ -10,6 +10,21 @@ import { Handle } from 'react-flow-renderer';
 export default memo(({ data }) => {
     return (
         <>
+            <div style={{
+                position: "fixed",
+                background: data?.groupColor,
+                height: "16px",
+                borderRadius: "8px",
+                top: "0px", left: "0px", right: "0px",
+            }}>
+                <div style={{
+                    position: "absolute",
+                    background: data?.groupColor,
+                    height: "8px",
+                    bottom: "0px", left: "0px", right: "0px"
+                }} />
+            </div>
+
             <Handle
                 type="target"
                 position="top"
@@ -18,14 +33,14 @@ export default memo(({ data }) => {
             />
             <Handle
                 type="source"
-                position="right"
-                id="r"
+                position="bottom"
+                id="b"
                 style={{ background: 'var(--color-mud_black)' }}
             />
             <Handle
                 type="source"
-                position="bottom"
-                id="b"
+                position="right"
+                id="r"
                 style={{ background: 'var(--color-mud_black)' }}
             />
             <Handle
@@ -40,6 +55,14 @@ export default memo(({ data }) => {
             <div style={{ maxWidth: "150px" }}>
                 <h4>Group: {data?.group}</h4>
                 <p>{data?.title}</p>
+            </div>
+            <div style={{
+                textAlign: "center",
+                background: data?.statusData['color'],
+                borderRadius: "4px",
+                padding: "4px"
+            }}>
+                {data?.statusData['status'] == "" ? "Empty" : data.statusData['status']}
             </div>
 
         </>

@@ -1,13 +1,11 @@
 import React from "react";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
-import Card from "./components/Card.js";
 
 import ItemNode from "./nodes/ItemNode.js";
 import PrettyNode from "./nodes/PrettyItemNode.js"
 
 import ReactFlow from 'react-flow-renderer';
-import Background from 'react-flow-renderer';
 
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
@@ -52,6 +50,8 @@ class App extends React.Component {
         this.setState({ boardData: res.data });
         console.log(res);
       });
+
+      console.log(this.state.context);
     });
   }
 
@@ -62,27 +62,22 @@ class App extends React.Component {
     function statusColor(itemColumnValues, boardColumnData) {
 
       // retrieves the status colors if not done already
-      if(statusColors == null)
-      {
+      if (statusColors == null) {
 
         var statusSettings = "pog";
         boardColumnData?.forEach(function (column, cIndex) {
-          if(column['title'] == "Status")
-          {
+          if (column['title'] == "Status") {
             statusSettings = column['settings_str'];
           }
         });
 
         statusColors = {};
         var statusInfoJson = JSON.parse(statusSettings);
-        Object.entries(statusInfoJson['labels']).forEach(function(labelData) {
+        Object.entries(statusInfoJson['labels']).forEach(function (labelData) {
           var localID = labelData[0];
           var name = labelData[1];
           statusColors[name] = statusInfoJson['labels_colors'][localID]['color'];
         });
-
-        console.log(statusInfoJson);
-        console.log(statusColors);
       }
 
       // gets the status from the column values
@@ -94,8 +89,8 @@ class App extends React.Component {
       });
 
       // returns the right color css
-      if(status in statusColors) return statusColors[status];
-      else { return "var(--color-ui_grey)"; }
+      if (status in statusColors) return { status: status, color: statusColors[status] };
+      else { return { status: "", color: "var(--color-ui_grey)"}; }
     }
 
     // what to do when the user clicks on an element
@@ -142,17 +137,28 @@ class App extends React.Component {
 
       // retrieves column data FOR JUST THE FIRST BOARD
       var columnData = bdata[0][1][0]['columns'];
-
-      //console.log(bdata);
       var boardElements = [];
 
-      //console.log(bdata[0][1]);
 
       //Goes into each board element in the JSON data
       //bdata[0][1] is where the list of boards are after the Object.entries conversion
       bdata[0][1].forEach(function (board, bIndex) {
 
         var previousNodeId = -1;
+        var previousGroupName = "";
+
+        // Adds an id number & index to the group ids
+        let groupIds = {};
+        let groupIndex = {};
+        let currentGroupId = 0;
+        board['items'].forEach(function (item, itIndex) {
+          let groupName = item['group']['title'];
+          if (!(groupName in groupIds)) {
+            groupIds[groupName] = currentGroupId;
+            groupIndex[groupName] = 0;
+            currentGroupId++;
+          }
+        });
 
         //Goes into each item element in the JSON data
         board['items'].forEach(function (item, itIndex) {
@@ -160,23 +166,33 @@ class App extends React.Component {
           let groupName = item['group']['title'];
           let titleName = item['name'];
 
+          // gets status data
+          let statusData = statusColor(item['column_values'], columnData);
+
           // adds a node
           boardElements.push(
             {
               id: item['id'],
               type: "prettyNode",
-              data: { title: titleName, group: groupName },
-              style: { 
-                padding: "16px", 
-                borderRadius: "8px", border: "2px solid", borderColor: item['group']['color'], 
-                background: statusColor(item['column_values'], columnData) 
+              data: { 
+                title: titleName, 
+                group: groupName, groupColor: item['group']['color'],
+                statusData: statusData 
               },
-              position: { x: 200 * bIndex, y: 200 * itIndex }
+              style: {
+                padding: "16px",
+                borderRadius: "8px", //border: "4px solid", borderColor: item['group']['color'],
+                background: "#ddd" //item['group']['color']
+              },
+              position: { x: 250 * groupIds[groupName] + bIndex * 1000, y: 250 * groupIndex[groupName] }
             }
           );
 
-          // adds an animated connector to the next one
-          if (previousNodeId > 0) {
+          // increments group index
+          groupIndex[groupName] += 1;
+
+          // adds an animated connector to the next one if in same group
+          if (previousNodeId > 0 && previousGroupName == groupName) {
             boardElements.push(
               {
                 id: 'e' + previousNodeId + '-' + item['id'],
@@ -188,9 +204,9 @@ class App extends React.Component {
           }
 
           previousNodeId = item['id'];
+          previousGroupName = groupName;
         });
       });
-      //console.log(boardElements);
     }
 
 
