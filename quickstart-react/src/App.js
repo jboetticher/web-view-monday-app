@@ -36,7 +36,7 @@ class App extends React.Component {
       this.setState({ context: res.data });
       console.log(res.data);
       /*monday.api(`query ($boardIds: [Int]) { boards (ids:$boardIds) { name items { name column_values { title text } } } }`,*/
-      monday.api(`query ($boardIds: [Int]) { boards (ids:$boardIds) { name items { id name group {title} column_values { title text } } } }`,
+      monday.api(`query ($boardIds: [Int]) { boards (ids:$boardIds) { name items { id name group {title color} column_values { title text } } } }`,
         { variables: { boardIds: this.state.context.boardIds } }
       )
         .then(res => {
@@ -135,7 +135,7 @@ class App extends React.Component {
               id: item['id'],
               type: "prettyNode",
               data: { title: titleName, group: groupName },
-              style: { padding: "16px", borderRadius: "8px", background: statusColor(item['column_values']) },
+              style: { padding: "16px", borderRadius: "8px", border: "2px solid", borderColor: item['group']['color'], background: statusColor(item['column_values']) },
               position: { x: 200 * bIndex, y: 200 * itIndex }
             }
           );
