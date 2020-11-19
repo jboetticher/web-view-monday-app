@@ -29,7 +29,7 @@ export default memo(({ data }) => {
                 type="target"
                 position="top"
                 id="t"
-                style={{ background: 'var(--color-mud_black)' }}
+                style={{ background: '#0071d9' }}
             />
             <Handle
                 type="source"
