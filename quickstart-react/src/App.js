@@ -2,14 +2,14 @@ import React from "react";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
 
-import ItemNode from "./nodes/ItemNode.js";
-import PrettyNode from "./nodes/PrettyItemNode.js"
-
 import ReactFlow from 'react-flow-renderer';
+import ItemNode from "./nodes/ItemNode.js";
+import PrettyItemNode from "./nodes/PrettyItemNode.js";
+import "./css/node-view.css";
 
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
-import PrettyItemNode from "./nodes/PrettyItemNode.js";
+import UIOverlay from "./components/UIOverlay";
 
 const monday = mondaySdk();
 
@@ -90,7 +90,7 @@ class App extends React.Component {
 
       // returns the right color css
       if (status in statusColors) return { status: status, color: statusColors[status] };
-      else { return { status: "", color: "var(--color-ui_grey)"}; }
+      else { return { status: "", color: "var(--color-ui_grey)" }; }
     }
 
     // what to do when the user clicks on an element
@@ -109,7 +109,7 @@ class App extends React.Component {
 
     const nodeTypes = {
       itmNode: ItemNode,
-      prettyNode: PrettyNode
+      prettyNode: PrettyItemNode
     };
 
     const elements = [
@@ -177,21 +177,21 @@ class App extends React.Component {
           // gets subitems if the item has subitems
           // item['column_values'][0]['text'] provides a text of the subitems
           // if no subitems, value will be empty string
-          if (item['column_values'][0] != ""){
+          if (item['column_values'][0] != "") {
             let subitems = item['column_values'][0]['text'];
             console.log(subitems);
           }
-          
+
 
           // adds a node
           boardElements.push(
             {
               id: item['id'],
               type: "prettyNode",
-              data: { 
-                title: titleName, 
+              data: {
+                title: titleName,
                 group: groupName, groupColor: item['group']['color'],
-                statusData: statusData 
+                statusData: statusData
               },
               style: {
                 padding: "16px",
@@ -232,14 +232,22 @@ class App extends React.Component {
         className="App"
         style={{ display: "block", background: "var(--color-mud_black)" }}//(this.state.settings.background) }}
       >
-
         <ReactFlow
           elements={boardElements}
           nodeTypes={nodeTypes}
           onElementClick={onElementClick}
         >
-
         </ReactFlow>
+        <UIOverlay>
+          <div style={{
+            width: "100px", height: "100px",
+            bottom: "0px", left: "0px"
+          }}>
+            <a href="https://pisslake.github.io/">
+              <Button>Pisslake</Button>
+            </a>
+          </div>
+        </UIOverlay>
       </div >
     );
   }
