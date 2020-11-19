@@ -71,7 +71,7 @@ class App extends React.Component {
   }
 
   render() {
-
+    /*
     // determines the color of a node
     var statusColors = null;
     function statusColor(itemColumnValues, boardColumnData) {
@@ -106,7 +106,7 @@ class App extends React.Component {
       // returns the right color css
       if (status in statusColors) return { status: status, color: statusColors[status] };
       else { return { status: "", color: "var(--color-ui_grey)" }; }
-    }
+    }*/
 
     // what to do when the user clicks on an element
     function onElementClick(event, element) {
@@ -122,7 +122,7 @@ class App extends React.Component {
     }
 
     // returns the right color based on the current filter
-    function nodeColorOnFilter(filteredData, itemId) {
+    /*function nodeColorOnFilter(filteredData, itemId) {
 
       if (filteredData == null) return "var(--color-snow_white)";
 
@@ -136,7 +136,7 @@ class App extends React.Component {
       });
 
       return colorString;
-    }
+    }*/
 
     // pass in the item and the board it is in, alogn with all the boardData
     // returns an array that holds all the data about the subitems of an item
@@ -164,7 +164,7 @@ class App extends React.Component {
       return subitemArray;
     }*/
 
-    const nodeTypes = {
+    /*const nodeTypes = {
       itmNode: ItemNode,
       prettyNode: PrettyItemNode
     };
@@ -263,7 +263,7 @@ class App extends React.Component {
           previousGroupName = groupName;
         });
       });
-    }
+    }*/
 
 
     // note: adding a background threw a shit ton of errors for some reason whoops
@@ -273,10 +273,12 @@ class App extends React.Component {
         style={{ display: "block", background: "var(--color-mud_black)" }}//(this.state.settings.background) }}
       >
        
-       <ReactFlowChart 
-          boardElements={boardElements}
-          nodeTypes={nodeTypes}
-          onElementClick={onElementClick}
+       <ReactFlowChart
+          boardData={this.state.boardData?.boards} 
+          filteredItems={this.state?.filteredItems}
+          //boardElements={boardElements}
+          //nodeTypes={nodeTypes}
+          //onElementClick={onElementClick}
        />
 
         <UIOverlay>
