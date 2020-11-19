@@ -1,8 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
 
-import ReactFlow from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge } from 'react-flow-renderer';
 import ItemNode from "./nodes/ItemNode.js";
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
 import "./css/node-view.css";
@@ -10,6 +10,8 @@ import "./css/node-view.css";
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
 import UIOverlay from "./components/UIOverlay";
+
+import ReactFlowChart from "./ReactFlowChart.js";
 
 const monday = mondaySdk();
 
@@ -264,19 +266,19 @@ class App extends React.Component {
     }
 
 
-
     // note: adding a background threw a shit ton of errors for some reason whoops
     return (
       <div
         className="App"
         style={{ display: "block", background: "var(--color-mud_black)" }}//(this.state.settings.background) }}
       >
-        <ReactFlow
-          elements={boardElements}
+       
+       <ReactFlowChart 
+          boardElements={boardElements}
           nodeTypes={nodeTypes}
           onElementClick={onElementClick}
-        >
-        </ReactFlow>
+       />
+
         <UIOverlay>
           <div style={{
             width: "100px", height: "100px",
