@@ -48,7 +48,6 @@ class App extends React.Component {
         { variables: { boardIds: this.state.context.boardIds } }
       ).then(res => {
         this.setState({ boardData: res.data });
-        //console.log(res);
       });
 
       //console.log(this.state.context);
@@ -56,6 +55,16 @@ class App extends React.Component {
 
     monday.listen("itemIds", (res) => {
       this.setState({ filteredItems: res.data });
+    });
+
+    monday.listen("events", (res) => {
+      switch (res["type"]) {
+        case "new_items":
+          alert("NEW ITEM BRUH");
+          break;
+        case "change_column_value":
+          break;
+      }
     });
   }
 
@@ -118,8 +127,8 @@ class App extends React.Component {
       var colorString = "var(--color-jarco_gray)";
       Object.entries(filteredData).forEach(function (num, numIndex) {
         console.log("suggestion for " + itemId + ": " + num[1]);
-        if (itemId == num[1]) { 
-          colorString = "var(--color-snow_white)"; 
+        if (itemId == num[1]) {
+          colorString = "var(--color-snow_white)";
           console.log("Holy smokes, you did it! they're equal! now colorstring: " + colorString);
         }
       });
