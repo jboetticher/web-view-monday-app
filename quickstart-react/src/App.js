@@ -48,10 +48,14 @@ class App extends React.Component {
         { variables: { boardIds: this.state.context.boardIds } }
       ).then(res => {
         this.setState({ boardData: res.data });
-        console.log(res);
+        //console.log(res);
       });
 
-      console.log(this.state.context);
+      //console.log(this.state.context);
+    });
+
+    monday.listen("itemIds", (res) => {
+      this.setState({ filteredItems: res.data });
     });
   }
 
@@ -106,6 +110,23 @@ class App extends React.Component {
       }
     }
 
+    // returns the right color based on the current filter
+    function nodeColorOnFilter(filteredData, itemId) {
+
+      if (filteredData == null) return "var(--color-snow_white)";
+
+      var colorString = "var(--color-jarco_gray)";
+      Object.entries(filteredData).forEach(function (num, numIndex) {
+        console.log("suggestion for " + itemId + ": " + num[1]);
+        if (itemId == num[1]) { 
+          colorString = "var(--color-snow_white)"; 
+          console.log("Holy smokes, you did it! they're equal! now colorstring: " + colorString);
+        }
+      });
+
+      return colorString;
+    }
+
     // pass in the item and the board it is in, alogn with all the boardData
     // returns an array that holds all the data about the subitems of an item
     /* CURRENTLY UNABLE TO WORK DUE TO CONSTRAINTS WITH MONDAY API AND SUBITEMS */
@@ -137,31 +158,14 @@ class App extends React.Component {
       prettyNode: PrettyItemNode
     };
 
-    const elements = [
-      { id: '1', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
-      // you can also pass a React component as a label
-      { id: '2', data: { label: 'node 2' }, position: { x: 100, y: 100 } },
-      {
-        id: '3',
-        type: 'itmNode',
-        style: { border: '1px solid #777', padding: 10 },
-        position: { x: 300, y: 50 },
-      },
-      {
-        id: '4', type: "prettyNode", data: { label: 'Pretty Node' }, position: { x: 150, y: 150 },
-        style: { padding: "16px", borderRadius: "8px", background: "var(--color-egg_yolk)", maxWidth: "200px" }
-      },
-      { id: 'e1-2', source: '1', target: '2', animated: true },
-    ];
-
     // Only execute once board data has loaded
     if (this.state.boardData != null) {
 
-      //converts strange JSON data into usable array
-      //var bdata = Object.entries(this.state.boardData);
-
       //bdata is the array monday passed us with all the data
       var bdata = this.state.boardData.boards;
+
+      //the items that should be highlighted by the filter
+      var filteredItems = this.state.filteredItems;
 
       console.log("-----------------------");
       console.log(this.state.boardData.boards);
@@ -173,7 +177,7 @@ class App extends React.Component {
 
       //Goes into each board element in the JSON data array
       bdata.forEach(function (board, bIndex) {
-        if(board['name'].indexOf("Subitems of") == 1) return;
+        if (board['name'].indexOf("Subitems of") == 1) return;
         var previousNodeId = -1;
         var previousGroupName = "";
 
@@ -195,6 +199,7 @@ class App extends React.Component {
 
           let groupName = item['group']['title'];
           let titleName = item['name'];
+          let nodeBackgroundColor = nodeColorOnFilter(filteredItems, item['id']);
 
           // gets status data
           let statusData = statusColor(item['column_values'], columnData);
@@ -204,7 +209,7 @@ class App extends React.Component {
           // if no subitems, value will be empty string
           if (item['column_values'][0] != "") {
             let subitems = item['column_values'][0]['text'];
-            console.log(subitems);
+            //console.log(subitems);
           }
 
 
@@ -221,7 +226,7 @@ class App extends React.Component {
               style: {
                 padding: "16px",
                 borderRadius: "8px", //border: "4px solid", borderColor: item['group']['color'],
-                background: "var(--color-snow_white)", //item['group']['color']
+                background: nodeBackgroundColor, //item['group']['color']
                 boxShadow: "0px 6px 20px -2px rgba(0, 0, 0, 0.2)"
               },
               position: { x: 250 * groupIds[groupName] + bIndex * 1000, y: 250 * groupIndex[groupName] }
