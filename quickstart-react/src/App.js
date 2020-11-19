@@ -182,7 +182,8 @@ class App extends React.Component {
               style: {
                 padding: "16px",
                 borderRadius: "8px", //border: "4px solid", borderColor: item['group']['color'],
-                background: "#ddd" //item['group']['color']
+                background: "var(--color-snow_white)", //item['group']['color']
+                boxShadow: "0px 6px 20px -2px rgba(0, 0, 0, 0.2)"
               },
               position: { x: 250 * groupIds[groupName] + bIndex * 1000, y: 250 * groupIndex[groupName] }
             }
@@ -215,7 +216,7 @@ class App extends React.Component {
     return (
       <div
         className="App"
-        style={{ display: "block", background: (this.state.settings.background) }}
+        style={{ display: "block", background: "var(--color-mud_black)" }}//(this.state.settings.background) }}
       >
 
         <ReactFlow

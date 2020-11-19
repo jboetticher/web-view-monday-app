@@ -62,7 +62,7 @@ export default memo(({ data }) => {
                 borderRadius: "4px",
                 padding: "4px"
             }}>
-                {data?.statusData['status'] == "" ? "Empty" : data.statusData['status']}
+                {data?.statusData['status'] === "" ? "Empty" : data.statusData['status']}
             </div>
 
         </>
