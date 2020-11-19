@@ -106,6 +106,31 @@ class App extends React.Component {
       }
     }
 
+    // pass in the item and the board it is in, alogn with all the boardData
+    // returns an array that holds all the data about the subitems of an item
+    /* CURRENTLY UNABLE TO WORK DUE TO CONSTRAINTS WITH MONDAY API AND SUBITEMS */
+    /*function getSubitems(boardData, board, parentItem){
+      let subitemArray = [];
+
+      let subitemBoard;
+      boardData.forEach(function(board){
+        if (board['name'] == "Subitems of " + board['name']){
+          subitemBoard = board;
+        }
+      });
+
+      let parentSubitemText = parentItem['column_values'][0]['text'];
+      subitemBoard.forEach(function(subitem){
+        
+        //if the parent subitem text contains the name of the subitem,
+        //then that subitem in the pool is a subitem of our parent
+        if (parentSubitemText.indexOf(subitem['name']) > 0){
+          subitemArray.push(subitem);
+        }
+      });
+
+      return subitemArray;
+    }*/
 
     const nodeTypes = {
       itmNode: ItemNode,
@@ -138,9 +163,9 @@ class App extends React.Component {
       //bdata is the array monday passed us with all the data
       var bdata = this.state.boardData.boards;
 
-      //console.log("-----------------------");
-      //console.log(this.state.boardData.boards);
-      //console.log("-----------------------");
+      console.log("-----------------------");
+      console.log(this.state.boardData.boards);
+      console.log("-----------------------");
 
       // retrieves column data FOR JUST THE FIRST BOARD
       var columnData = bdata[0]['columns'];
@@ -148,7 +173,7 @@ class App extends React.Component {
 
       //Goes into each board element in the JSON data array
       bdata.forEach(function (board, bIndex) {
-
+        if(board['name'].indexOf("Subitems of") == 1) return;
         var previousNodeId = -1;
         var previousGroupName = "";
 
