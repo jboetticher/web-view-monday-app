@@ -133,16 +133,21 @@ class App extends React.Component {
     if (this.state.boardData != null) {
 
       //converts strange JSON data into usable array
-      var bdata = Object.entries(this.state.boardData);
+      //var bdata = Object.entries(this.state.boardData);
+
+      //bdata is the array monday passed us with all the data
+      var bdata = this.state.boardData.boards;
+
+      //console.log("-----------------------");
+      //console.log(this.state.boardData.boards);
+      //console.log("-----------------------");
 
       // retrieves column data FOR JUST THE FIRST BOARD
-      var columnData = bdata[0][1][0]['columns'];
+      var columnData = bdata[0]['columns'];
       var boardElements = [];
 
-
-      //Goes into each board element in the JSON data
-      //bdata[0][1] is where the list of boards are after the Object.entries conversion
-      bdata[0][1].forEach(function (board, bIndex) {
+      //Goes into each board element in the JSON data array
+      bdata.forEach(function (board, bIndex) {
 
         var previousNodeId = -1;
         var previousGroupName = "";
@@ -168,6 +173,15 @@ class App extends React.Component {
 
           // gets status data
           let statusData = statusColor(item['column_values'], columnData);
+
+          // gets subitems if the item has subitems
+          // item['column_values'][0]['text'] provides a text of the subitems
+          // if no subitems, value will be empty string
+          if (item['column_values'][0] != ""){
+            let subitems = item['column_values'][0]['text'];
+            console.log(subitems);
+          }
+          
 
           // adds a node
           boardElements.push(
