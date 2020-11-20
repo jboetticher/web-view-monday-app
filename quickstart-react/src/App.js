@@ -5,6 +5,7 @@ import mondaySdk from "monday-sdk-js";
 import { removeElements, addEdge, Controls } from 'react-flow-renderer';
 import ItemNode from "./nodes/ItemNode.js";
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
+import NodeFunctions from "./nodes/NodeFunctions.js";
 import "./css/node-view.css";
 
 import Button from "monday-ui-react-core/dist/Button.js";
@@ -14,6 +15,7 @@ import UIOverlay from "./components/UIOverlay";
 import ReactFlowChart from "./ReactFlowChart.js";
 
 const monday = mondaySdk();
+const nodeHelper = new NodeFunctions(monday);
 
 class App extends React.Component {
   constructor(props) {
@@ -108,6 +110,7 @@ class App extends React.Component {
 
           }}
             style={{ marginRight: "8px" }}>
+              Recenter
           </Button>
           <Button onClick={() => {
             monday.execute("confirm", {
