@@ -98,6 +98,7 @@ class App extends React.Component {
           boardData={this.state.boardData?.boards}
           filteredItems={this.state?.filteredItems}
           onElementClick={onElementClick}
+          pathSettings={this.state.settings?.pathdisplay}
         //boardElements={boardElements}
         //nodeTypes={nodeTypes}
         />
