@@ -212,7 +212,7 @@ let ReactFlowChart = props => {
 			console.log(els);
 
 			if (els !== null) { 
-				addEdge(params, els);
+				els = addEdge(params, els);
 				console.log("add edge has run");
 			}
 
