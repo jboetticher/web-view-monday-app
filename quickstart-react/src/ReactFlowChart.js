@@ -157,7 +157,8 @@ let ReactFlowChart = props => {
 						data: {
 							title: titleName,
 							group: groupName, groupColor: item['group']['color'],
-							statusData: statusData
+							statusData: statusData,
+							isConnecting: false
 						},
 						style: {
 							padding: "16px",
@@ -216,10 +217,44 @@ let ReactFlowChart = props => {
 				console.log("add edge has run");
 			}
 
-			console.log(els);
 			return els;
 		});
 		console.log('---------------------');
+	};
+
+	const onConnectStart = (event, { nodeId, handleType }) => {
+		console.log('on connect start', { nodeId, handleType } );
+
+		//loop through all the current elements and replace target handles with bigger versions
+		setElements(function (els) {
+			els.forEach(function(elsItem){
+				if(elsItem['type'] != "prettyNode") return;
+
+					elsItem['data']['isConnecting'] = true;
+					console.log(elsItem['data']['isConnecting']);
+
+			});	
+			return els;
+		});
+	};
+		
+	const onConnectStop = (event) => {
+		console.log('on connect stop', event);
+
+		//loop through all the current elements and replace target handles with bigger versions
+		setElements(function (els) {
+			els.forEach(function(elsItem){
+				if(elsItem['type'] != "prettyNode") return;
+
+					elsItem['data']['isConnecting'] = false;
+					//elsItem['data']['groupColor'] = '#579bfc';
+					elsItem['style']['background'] = '#579bfc';	
+					console.log(elsItem);
+
+			});
+			return els;
+		});
+
 	};
 
 	return (
@@ -229,6 +264,8 @@ let ReactFlowChart = props => {
 			nodeTypes={nodeTypes}
 			onElementClick={props?.onElementClick}
 			onConnect={onConnect}
+			onConnectStart={onConnectStart}
+			onConnectStop={onConnectStop}
 		>
 		</ReactFlow>
 
