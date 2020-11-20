@@ -207,6 +207,9 @@ let ReactFlowChart = props => {
 			console.log('onConnect', params)		
 			return els;
 		});
+
+		// save dat shit
+		props?.nodeHelper.AddConnection(params);
 	};
 
 	const onConnectStart = (event, { nodeId, handleType }) => {

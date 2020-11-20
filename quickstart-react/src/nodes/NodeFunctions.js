@@ -13,11 +13,15 @@ class NodeFunctions {
      */
     QueryConnections() {
         this.monday.storage.instance.getItem('connection_objects').then(res => {
+            console.log(res);
+            
             if (res.data.value !== null) {
                 this.connections = JSON.parse(res.data.value);
+                console.log(this.connections);
             }
             else {
                 this.connections = [];
+                console.log(this.connections);
             }
         });
     }
@@ -36,6 +40,7 @@ class NodeFunctions {
 
         // if it's null we ain't messing with it
         if (onConnectParams == null) { return; }
+        console.log("saving connections ", onConnectParams);
 
         // checks to see if the current array has any of those connections
         var replaceIndex = -1;
@@ -61,6 +66,9 @@ class NodeFunctions {
         // save to monday.com persist
         this.monday.storage.instance.setItem('connection_objects', jsonString).then(res => {
             console.log(res);
+            console.log(jsonString);
+
+            this.QueryConnections();
         });
     }
 }
