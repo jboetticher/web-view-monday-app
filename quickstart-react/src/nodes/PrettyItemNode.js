@@ -10,15 +10,16 @@ import { Handle } from 'react-flow-renderer';
 export default memo(({ data }) => {
 
     // change what the handles look like if it is in connecting mode
-    var targetStyle;
+    // doesnt work so don't give up 
+    var targetStyle;    
     var sourceStyle = { background: 'var(--color-mud_black)', width: '10px', height:'10px' };
     if(data?.isConnecting){
         targetStyle = { background: '#0071d9', width: '20px', height:'20px' };
-        console.log("handle style changed");
+        //console.log("handle style changed");
     }
     else {
         targetStyle = { background: '#0071d9', width: '10px', height:'10px' };
-        console.log("default handle style");
+        //console.log("default handle style");
     }
 
 

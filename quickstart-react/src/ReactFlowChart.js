@@ -213,7 +213,7 @@ let ReactFlowChart = props => {
 				if(elsItem['type'] != "prettyNode") return;
 
 					elsItem['data']['isConnecting'] = true;
-					console.log(elsItem['data']['isConnecting']);
+					//console.log(elsItem['data']['isConnecting']);
 
 			});	
 			return els;
@@ -230,8 +230,8 @@ let ReactFlowChart = props => {
 
 					elsItem['data']['isConnecting'] = false;
 					//elsItem['data']['groupColor'] = '#579bfc';
-					elsItem['style']['background'] = '#579bfc';	
-					console.log(elsItem);
+					//elsItem['style']['background'] = '#579bfc';	
+					//console.log(elsItem);
 
 			});
 			return els;
