@@ -88,17 +88,6 @@ let ReactFlowChart = props => {
 	  return subitemArray;
 	}*/
 
-
-	/* there's an issue with this code:
-	 * 1. elements is a const, so it gets set once, before the data is recieved. 
-	 *    That's fine. But it gets set to null.
-	 *    So now, the elements is set only once, and can't render in ReactFlow.
-	 * 2. What we need to happen is elements is declared, and then is updated once props is updated.
-	 *    Sync the props to state! This is where useEffect comes into play hopefully
-	 * 
-	 * 
-	*/
-
 	var boardElements = [];
 	const nodeTypes = {
 		prettyNode: PrettyItemNode
@@ -206,20 +195,12 @@ let ReactFlowChart = props => {
 	}, [props]);
 
 	const onConnect = (params) => {
-		console.log('---------------------');
-		console.log('on connect', params);
 		setElements(function (els) {
-			console.log(els);
-
 			if (els !== null) { 
 				els = addEdge(params, els);
-				console.log("add edge has run");
 			}
-
-			console.log(els);
 			return els;
 		});
-		console.log('---------------------');
 	};
 
 	return (

@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
 
-import ReactFlow, { removeElements, addEdge } from 'react-flow-renderer';
+import { removeElements, addEdge, Controls } from 'react-flow-renderer';
 import ItemNode from "./nodes/ItemNode.js";
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
 import "./css/node-view.css";
@@ -91,24 +91,40 @@ class App extends React.Component {
         className="App"
         style={{ display: "block", background: "var(--color-mud_black)" }}//(this.state.settings.background) }}
       >
-       
-       <ReactFlowChart
-          boardData={this.state.boardData?.boards} 
+
+        <ReactFlowChart
+          boardData={this.state.boardData?.boards}
           filteredItems={this.state?.filteredItems}
-          //boardElements={boardElements}
-          //nodeTypes={nodeTypes}
-          //onElementClick={onElementClick}
-       />
+        //boardElements={boardElements}
+        //nodeTypes={nodeTypes}
+        //onElementClick={onElementClick}
+        />
 
         <UIOverlay>
-          <div style={{
-            width: "100px", height: "100px",
-            bottom: "0px", left: "0px"
-          }}>
-            <a href="https://pisslake.github.io/">
-              <Button>Pisslake</Button>
-            </a>
-          </div>
+          <a href="https://pisslake.github.io/" style={{ marginRight: "8px" }}>
+            <Button>Pisslake</Button>
+          </a>
+          <Button onClick={() => {
+
+          }}
+            style={{ marginRight: "8px" }}>
+          </Button>
+          <Button onClick={() => {
+            monday.execute("confirm", {
+              message: "Are you sure you want to reset the nodes? " +
+                "You will lose all of the connections that you have made, and all of the original connections will be returned.",
+              confirmButton: "Confirm",
+              cancelButton: "Cancel",
+              excludeCancelButton: false
+            }).then((res) => {
+              if(res.data["confirm"] === true) {
+                // do the reset here
+              }
+            });
+          }}
+            style={{ marginRight: "8px" }}>
+            Reset
+          </Button>
         </UIOverlay>
       </div >
     );
