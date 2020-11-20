@@ -169,6 +169,9 @@ let ReactFlowChart = props => {
 							id: 'e' + previousNodeId + '-' + item['id'],
 							source: previousNodeId,
 							target: item['id'],
+							style: { stroke: '#fff' },
+							//type: 'step',
+							type: props?.pathSettings,
 							animated: true
 						}
 					)
@@ -198,7 +201,7 @@ let ReactFlowChart = props => {
 	const onConnect = (params) => {
 		setElements(function (els) {
 			if (els !== null) { 
-				els = addEdge(params, els);
+				els = addEdge({ ...params, animated: true, type: props?.pathSettings, style: { stroke: '#fff' } }, els);
 			}
 			console.log(els);			return els;
 		});
