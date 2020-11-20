@@ -200,7 +200,11 @@ let ReactFlowChart = props => {
 			if (els !== null) { 
 				els = addEdge(params, els);
 			}
-			console.log(els);			return els;
+<<<<<<< HEAD
+=======
+
+>>>>>>> e483171d781c4c4899cdd1d4f7eabdae699b28b3
+			return els;
 		});
 	};
 

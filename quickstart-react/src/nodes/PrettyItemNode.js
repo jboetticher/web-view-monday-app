@@ -8,6 +8,20 @@ import { Handle } from 'react-flow-renderer';
 
 
 export default memo(({ data }) => {
+
+    // change what the handles look like if it is in connecting mode
+    var targetStyle;
+    var sourceStyle = { background: 'var(--color-mud_black)', width: '10px', height:'10px' };
+    if(data?.isConnecting){
+        targetStyle = { background: '#0071d9', width: '20px', height:'20px' };
+        console.log("handle style changed");
+    }
+    else {
+        targetStyle = { background: '#0071d9', width: '10px', height:'10px' };
+        console.log("default handle style");
+    }
+
+
     return (
         <>
             <div style={{
@@ -29,26 +43,25 @@ export default memo(({ data }) => {
                 type="target"
                 position="top"
                 id="t"
-                style={{ background: '#0071d9' }}
-            />
+                style={targetStyle}
+            />  
             <Handle
                 type="source"
                 position="bottom"
                 id="b"
-                style={{ background: 'var(--color-mud_black)' }}
+                style={sourceStyle}
             />
             <Handle
                 type="source"
                 position="right"
                 id="r"
-                style={{ background: 'var(--color-mud_black)' }}
+                style={sourceStyle}
             />
             <Handle
                 type="source"
                 position="left"
                 id="l"
-                style={{ background: 'var(--color-mud_black)' }}
-                onConnect={(params) => console.log('handle onConnect', params)}
+                style={sourceStyle}
             />
 
             <h4>{data?.label}</h4>
@@ -56,7 +69,7 @@ export default memo(({ data }) => {
                 <h4>Group: {data?.group}</h4>
                 <p>{data?.title}</p>
             </div>
-            <div style={{
+            <div style={{   
                 textAlign: "center",
                 background: data?.statusData['color'],
                 borderRadius: "4px",
