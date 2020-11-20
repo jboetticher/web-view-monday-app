@@ -29,25 +29,25 @@ export default memo(({ data }) => {
                 type="target"
                 position="top"
                 id="t"
-                style={{ background: '#0071d9' }}
+                style={{ background: '#0071d9', width: '10px', height:'10px' }}
             />
             <Handle
                 type="source"
                 position="bottom"
                 id="b"
-                style={{ background: 'var(--color-mud_black)' }}
+                style={{ background: 'var(--color-mud_black)', width: '10px', height:'10px' }}
             />
             <Handle
                 type="source"
                 position="right"
                 id="r"
-                style={{ background: 'var(--color-mud_black)' }}
+                style={{ background: 'var(--color-mud_black)', width: '10px', height:'10px' }}
             />
             <Handle
                 type="source"
                 position="left"
                 id="l"
-                style={{ background: 'var(--color-mud_black)' }}
+                style={{ background: 'var(--color-mud_black)', width: '10px', height:'10px' }}
                 onConnect={(params) => console.log('handle onConnect', params)}
             />
 
