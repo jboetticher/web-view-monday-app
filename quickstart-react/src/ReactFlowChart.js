@@ -188,27 +188,38 @@ let ReactFlowChart = props => {
 				previousGroupName = groupName;
 			});
 		});
-	
+
 		console.log("-----------------------");
 		console.log(bdata);
 		console.log(boardElements);
 		console.log("-----------------------");
 	}
 
-	// elements isn't used in ReactFlow vvv, which is why react flow doesn't update
+	// elements are now board elements
 	const [elements, setElements] = useState(boardElements);
 	console.log(elements);
 
+	// updates elements when props changes
 	useEffect(() => {
 		setElements(boardElements);
+		console.log('elements have been reset to simple boardElements');
 	}, [props]);
 
 	const onConnect = (params) => {
+		console.log('---------------------');
 		console.log('on connect', params);
-		setElements((els) => {
+		setElements(function (els) {
 			console.log(els);
-			if (els !== null) addEdge(params, els);
+
+			if (els !== null) { 
+				addEdge(params, els);
+				console.log("add edge has run");
+			}
+
+			console.log(els);
+			return els;
 		});
+		console.log('---------------------');
 	};
 
 	return (
