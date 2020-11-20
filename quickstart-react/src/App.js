@@ -97,9 +97,9 @@ class App extends React.Component {
         <ReactFlowChart
           boardData={this.state.boardData?.boards}
           filteredItems={this.state?.filteredItems}
+          onElementClick={onElementClick}
         //boardElements={boardElements}
         //nodeTypes={nodeTypes}
-        //onElementClick={onElementClick}
         />
 
         <UIOverlay>
@@ -110,7 +110,7 @@ class App extends React.Component {
 
           }}
             style={{ marginRight: "8px" }}>
-              Recenter
+            Recenter
           </Button>
           <Button onClick={() => {
             monday.execute("confirm", {
@@ -120,7 +120,7 @@ class App extends React.Component {
               cancelButton: "Cancel",
               excludeCancelButton: false
             }).then((res) => {
-              if(res.data["confirm"] === true) {
+              if (res.data["confirm"] === true) {
                 // do the reset here
               }
             });
