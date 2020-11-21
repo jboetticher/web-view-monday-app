@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
 import { Handle } from 'react-flow-renderer';
-
-
+import ChevronDown from "monday-ui-react-core/dist/icons/DropdownChevronDown";
+import ChevronUp from "monday-ui-react-core/dist/icons/DropdownChevronUp";
+import Chip from '@material-ui/core/Chip';
 
 // todo: make color of node change based on whether or not it's finished
 // todo: make the color of the dependent nodes change based on whether or not it's finished
@@ -39,6 +40,8 @@ export default memo(({ data }) => {
                     bottom: "0px", left: "0px", right: "0px"
                 }} />
             </div>
+
+                <Chip></Chip>
 
             <Handle
                 type="target"
