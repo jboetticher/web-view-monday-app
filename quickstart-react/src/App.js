@@ -79,25 +79,26 @@ class App extends React.Component {
 
       // checks for ignore node click
       if (event == null) { return; }
+      try {
+        console.log(JSON.stringify(event));
+      }
+      catch {
+        console.log("spaghetti code oh yeah")
+        return;
+      }
       if(nodeHelper.EventHasClass(event, "ignore-node-on-click")) {
         console.log("Click detected, but ignoring.");
         return;
       }
-      /*
-      var classList = Object.entries(event["path"][0]['classList']);
-      for (var i = 0; i < classList.length; i++) {
-        if (classList[i][1] === "ignore-node-on-click") {
-          console.log("Click detected, but ignoring.");
-          return;
-        }
-      }*/
 
       // only do node actions if it's our node
       if (typeof (element) === typeof (PrettyItemNode)) {
         // monday.com FUCKING SUCKS BECAUSE THEIR API IS FUCKING BROKEN SINCE AUGUST AND THIS DOESN'T FUCKING WORK
         //monday.execute('openItemCard', { itemId: element["id"], kind: 'columns' });
 
-        monday.execute('openItemCard', { itemId: element["id"], kind: 'updates' });
+        console.log('node actions happened i guess', event);
+
+        monday.execute('openItemCard', { itemId: element["id"], kind: 'columns' });
       }
       else {
         alert("OH");

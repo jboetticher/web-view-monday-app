@@ -13,11 +13,12 @@ class NodeFunctions {
     }
 
     EventHasClass(event, className) {
+        if (event["path"] == null) { return false; }
         var classList = Object.entries(event["path"][0]['classList']);
         for (var i = 0; i < classList.length; i++) {
-          if (classList[i][1] === "ignore-node-on-click") {
-            return true;
-          }
+            if (classList[i][1] === "ignore-node-on-click") {
+                return true;
+            }
         }
 
         return false;
@@ -125,16 +126,16 @@ class NodeFunctions {
         if (onNodeDragStopParams == null) { return; }
         console.log("saving positions ", onNodeDragStopParams);
 
-        // checks to see if the current array has any of those connections
+        // checks to see if the current array has any of those positions
         var replaceIndex = -1;
-        for (var i = 0; i < this.connections.length; i++) {
+        for (var i = 0; i < this.positions.length; i++) {
             if (this.positions[i].id == onNodeDragStopParams.id) {
                 replaceIndex = i;
                 break;
             }
         }
 
-        // add or replace to the current array of connections 
+        // add or replace to the current array of positions 
         if (replaceIndex < 0) {
             this.positions.push({
                 "id": onNodeDragStopParams.id,

@@ -10,3 +10,10 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.centered-td 
+{
+    text-align: center; 
+    vertical-align: middle;
+    text-overflow: hidden;
+}

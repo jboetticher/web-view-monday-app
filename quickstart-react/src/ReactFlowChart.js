@@ -207,7 +207,6 @@ let ReactFlowChart = props => {
 					let subitems = item['column_values'][0]['text'];
 				}
 
-
 				// adds a node
 				boardElements.push(
 					{
@@ -217,6 +216,7 @@ let ReactFlowChart = props => {
 							title: titleName,
 							group: groupName, groupColor: item['group']['color'],
 							statusData: statusData,
+							columnValues: item['column_values'],
 							isConnecting: false
 						},
 						style: {
@@ -225,7 +225,7 @@ let ReactFlowChart = props => {
 							background: nodeBackgroundColor, //item['group']['color']
 							boxShadow: "0px 6px 20px -2px rgba(0, 0, 0, 0.2)"
 						},
-						position: { x: 250 * groupIds[groupName] + bIndex * 1000, y: 250 * groupIndex[groupName] }
+						position: { x: 325 * groupIds[groupName] + bIndex * 1000, y: 300 * groupIndex[groupName] }
 					}
 				);
 
@@ -334,7 +334,7 @@ let ReactFlowChart = props => {
 	};
 
 	const onNodeDragStop = (event, node) => {
-		console.log("onSelectionDragStop nodes ", node);
+		console.log("onNodeDragStop nodes ", node);
 		props?.nodeHelper.AddPosition(node);
 	}
 

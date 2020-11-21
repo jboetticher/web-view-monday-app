@@ -17,7 +17,7 @@ export default memo(({ data }) => {
     var chevronUpStyle = collapsed ? { top: '-2px' } : { bottom: '-2px' };
     var collapseButtonChip =
         <Avatar className={"small-avatar pos-absolute collapse-chip ignore-node-on-click"}
-            style={{ left: "-10px", top: "-10px"}}
+            style={{ left: "-10px", top: "-10px" }}
             onClick={() => {
                 setCollapsed(!collapsed);
             }}
@@ -25,9 +25,34 @@ export default memo(({ data }) => {
             <ChevronUp className={"pos-absolute noClick"} style={chevronUpStyle} />
             <ChevronDown className={"pos-absolute noClick"} style={chevronDownStyle} />
         </Avatar>;
-    var notCollapsedData = collapsed ? <div/> :
-        <div>
-            Group: {data?.group}
+
+    //console.log(data?.columnValues);
+
+    var notCollapsedData = collapsed ? <div /> :
+        <div style={{ maxWidth: "300px" }}>
+            <table>
+                <tbody>
+                    {data?.columnValues.map((x, i) => {
+                        switch (x['title']) {
+                            case "Subitems":
+                            case "Person":
+                            case "Status":
+                                return <tr key={i}></tr>;
+                            default:
+                                return (
+                                    <tr key={i}>
+                                        <td>{x['title']}</td>
+                                        <td style={{ width: "16px" }} />
+                                        <td className={"centered-td"}>
+                                            {x['text'] === "" || x['text'] === null ? "- - -" : x['text']}
+                                        </td>
+                                    </tr>
+                                );
+                        }
+                    })}
+                </tbody>
+            </table>
+
         </div>;
 
 
@@ -37,11 +62,9 @@ export default memo(({ data }) => {
     var sourceStyle = { background: 'var(--color-mud_black)', width: '10px', height: '10px' };
     if (data?.isConnecting) {
         targetStyle = { background: '#0071d9', width: '20px', height: '20px' };
-        //console.log("handle style changed");
     }
     else {
         targetStyle = { background: '#0071d9', width: '10px', height: '10px' };
-        //console.log("default handle style");
     }
 
 
@@ -90,8 +113,8 @@ export default memo(({ data }) => {
 
             <div style={{ maxWidth: "170px" }}>
                 <h4>{data?.title}</h4>
-                {notCollapsedData}
             </div>
+            {notCollapsedData}
             <div style={{
                 textAlign: "center",
                 background: data?.statusData['color'],
