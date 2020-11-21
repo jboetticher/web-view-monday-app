@@ -190,13 +190,15 @@ let ReactFlowChart = props => {
 
 	// elements are now board elements
 	const [elements, setElements] = useState(boardElements);
-	console.log(elements);
+	//console.log(elements);
 
 	// updates elements when props changes
 	useEffect(() => {
 		setElements(boardElements);
 		console.log('elements have been reset to simple boardElements');
 	}, [props]);
+
+	//#region ReactFlow Callbacks
 
 	const onConnect = (params) => {
 		setElements(function (els) {
@@ -247,6 +249,13 @@ let ReactFlowChart = props => {
 
 	};
 
+	const onNodeDragStop = (event, node) => {
+		console.log("onSelectionDragStop nodes ", node);
+		props?.nodeHelper.AddPosition(node);
+	}
+
+	//#endregion
+
 	return (
 
 		<ReactFlow
@@ -256,6 +265,7 @@ let ReactFlowChart = props => {
 			onConnect={onConnect}
 			onConnectStart={onConnectStart}
 			onConnectStop={onConnectStop}
+			onNodeDragStop={onNodeDragStop}
 		>
 		</ReactFlow>
 
