@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, getIncomers } from 'react';
 import { Handle } from 'react-flow-renderer';
 import ChevronDown from "monday-ui-react-core/dist/icons/DropdownChevronDown";
 import ChevronUp from "monday-ui-react-core/dist/icons/DropdownChevronUp";
@@ -26,12 +26,16 @@ export default memo(({ data }) => {
             <ChevronDown className={"pos-absolute noClick"} style={chevronDownStyle} />
         </Avatar>;
 
-    //console.log(data?.columnValues);
-
+    // generates the divs for when it's collapsed and when it's not
     var notCollapsedData = collapsed ? <div /> :
         <div style={{ maxWidth: "300px" }}>
             <table>
                 <tbody>
+                    <tr>
+                        <td>Group</td>
+                        <td style={{ width: "16px" }} />
+                        <td className={"centered-td"}>{data?.group}</td>
+                    </tr>
                     {data?.columnValues.map((x, i) => {
                         switch (x['title']) {
                             case "Subitems":
@@ -55,6 +59,7 @@ export default memo(({ data }) => {
 
         </div>;
 
+    // blug
 
     //css styles for the handles (these are large and opacity 0)
     //determines the "hitbox" for the handles
@@ -78,7 +83,6 @@ export default memo(({ data }) => {
     else {
         targetStyle = { background: '#0071d9', width: '10px', height: '10px' };
     }*/
-
 
     return (
         <>

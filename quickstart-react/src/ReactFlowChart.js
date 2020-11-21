@@ -162,6 +162,7 @@ let ReactFlowChart = props => {
 		prettyNode: PrettyItemNode
 	};
 
+	// sets board elements
 	if (props?.boardData != null) {
 		// the board data and the items that should be highlighted by the filter
 		let bdata = props?.boardData;
@@ -263,12 +264,10 @@ let ReactFlowChart = props => {
 
 	// elements are now board elements
 	const [elements, setElements] = useState(boardElements);
-	//console.log(elements);
 
 	// updates elements when props changes
 	useEffect(() => {
 		setElements(boardElements);
-		console.log('elements have been reset to simple boardElements');
 	}, [props]);
 
 	// background settings

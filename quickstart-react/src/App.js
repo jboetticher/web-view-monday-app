@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
 
-import { removeElements, addEdge, Controls } from 'react-flow-renderer';
+import { removeElements } from 'react-flow-renderer';
 import ItemNode from "./nodes/ItemNode.js";
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
 import NodeFunctions from "./nodes/NodeFunctions.js";
@@ -109,7 +109,11 @@ class App extends React.Component {
     return (
       <div
         className="App"
-        style={{ display: "block", background: "var(--color-mud_black)" }}//(this.state.settings.background) }}
+        style={{
+          display: "block", 
+          background: "var(--color-mud_black)" ,
+          fontFamily: "Roboto, sans-serif"
+        }}
       >
 
         <ReactFlowChart
