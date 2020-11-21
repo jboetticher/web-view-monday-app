@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactFlow, { removeElements, addEdge } from 'react-flow-renderer';
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
+import CustomConnectionLine from "./nodes/CustomConnectionLine.js";
 
 let ReactFlowChart = props => {
 
@@ -266,6 +267,7 @@ let ReactFlowChart = props => {
 			onConnectStart={onConnectStart}
 			onConnectStop={onConnectStop}
 			onNodeDragStop={onNodeDragStop}
+			connectionLineComponent={CustomConnectionLine}
 		>
 		</ReactFlow>
 

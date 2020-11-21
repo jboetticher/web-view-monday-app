@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactFlow, { removeElements, addEdge } from 'react-flow-renderer';
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
+import CustomConnectionLine from "./nodes/CustomConnectionLine.js";
 
 let ReactFlowChart = props => {
 
@@ -169,6 +170,9 @@ let ReactFlowChart = props => {
 							id: 'e' + previousNodeId + '-' + item['id'],
 							source: previousNodeId,
 							target: item['id'],
+							style: { stroke: '#fff', strokeWidth: '5px'},
+							//type: 'step',
+							type: props?.pathSettings,
 							animated: true
 						}
 					)
@@ -187,7 +191,7 @@ let ReactFlowChart = props => {
 
 	// elements are now board elements
 	const [elements, setElements] = useState(boardElements);
-	console.log(elements);
+	//console.log(elements);
 
 	// updates elements when props changes
 	useEffect(() => {
@@ -195,17 +199,20 @@ let ReactFlowChart = props => {
 		console.log('elements have been reset to simple boardElements');
 	}, [props]);
 
+	//#region ReactFlow Callbacks
+
 	const onConnect = (params) => {
 		setElements(function (els) {
 			if (els !== null) { 
-				els = addEdge(params, els);
+				els = addEdge({ ...params, animated: true, type: props?.pathSettings, style: { stroke: '#fff', strokeWidth: '5px' }}, els);
 			}
-<<<<<<< HEAD
-=======
-
->>>>>>> e483171d781c4c4899cdd1d4f7eabdae699b28b3
+			console.log(els);	
+			console.log('onConnect', params)		
 			return els;
 		});
+
+		// save dat shit
+		props?.nodeHelper.AddConnection(params);
 	};
 
 	const onConnectStart = (event, { nodeId, handleType }) => {
@@ -217,7 +224,7 @@ let ReactFlowChart = props => {
 				if(elsItem['type'] != "prettyNode") return;
 
 					elsItem['data']['isConnecting'] = true;
-					console.log(elsItem['data']['isConnecting']);
+					//console.log(elsItem['data']['isConnecting']);
 
 			});	
 			return els;
@@ -234,14 +241,21 @@ let ReactFlowChart = props => {
 
 					elsItem['data']['isConnecting'] = false;
 					//elsItem['data']['groupColor'] = '#579bfc';
-					elsItem['style']['background'] = '#579bfc';	
-					console.log(elsItem);
+					//elsItem['style']['background'] = '#579bfc';	
+					//console.log(elsItem);
 
 			});
 			return els;
 		});
 
 	};
+
+	const onNodeDragStop = (event, node) => {
+		console.log("onSelectionDragStop nodes ", node);
+		props?.nodeHelper.AddPosition(node);
+	}
+
+	//#endregion
 
 	return (
 
@@ -252,6 +266,11 @@ let ReactFlowChart = props => {
 			onConnect={onConnect}
 			onConnectStart={onConnectStart}
 			onConnectStop={onConnectStop}
+<<<<<<< HEAD
+			onNodeDragStop={onNodeDragStop}
+=======
+			connectionLineComponent={CustomConnectionLine}
+>>>>>>> 88d3a47526368fdf1d0c508fe3e93d654bf344b6
 		>
 		</ReactFlow>
 
