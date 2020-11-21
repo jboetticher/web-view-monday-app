@@ -15,3 +15,11 @@
 .pos-absolute {
     position: absolute;
 }
+
+.collapse-chip {
+    background: #666 !important;
+}
+
+.noClick {
+    pointer-events: none;
+ }

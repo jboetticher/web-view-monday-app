@@ -16,15 +16,14 @@ export default memo(({ data }) => {
     var chevronDownStyle = collapsed ? { bottom: '-2px' } : { top: '-2px' };
     var chevronUpStyle = collapsed ? { top: '-2px' } : { bottom: '-2px' };
     var collapseButtonChip =
-        <Avatar className={"small-avatar pos-absolute collapse-chip"}
-            style={{ left: "-10px", top: "-10px", background: "#666" }}
+        <Avatar className={"small-avatar pos-absolute collapse-chip ignore-node-on-click"}
+            style={{ left: "-10px", top: "-10px"}}
             onClick={() => {
-                console.log('u just clicked it');
                 setCollapsed(!collapsed);
             }}
         >
-            <ChevronUp className={"pos-absolute"} style={chevronUpStyle} />
-            <ChevronDown className={"pos-absolute"} style={chevronDownStyle} />
+            <ChevronUp className={"pos-absolute noClick"} style={chevronUpStyle} />
+            <ChevronDown className={"pos-absolute noClick"} style={chevronDownStyle} />
         </Avatar>;
     var notCollapsedData = collapsed ? <div/> :
         <div>

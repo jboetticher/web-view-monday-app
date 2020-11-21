@@ -12,6 +12,17 @@ class NodeFunctions {
         this.QueryPositions();
     }
 
+    EventHasClass(event, className) {
+        var classList = Object.entries(event["path"][0]['classList']);
+        for (var i = 0; i < classList.length; i++) {
+          if (classList[i][1] === "ignore-node-on-click") {
+            return true;
+          }
+        }
+
+        return false;
+    }
+
     //#region Connections
 
     /* Queries the connection data from monday.com.

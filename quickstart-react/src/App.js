@@ -76,6 +76,23 @@ class App extends React.Component {
 
     // what to do when the user clicks on an element
     function onElementClick(event, element) {
+
+      // checks for ignore node click
+      if (event == null) { return; }
+      if(nodeHelper.EventHasClass(event, "ignore-node-on-click")) {
+        console.log("Click detected, but ignoring.");
+        return;
+      }
+      /*
+      var classList = Object.entries(event["path"][0]['classList']);
+      for (var i = 0; i < classList.length; i++) {
+        if (classList[i][1] === "ignore-node-on-click") {
+          console.log("Click detected, but ignoring.");
+          return;
+        }
+      }*/
+
+      // only do node actions if it's our node
       if (typeof (element) === typeof (PrettyItemNode)) {
         // monday.com FUCKING SUCKS BECAUSE THEIR API IS FUCKING BROKEN SINCE AUGUST AND THIS DOESN'T FUCKING WORK
         //monday.execute('openItemCard', { itemId: element["id"], kind: 'columns' });
@@ -99,6 +116,7 @@ class App extends React.Component {
           filteredItems={this.state?.filteredItems}
           onElementClick={onElementClick}
           pathSettings={this.state.settings?.pathdisplay}
+          backgroundSettings={this.state.settings?.backgroundType}
           nodeHelper={nodeHelper}
         //boardElements={boardElements}
         //nodeTypes={nodeTypes}

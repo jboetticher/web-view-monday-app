@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ReactFlow, { removeElements, addEdge } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, Controls, MiniMap, Background } from 'react-flow-renderer';
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
 import CustomConnectionLine from "./nodes/CustomConnectionLine.js";
 
@@ -63,7 +63,6 @@ let ReactFlowChart = props => {
 		else { return { status: "", color: "var(--color-ui_grey)" }; }
 	}
 
-	
 	/* CURRENTLY UNABLE TO WORK DUE TO CONSTRAINTS WITH MONDAY API AND SUBITEMS 
 	// pass in the item and the board it is in, alogn with all the boardData
 	// returns an array that holds all the data about the subitems of an item
@@ -90,7 +89,7 @@ let ReactFlowChart = props => {
 	  return subitemArray;
 	}*/
 
-	function loadPositions(currElements){
+	function loadPositions(currElements) {
 		//Get the saved data
 		let savedPositions = props?.nodeHelper.GetPositions();
 
@@ -98,19 +97,19 @@ let ReactFlowChart = props => {
 		if (savedPositions == undefined) return;
 
 		//loop through current elements in board
-		currElements.forEach(function(element){
+		currElements.forEach(function (element) {
 			// if the element is not a node, skip it
-			if(element['type'] != "prettyNode") return;
+			if (element['type'] != "prettyNode") return;
 
 			// loop through the saved position data
-			savedPositions.forEach(function(posData){
+			savedPositions.forEach(function (posData) {
 
 				//if the saved position data id matches the current element id
 				//update the current element's position
-				if(posData['id'] == element['id']){
+				if (posData['id'] == element['id']) {
 					element['position']['x'] = posData['position']['x'];
 					element['position']['y'] = posData['position']['y'];
-				} 
+				}
 			});
 
 		});
@@ -118,7 +117,7 @@ let ReactFlowChart = props => {
 	}
 
 	//returns an array of elements populated with saved connections
-	function loadConnections(currElements){
+	function loadConnections(currElements) {
 		//Get the saved data
 		let savedConnections = props?.nodeHelper.GetConnections();
 
@@ -135,14 +134,14 @@ let ReactFlowChart = props => {
 		});*/
 
 		// add in all the saved connections
-		savedConnections.forEach(function(connection){
+		savedConnections.forEach(function (connection) {
 			let newEdge = {
 				id: 'e' + connection['source'] + '-' + connection['target'],
-				source: connection['source'] ,
+				source: connection['source'],
 				target: connection['target'],
 				sourceHandle: connection['sourceHandle'],
 				targetHandle: connection['targetHandle'],
-				style: { stroke: '#fff', strokeWidth: '5px'},
+				style: { stroke: '#fff', strokeWidth: '5px' },
 				type: props?.pathSettings,
 				animated: true
 			};
@@ -240,7 +239,7 @@ let ReactFlowChart = props => {
 							id: 'e' + previousNodeId + '-' + item['id'],
 							source: previousNodeId,
 							target: item['id'],
-							style: { stroke: '#fff', strokeWidth: '5px'},
+							style: { stroke: '#fff', strokeWidth: '5px' },
 							//type: 'step',
 							type: props?.pathSettings,
 							animated: true
@@ -272,15 +271,26 @@ let ReactFlowChart = props => {
 		console.log('elements have been reset to simple boardElements');
 	}, [props]);
 
+	// background settings
+	var background = <div></div>;
+	if (props?.backgroundSettings !== "none" && props?.backgroundSettings !== null) {
+		background =
+			<Background
+				variant={props?.backgroundSettings}
+				gap={32}
+				size={2}
+			/>;
+	}
+
 	//#region ReactFlow Callbacks
 
 	const onConnect = (params) => {
 		setElements(function (els) {
-			if (els !== null) { 
-				els = addEdge({ ...params, animated: true, type: props?.pathSettings, style: { stroke: '#fff', strokeWidth: '5px' }}, els);
+			if (els !== null) {
+				els = addEdge({ ...params, animated: true, type: props?.pathSettings, style: { stroke: '#fff', strokeWidth: '5px' } }, els);
 			}
-			console.log(els);	
-			console.log('onConnect', params)		
+			console.log(els);
+			console.log('onConnect', params)
 			return els;
 		});
 
@@ -289,33 +299,33 @@ let ReactFlowChart = props => {
 	};
 
 	const onConnectStart = (event, { nodeId, handleType }) => {
-		console.log('on connect start', { nodeId, handleType } );
+		console.log('on connect start', { nodeId, handleType });
 
 		//loop through all the current elements and replace target handles with bigger versions
 		setElements(function (els) {
-			els.forEach(function(elsItem){
-				if(elsItem['type'] != "prettyNode") return;
+			els.forEach(function (elsItem) {
+				if (elsItem['type'] != "prettyNode") return;
 
-					elsItem['data']['isConnecting'] = true;
-					//console.log(elsItem['data']['isConnecting']);
+				elsItem['data']['isConnecting'] = true;
+				//console.log(elsItem['data']['isConnecting']);
 
-			});	
+			});
 			return els;
 		});
 	};
-		
+
 	const onConnectStop = (event) => {
 		console.log('on connect stop', event);
 
 		//loop through all the current elements and replace target handles with bigger versions
 		setElements(function (els) {
-			els.forEach(function(elsItem){
-				if(elsItem['type'] != "prettyNode") return;
+			els.forEach(function (elsItem) {
+				if (elsItem['type'] != "prettyNode") return;
 
-					elsItem['data']['isConnecting'] = false;
-					//elsItem['data']['groupColor'] = '#579bfc';
-					//elsItem['style']['background'] = '#579bfc';	
-					//console.log(elsItem);
+				elsItem['data']['isConnecting'] = false;
+				//elsItem['data']['groupColor'] = '#579bfc';
+				//elsItem['style']['background'] = '#579bfc';	
+				//console.log(elsItem);
 
 			});
 			return els;
@@ -342,6 +352,8 @@ let ReactFlowChart = props => {
 			onNodeDragStop={onNodeDragStop}
 			connectionLineComponent={CustomConnectionLine}
 		>
+			<Controls />
+			{background}
 		</ReactFlow>
 
 	);
