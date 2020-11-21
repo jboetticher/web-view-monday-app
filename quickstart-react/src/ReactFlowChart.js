@@ -63,9 +63,10 @@ let ReactFlowChart = props => {
 		else { return { status: "", color: "var(--color-ui_grey)" }; }
 	}
 
+	
+	/* CURRENTLY UNABLE TO WORK DUE TO CONSTRAINTS WITH MONDAY API AND SUBITEMS 
 	// pass in the item and the board it is in, alogn with all the boardData
 	// returns an array that holds all the data about the subitems of an item
-	/* CURRENTLY UNABLE TO WORK DUE TO CONSTRAINTS WITH MONDAY API AND SUBITEMS 
 	function getSubitems(boardData, board, parentItem){
 	  let subitemArray = [];
 
@@ -89,6 +90,74 @@ let ReactFlowChart = props => {
 	  return subitemArray;
 	}*/
 
+	function loadPositions(currElements){
+		//Get the saved data
+		let savedPositions = props?.nodeHelper.GetPositions();
+
+		//if there was no saved positional data, return
+		if (savedPositions == undefined) return;
+
+		//loop through current elements in board
+		currElements.forEach(function(element){
+			// if the element is not a node, skip it
+			if(element['type'] != "prettyNode") return;
+
+			// loop through the saved position data
+			savedPositions.forEach(function(posData){
+
+				//if the saved position data id matches the current element id
+				//update the current element's position
+				if(posData['id'] == element['id']){
+					element['position']['x'] = posData['position']['x'];
+					element['position']['y'] = posData['position']['y'];
+				} 
+			});
+
+		});
+
+	}
+
+	//returns an array of elements populated with saved connections
+	function loadConnections(currElements){
+		//Get the saved data
+		let savedConnections = props?.nodeHelper.GetConnections();
+
+		//if there was no saved positional data, return
+		if (savedConnections == undefined) return currElements;
+
+		// create an array of only nodes in the board
+		/*let onlyNodes = [];
+		currElements.forEach(function(element){
+			// if the element is not a node, skip it
+			if(element['type'] == "prettyNode"){
+				onlyNodes.push(element);
+			}
+		});*/
+
+		// add in all the saved connections
+		savedConnections.forEach(function(connection){
+			let newEdge = {
+				id: 'e' + connection['source'] + '-' + connection['target'],
+				source: connection['source'] ,
+				target: connection['target'],
+				sourceHandle: connection['sourceHandle'],
+				targetHandle: connection['targetHandle'],
+				style: { stroke: '#fff', strokeWidth: '5px'},
+				type: props?.pathSettings,
+				animated: true
+			};
+
+			//onlyNodes.push(newEdge);
+			currElements.push(newEdge);
+
+		});
+
+		//TODO: delete illegal/duplicate connections
+
+		return currElements;
+
+	}
+
 	var boardElements = [];
 	const nodeTypes = {
 		prettyNode: PrettyItemNode
@@ -103,6 +172,7 @@ let ReactFlowChart = props => {
 		var columnData = bdata[0]['columns'];
 
 		//Goes into each board element in the JSON data array
+		//By the end of it, a complete node board will be populated with nodes and default connections
 		bdata.forEach(function (board, bIndex) {
 			if (board['name'].indexOf("Subitems of") == 1) return;
 			var previousNodeId = -1;
@@ -182,6 +252,9 @@ let ReactFlowChart = props => {
 				previousGroupName = groupName;
 			});
 		});
+
+		loadPositions(boardElements);
+		boardElements = loadConnections(boardElements);
 
 		console.log("-----------------------");
 		console.log(bdata);
