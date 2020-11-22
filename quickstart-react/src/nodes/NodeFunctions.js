@@ -50,9 +50,9 @@ class NodeFunctions {
     }
 
     /* 
-    * Adds and saves connections between two nodes.
-    * onConnectParams - the parameters that you get when a connection is made
-    */
+     * Adds and saves connections between two nodes.
+     * onConnectParams - the parameters that you get when a connection is made
+     */
     AddConnection(onConnectParams) {
 
         // if it's null we ain't messing with it
@@ -87,6 +87,40 @@ class NodeFunctions {
 
             this.QueryConnections();
         });
+    }
+
+    /* Removes a single connection between two nodes from monday.com
+     * sourceId - the id of the source node
+     * targetId - the id of the target node
+     */
+    RemoveConnection(sourceId, targetId) {
+        // checks to see if the current array has one of those connections
+        var replaceIndex = -1;
+        for (var i = 0; i < this.connections.length; i++) {
+            if (this.connections[i].source == onConnectParams.sourceId &&
+                this.connections[i].target == onConnectParams.targetId) {
+                replaceIndex = i;
+                break;
+            }
+        }
+
+        // if the index isn't negative then it deletes
+        if (replaceIndex >= 0) {
+            // splices the target that was removed
+            var removed = this.connections.splice(1, i);
+            this.connections = removed;
+
+            // json stringify the current connections
+            const jsonString = JSON.stringify(this.connections);
+
+            // save to monday.com persist
+            this.monday.storage.instance.setItem('connection_objects', jsonString).then(res => {
+                console.log(res);
+                console.log(jsonString);
+
+                this.QueryConnections();
+            });
+        }
     }
 
     //#endregion
