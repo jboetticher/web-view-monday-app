@@ -97,8 +97,8 @@ class NodeFunctions {
         // checks to see if the current array has one of those connections
         var replaceIndex = -1;
         for (var i = 0; i < this.connections.length; i++) {
-            if (this.connections[i].source == onConnectParams.sourceId &&
-                this.connections[i].target == onConnectParams.targetId) {
+            if (this.connections[i].source == sourceId &&
+                this.connections[i].target == targetId) {
                 replaceIndex = i;
                 break;
             }
