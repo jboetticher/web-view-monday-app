@@ -1,4 +1,4 @@
-import React, { memo, useState, getIncomers } from 'react';
+import React, { memo, useState } from 'react';
 import { Handle } from 'react-flow-renderer';
 import ChevronDown from "monday-ui-react-core/dist/icons/DropdownChevronDown";
 import ChevronUp from "monday-ui-react-core/dist/icons/DropdownChevronUp";

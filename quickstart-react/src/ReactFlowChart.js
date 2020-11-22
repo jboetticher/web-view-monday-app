@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ReactFlow, { removeElements, addEdge, Controls, MiniMap, Background } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, Controls, MiniMap, Background, getIncomers } from 'react-flow-renderer';
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
 import CustomConnectionLine from "./nodes/CustomConnectionLine.js";
 
@@ -157,6 +157,20 @@ let ReactFlowChart = props => {
 
 	}
 
+	// provides the nodes passed in with data from getIncomers()
+	function updateIncomingNodesData(currElements){
+
+		// loop through board data
+		currElements.forEach(function (element) {
+
+			// if the element is not a node, skip it
+			if (element['type'] != "prettyNode") return;
+
+			element['data']['incomingNodes'] = getIncomers(element, currElements);
+
+		});
+	}
+
 	var boardElements = [];
 	const nodeTypes = {
 		prettyNode: PrettyItemNode
@@ -218,6 +232,7 @@ let ReactFlowChart = props => {
 							group: groupName, groupColor: item['group']['color'],
 							statusData: statusData,
 							columnValues: item['column_values'],
+							incomingNodes: [],
 							isConnecting: false
 						},
 						style: {
@@ -253,9 +268,15 @@ let ReactFlowChart = props => {
 			});
 		});
 
+		// updates the positions of all the ndoes from saved data
 		loadPositions(boardElements);
+
+		// adds in connections from saved data
 		boardElements = loadConnections(boardElements);
 
+		// passes nodes info on their incoming connections
+		updateIncomingNodesData(boardElements);
+		
 		console.log("-----------------------");
 		console.log(bdata);
 		console.log(boardElements);
@@ -288,10 +309,16 @@ let ReactFlowChart = props => {
 			if (els !== null) {
 				els = addEdge({ ...params, animated: true, type: props?.pathSettings, style: { stroke: '#fff', strokeWidth: '5px' } }, els);
 			}
+
+			// update internal node data with new incoming connections
+			updateIncomingNodesData(els);
+			
 			console.log(els);
 			console.log('onConnect', params)
 			return els;
 		});
+
+		
 
 		// save dat shit
 		props?.nodeHelper.AddConnection(params);
