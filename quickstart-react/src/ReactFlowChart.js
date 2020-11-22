@@ -365,6 +365,16 @@ let ReactFlowChart = props => {
 		props?.nodeHelper.AddPosition(node);
 	}
 
+	const onElementsRemove = (elementsToRemove) => {
+		//setElements((els) => removeElements(elementsToRemove, els));
+	}
+
+	const onNodeContextMenu = (event, node) => {
+		console.log("hello does this work. yes it does");
+		event.preventDefault();
+	}
+    
+
 	//#endregion
 
 	return (
@@ -377,6 +387,8 @@ let ReactFlowChart = props => {
 			onConnectStart={onConnectStart}
 			onConnectStop={onConnectStop}
 			onNodeDragStop={onNodeDragStop}
+			onElementsRemove={onElementsRemove}
+			onNodeContextMenu={onNodeContextMenu}
 			connectionLineComponent={CustomConnectionLine}
 		>
 			<Controls />
