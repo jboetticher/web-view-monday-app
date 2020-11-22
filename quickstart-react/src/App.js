@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
+import Search from "monday-ui-react-core/dist/icons/Search";
 
 import { removeElements } from 'react-flow-renderer';
 import ItemNode from "./nodes/ItemNode.js";
@@ -86,7 +87,7 @@ class App extends React.Component {
         console.log("spaghetti code oh yeah")
         return;
       }
-      if(nodeHelper.EventHasClass(event, "ignore-node-on-click")) {
+      if (nodeHelper.EventHasClass(event, "ignore-node-on-click")) {
         console.log("Click detected, but ignoring.");
         return;
       }
@@ -110,8 +111,8 @@ class App extends React.Component {
       <div
         className="App"
         style={{
-          display: "block", 
-          background: "var(--color-mud_black)" ,
+          display: "block",
+          background: "var(--color-mud_black)",
           fontFamily: "Roboto, sans-serif"
         }}
       >
@@ -128,16 +129,25 @@ class App extends React.Component {
         />
 
         <UIOverlay>
-          <a href="https://pisslake.github.io/" style={{ marginRight: "8px" }}>
-            <Button>Pisslake</Button>
-          </a>
-          <Button onClick={() => {
-
-          }}
-            style={{ marginRight: "8px" }}>
+          <Button
+            size="small"
+            style={{ marginRight: "8px" }}
+            onClick={() => {
+              console.log("priority being found...");
+          }}>
+            Find Priority
+          </Button>
+          <Button 
+            size="small" kind="secondary"
+            style={{ marginRight: "8px" }}
+            onClick={() => {
+          }}>
             Recenter
           </Button>
-          <Button onClick={() => {
+          <Button 
+            size="small" kind="secondary"
+            style={{ marginRight: "8px" }}
+            onClick={() => {
             monday.execute("confirm", {
               message: "Are you sure you want to reset the nodes? " +
                 "You will lose all of the connections that you have made, and all of the original connections will be returned.",

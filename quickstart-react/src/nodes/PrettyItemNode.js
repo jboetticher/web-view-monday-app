@@ -59,21 +59,19 @@ export default memo(({ data }) => {
 
         </div>;
 
-    // blug
-
     //css styles for the handles (these are large and opacity 0)
     //determines the "hitbox" for the handles
     //currently the path connects into these hitboxes so it looks strange if it sticks out more than the fake dot            
-    var targetStyle = { background: '#0071d9', width: '30%', height: '20px', borderRadius: '0%', top: '-5px', opacity:'0%'};
-    var sourceStyleLeft = { background: 'var(--color-mud_black)', width: '20px', height: '30%', borderRadius: '0%', left: '-5px', opacity:'0%'};
-    var sourceStyleRight = { background: 'var(--color-mud_black)', width: '20px', height: '30%', borderRadius: '0%', right: '-5px', opacity:'0%'};
-    var sourceStyleBot = { background: 'var(--color-mud_black)', width: '30%', height: '20px', borderRadius: '0%', bottom: '-5px', opacity:'0%'};
+    var targetStyle = { background: '#0071d9', width: '30%', height: '20px', borderRadius: '0%', top: '-5px', opacity: '0%' };
+    var sourceStyleLeft = { background: 'var(--color-mud_black)', width: '20px', height: '30%', borderRadius: '0%', left: '-5px', opacity: '0%' };
+    var sourceStyleRight = { background: 'var(--color-mud_black)', width: '20px', height: '30%', borderRadius: '0%', right: '-5px', opacity: '0%' };
+    var sourceStyleBot = { background: 'var(--color-mud_black)', width: '30%', height: '20px', borderRadius: '0%', bottom: '-5px', opacity: '0%' };
 
     //these are the little handle dots (purely visual)
-    var fakeTopHandle = <div className='react-flow__handle-top react-flow__handle' style={{background: '#0071d9', width: '10px', height: '10px', top: '-5px'}}></div>;
-    var fakeLeftHandle = <div className='react-flow__handle-left react-flow__handle' style={{background: 'var(--color-mud_black)', width: '10px', height: '10px'    , left: '-5px'}}></div>;
-    var fakeRightHandle = <div className='react-flow__handle-right react-flow__handle' style={{background: 'var(--color-mud_black)', width: '10px', height: '10px', right: '-5px'}}></div>;
-    var fakeBotHandle = <div className='react-flow__handle-bottom react-flow__handle' style={{background: 'var(--color-mud_black)', width: '10px', height: '10px', bottom: '-5px'}}></div>;
+    var fakeTopHandle = <div className='react-flow__handle-top react-flow__handle' style={{ background: '#0071d9', width: '10px', height: '10px', top: '-5px' }}></div>;
+    var fakeLeftHandle = <div className='react-flow__handle-left react-flow__handle' style={{ background: 'var(--color-mud_black)', width: '10px', height: '10px', left: '-5px' }}></div>;
+    var fakeRightHandle = <div className='react-flow__handle-right react-flow__handle' style={{ background: 'var(--color-mud_black)', width: '10px', height: '10px', right: '-5px' }}></div>;
+    var fakeBotHandle = <div className='react-flow__handle-bottom react-flow__handle' style={{ background: 'var(--color-mud_black)', width: '10px', height: '10px', bottom: '-5px' }}></div>;
 
     // change what the handles look like if it is in connecting mode
     // doesnt work so don't give up 
@@ -100,6 +98,15 @@ export default memo(({ data }) => {
                     bottom: "0px", left: "0px", right: "0px"
                 }} />
                 {collapseButtonChip}
+                <Chip 
+                    size={"medium"}
+                    label={data?.outgoingNodes.length}
+                    style={{
+                        position: "absolute",
+                        right: "-8px", top: "-8px",
+                        background: data?.groupColor
+                    }}
+                />
             </div>
 
             <Handle

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ReactFlow, { removeElements, addEdge, Controls, MiniMap, Background, getIncomers } from 'react-flow-renderer';
+import ReactFlow, { removeElements, addEdge, Controls, Background, getIncomers, getOutgoers } from 'react-flow-renderer';
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
 import CustomConnectionLine from "./nodes/CustomConnectionLine.js";
 
@@ -166,7 +166,8 @@ let ReactFlowChart = props => {
 			// if the element is not a node, skip it
 			if (element['type'] != "prettyNode") return;
 
-			element['data']['incomingNodes'] = getIncomers(element, currElements);
+			//element['data']['incomingNodes'] = getIncomers(element, currElements);
+			element['data']['outgoingNodes'] = getOutgoers(element, currElements);
 
 		});
 	}
