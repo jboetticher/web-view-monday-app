@@ -16,7 +16,7 @@ class NodeFunctions {
         if (event["path"] == null) { return false; }
         var classList = Object.entries(event["path"][0]['classList']);
         for (var i = 0; i < classList.length; i++) {
-            if (classList[i][1] === "ignore-node-on-click") {
+            if (classList[i][1] === className) {
                 return true;
             }
         }

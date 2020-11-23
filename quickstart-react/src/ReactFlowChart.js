@@ -373,10 +373,10 @@ let ReactFlowChart = props => {
 	}
 
 	const onNodeContextMenu = (event, node) => {
-		console.log("hello does this work. yes it does");
-		console.log(event);
-		console.log(node);
-		event.preventDefault();
+		//console.log("hello does this work. yes it does");
+		//console.log(event);
+		//console.log(node);
+		//event.preventDefault();
 	}
 
 
@@ -391,14 +391,21 @@ let ReactFlowChart = props => {
 	const [contextMenuState, setContextMenuState] = React.useState(initialContextMenuState);
 
 	const handleClick = (event) => {
+		console.log("CONTEXT MENU OPEN");
+		console.log(event.target);
+		console.log(event);
+
 		event.preventDefault();
+
 		setContextMenuState({
 			mouseX: event.clientX - 2,
 			mouseY: event.clientY - 4,
 		});
+
 	};
 
 	const handleClose = () => {
+		console.log("hello");
 		setContextMenuState(initialContextMenuState);
 	};
 
@@ -431,7 +438,7 @@ let ReactFlowChart = props => {
 						: undefined
 				}
 			>
-				<MenuItem onClick={handleClose}>Copy</MenuItem>
+				<MenuItem onClick={handleClose}>Delete</MenuItem>
 				<MenuItem onClick={handleClose}>Print</MenuItem>
 				<MenuItem onClick={handleClose}>Highlight</MenuItem>
 				<MenuItem onClick={handleClose}>Email</MenuItem>
