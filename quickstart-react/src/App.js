@@ -15,6 +15,8 @@ import UIOverlay from "./components/UIOverlay";
 
 import ReactFlowChart from "./ReactFlowChart.js";
 
+
+
 const monday = mondaySdk();
 const nodeHelper = new NodeFunctions(monday);
 
@@ -117,6 +119,8 @@ class App extends React.Component {
         }}
       >
 
+        
+
         <ReactFlowChart
           boardData={this.state.boardData?.boards}
           filteredItems={this.state?.filteredItems}
@@ -128,38 +132,40 @@ class App extends React.Component {
         //nodeTypes={nodeTypes}
         />
 
+        
+
         <UIOverlay>
           <Button
             size="small"
             style={{ marginRight: "8px" }}
             onClick={() => {
               console.log("priority being found...");
-          }}>
+            }}>
             Find Priority
           </Button>
-          <Button 
+          <Button
             size="small" kind="secondary"
             style={{ marginRight: "8px" }}
             onClick={() => {
-          }}>
+            }}>
             Recenter
           </Button>
-          <Button 
+          <Button
             size="small" kind="secondary"
             style={{ marginRight: "8px" }}
             onClick={() => {
-            monday.execute("confirm", {
-              message: "Are you sure you want to reset the nodes? " +
-                "You will lose all of the connections that you have made, and all of the original connections will be returned.",
-              confirmButton: "Confirm",
-              cancelButton: "Cancel",
-              excludeCancelButton: false
-            }).then((res) => {
-              if (res.data["confirm"] === true) {
-                // do the reset here
-              }
-            });
-          }}
+              monday.execute("confirm", {
+                message: "Are you sure you want to reset the nodes? " +
+                  "You will lose all of the connections that you have made, and all of the original connections will be returned.",
+                confirmButton: "Confirm",
+                cancelButton: "Cancel",
+                excludeCancelButton: false
+              }).then((res) => {
+                if (res.data["confirm"] === true) {
+                  // do the reset here
+                }
+              });
+            }}
             style={{ marginRight: "8px" }}>
             Reset
           </Button>

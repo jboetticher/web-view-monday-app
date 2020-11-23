@@ -3,6 +3,9 @@ import ReactFlow, { removeElements, addEdge, Controls, Background, getIncomers, 
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
 import CustomConnectionLine from "./nodes/CustomConnectionLine.js";
 
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
 let ReactFlowChart = props => {
 
 	const [dab, setDab] = useState(5);
@@ -158,7 +161,7 @@ let ReactFlowChart = props => {
 	}
 
 	// provides the nodes passed in with data from getIncomers()
-	function updateIncomingNodesData(currElements){
+	function updateIncomingNodesData(currElements) {
 
 		// loop through board data
 		currElements.forEach(function (element) {
@@ -277,7 +280,7 @@ let ReactFlowChart = props => {
 
 		// passes nodes info on their incoming connections
 		updateIncomingNodesData(boardElements);
-		
+
 		console.log("-----------------------");
 		console.log(bdata);
 		console.log(boardElements);
@@ -313,13 +316,13 @@ let ReactFlowChart = props => {
 
 			// update internal node data with new incoming connections
 			updateIncomingNodesData(els);
-			
+
 			console.log(els);
 			console.log('onConnect', params)
 			return els;
 		});
 
-		
+
 
 		// save dat shit
 		props?.nodeHelper.AddConnection(params);
@@ -371,15 +374,38 @@ let ReactFlowChart = props => {
 
 	const onNodeContextMenu = (event, node) => {
 		console.log("hello does this work. yes it does");
+		console.log(event);
+		console.log(node);
 		event.preventDefault();
 	}
-    
+
 
 	//#endregion
+
+	// context menu handling
+	const initialContextMenuState = {
+		mouseX: null,
+		mouseY: null,
+	};
+
+	const [contextMenuState, setContextMenuState] = React.useState(initialContextMenuState);
+
+	const handleClick = (event) => {
+		event.preventDefault();
+		setContextMenuState({
+			mouseX: event.clientX - 2,
+			mouseY: event.clientY - 4,
+		});
+	};
+
+	const handleClose = () => {
+		setContextMenuState(initialContextMenuState);
+	};
 
 	return (
 
 		<ReactFlow
+			onContextMenu={handleClick}
 			elements={elements}
 			nodeTypes={nodeTypes}
 			onElementClick={props?.onElementClick}
@@ -393,6 +419,24 @@ let ReactFlowChart = props => {
 		>
 			<Controls />
 			{background}
+
+			<Menu
+				keepMounted
+				open={contextMenuState.mouseY !== null}
+				onClose={handleClose}
+				anchorReference="anchorPosition"
+				anchorPosition={
+					contextMenuState.mouseY !== null && contextMenuState.mouseX !== null
+						? { top: contextMenuState.mouseY, left: contextMenuState.mouseX }
+						: undefined
+				}
+			>
+				<MenuItem onClick={handleClose}>Copy</MenuItem>
+				<MenuItem onClick={handleClose}>Print</MenuItem>
+				<MenuItem onClick={handleClose}>Highlight</MenuItem>
+				<MenuItem onClick={handleClose}>Email</MenuItem>
+			</Menu>
+
 		</ReactFlow>
 
 	);
