@@ -144,6 +144,7 @@ let ReactFlowChart = props => {
 				target: connection['target'],
 				sourceHandle: connection['sourceHandle'],
 				targetHandle: connection['targetHandle'],
+				className: 'e' + connection['source'] + '-' + connection['target'],
 				style: { stroke: '#fff', strokeWidth: '5px' },
 				type: props?.pathSettings,
 				animated: true
@@ -182,7 +183,7 @@ let ReactFlowChart = props => {
 	};
 
 
-	// sets board elements
+	// sets/populates board elements
 	if (props?.boardData != null) {
 		// the board data and the items that should be highlighted by the filter
 		let bdata = props?.boardData;
@@ -261,6 +262,7 @@ let ReactFlowChart = props => {
 							id: 'e' + previousNodeId + '-' + item['id'],
 							source: previousNodeId,
 							target: item['id'],
+							className: 'e' + previousNodeId + '-' + item['id'],
 							style: { stroke: '#fff', strokeWidth: '5px' },
 							//type: 'step',
 							type: props?.pathSettings,
@@ -289,7 +291,7 @@ let ReactFlowChart = props => {
 		console.log("-----------------------");
 	}
 
-	// elements are now board elements
+	// elements are set to board elements for initial state
 	const [elements, setElements] = useState(boardElements);
 
 	// updates elements when props changes
@@ -313,7 +315,7 @@ let ReactFlowChart = props => {
 	const onConnect = (params) => {
 		setElements(function (els) {
 			if (els !== null) {
-				els = addEdge({ ...params, animated: true, type: props?.pathSettings, style: { stroke: '#fff', strokeWidth: '5px' } }, els);
+				els = addEdge({ ...params, animated: true, type: props?.pathSettings, className: 'e' + params.source + '-' + params.target, style: { stroke: '#fff', strokeWidth: '5px' } }, els);
 			}
 
 			// update internal node data with new incoming connections
@@ -374,54 +376,101 @@ let ReactFlowChart = props => {
 		//setElements((els) => removeElements(elementsToRemove, els));
 	}
 
-	const onNodeContextMenu = (event, node) => {
-		//console.log("hello does this work. yes it does");
-		//console.log(event);
-		//console.log(node);
-		//event.preventDefault();
+	//#endregion
 
+	// context menu handling
+	const initialEdgeContextMenuState = {
+		currEdge: null,
+		mouseX: null,
+		mouseY: null,
+	};
+
+	const initialNodeContextMenuState = {
+		currNode: null,
+		mouseX: null,
+		mouseY: null,
+	};
+
+	const [edgeContextMenuState, setEdgeContextMenuState] = React.useState(initialEdgeContextMenuState);
+	const [nodeContextMenuState, setNodeContextMenuState] = React.useState(initialNodeContextMenuState);
+
+	// fired when context menu opened on an edge
+	// called from onContextMenu html tag on the pane
+	const onEdgeContextMenu = (event) => {
+		// prevent default context menu from firing
 		event.preventDefault();
 
-		setContextMenuState({
+		// if right clicked on an edge, activate edge menu
+		if(event.target.className['baseVal'] == "react-flow__edge-path"){
+
+			setEdgeContextMenuState({
+				currEdge: event.target,
+				mouseX: event.clientX - 2,
+				mouseY: event.clientY - 4,
+			});
+		}	
+
+	};
+
+	// fired when context menu opened on a node
+	// callback from ReactFlow
+	const onNodeContextMenu = (event, node) => {
+		// prevent default context menu from firing
+		event.preventDefault();
+
+		// display context menu on the right-clicked node
+		setNodeContextMenuState({
+			currNode: node,
 			mouseX: event.clientX - 2,
 			mouseY: event.clientY - 4,
 		});
 	}
 
-
-	//#endregion
-
-	// context menu handling
-	const initialContextMenuState = {
-		mouseX: null,
-		mouseY: null,
-	};
-
-	const [contextMenuState, setContextMenuState] = React.useState(initialContextMenuState);
-
-	const handleClick = (event) => {
-		console.log("CONTEXT MENU OPEN");
-		console.log(event.target);
-		console.log(event);
-
-		event.preventDefault();
-
-		setContextMenuState({
-			mouseX: event.clientX - 2,
-			mouseY: event.clientY - 4,
-		});
-
-	};
-
-	const handleClose = () => {
+	// close the context menu when clicked away
+	const defaultClose = () => {
 		console.log("context menu closed");
-		setContextMenuState(initialContextMenuState);
+		setEdgeContextMenuState(initialEdgeContextMenuState);
+		setNodeContextMenuState(initialNodeContextMenuState);
 	};
+
+	function onNodeDelete(){
+		// removes the node
+		setElements((els) => removeElements([nodeContextMenuState['currNode']], els));
+		console.log("deleted node", nodeContextMenuState['currNode']);
+		//TODO: update database and also confirmation message
+
+		// close the context menu
+		setNodeContextMenuState(initialNodeContextMenuState);
+	}
+
+	function onEdgeDelete(){
+		// get the edge id from the class name list of the parent
+		// i stored the id in the class name 
+		// since it's the only place I can store data in the html of a default edge
+		let currEdgeId = edgeContextMenuState['currEdge'].parentNode.classList.item(2);
+		
+		// loop through the elements until you find an id that matches currEdgeId
+		// this way you can remove the actual edge that is in elements
+		// for loop in order to break out as soon as edge is found
+		let i = 0;
+		for(i=0; i<elements.length; i++){
+			if(elements[i]['id'] == currEdgeId){		
+				// if id matches, remove the edge
+				setElements((els) => removeElements([elements[i]], els));
+				console.log("deleted edge", elements[i]);
+				//TODO: update database after removal
+				break;
+			}
+		}
+
+		// close the context menu
+		setEdgeContextMenuState(initialEdgeContextMenuState);
+	}
 
 	return (
 
 		<ReactFlow
-			//onContextMenu={handleClick}
+			onContextMenu={onEdgeContextMenu}
 			elements={elements}
 			nodeTypes={nodeTypes}
 			onElementClick={props?.onElementClick}
@@ -429,7 +478,7 @@ let ReactFlowChart = props => {
 			onConnectStart={onConnectStart}
 			onConnectStop={onConnectStop}
 			onNodeDragStop={onNodeDragStop}
-			onElementsRemove={onElementsRemove}
+			//onElementsRemove={onElementsRemove}
 			onNodeContextMenu={onNodeContextMenu}
 			connectionLineComponent={CustomConnectionLine}
 		>
@@ -438,19 +487,30 @@ let ReactFlowChart = props => {
 
 			<Menu
 				keepMounted
-				open={contextMenuState.mouseY !== null}
-				onClose={handleClose}
+				open={edgeContextMenuState.mouseY !== null}
+				onClose={defaultClose}
 				anchorReference="anchorPosition"
 				anchorPosition={
-					contextMenuState.mouseY !== null && contextMenuState.mouseX !== null
-						? { top: contextMenuState.mouseY, left: contextMenuState.mouseX }
+					edgeContextMenuState.mouseY !== null && edgeContextMenuState.mouseX !== null
+						? { top: edgeContextMenuState.mouseY, left: edgeContextMenuState.mouseX }
 						: undefined
 				}
 			>
-				<MenuItem onClick={handleClose}>Delete</MenuItem>
-				<MenuItem onClick={handleClose}>Print</MenuItem>
-				<MenuItem onClick={handleClose}>Highlight</MenuItem>
-				<MenuItem onClick={handleClose}>Email</MenuItem>
+				<MenuItem onClick={onEdgeDelete}>Delete Connection</MenuItem>
+			</Menu>
+
+			<Menu
+				keepMounted
+				open={nodeContextMenuState.mouseY !== null}
+				onClose={defaultClose}
+				anchorReference="anchorPosition"
+				anchorPosition={
+					nodeContextMenuState.mouseY !== null && nodeContextMenuState.mouseX !== null
+						? { top: nodeContextMenuState.mouseY, left: nodeContextMenuState.mouseX }
+						: undefined
+				}
+			>
+				<MenuItem onClick={onNodeDelete}>Delete Node</MenuItem>
 			</Menu>
 
 		</ReactFlow>
