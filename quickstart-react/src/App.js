@@ -55,7 +55,7 @@ class App extends React.Component {
         this.setState({ boardData: res.data });
       });
 
-      //console.log(this.state.context);
+      console.log(this.state.context);
     });
 
     monday.listen("itemIds", (res) => {
