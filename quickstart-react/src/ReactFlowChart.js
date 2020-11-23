@@ -144,6 +144,7 @@ let ReactFlowChart = props => {
 				target: connection['target'],
 				sourceHandle: connection['sourceHandle'],
 				targetHandle: connection['targetHandle'],
+				className: 'e' + connection['source'] + '-' + connection['target'],
 				style: { stroke: '#fff', strokeWidth: '5px' },
 				type: props?.pathSettings,
 				animated: true
@@ -261,6 +262,7 @@ let ReactFlowChart = props => {
 							id: 'e' + previousNodeId + '-' + item['id'],
 							source: previousNodeId,
 							target: item['id'],
+							className: 'e' + previousNodeId + '-' + item['id'],
 							style: { stroke: '#fff', strokeWidth: '5px' },
 							//type: 'step',
 							type: props?.pathSettings,
@@ -289,7 +291,7 @@ let ReactFlowChart = props => {
 		console.log("-----------------------");
 	}
 
-	// elements are now board elements
+	// elements are set to board elements for initial state
 	const [elements, setElements] = useState(boardElements);
 
 	// updates elements when props changes
@@ -313,7 +315,7 @@ let ReactFlowChart = props => {
 	const onConnect = (params) => {
 		setElements(function (els) {
 			if (els !== null) {
-				els = addEdge({ ...params, animated: true, type: props?.pathSettings, style: { stroke: '#fff', strokeWidth: '5px' } }, els);
+				els = addEdge({ ...params, animated: true, type: props?.pathSettings, className: 'e' + params.source + '-' + params.target, style: { stroke: '#fff', strokeWidth: '5px' } }, els);
 			}
 
 			// update internal node data with new incoming connections
@@ -432,18 +434,34 @@ let ReactFlowChart = props => {
 	};
 
 	function onNodeDelete(){
-		console.log("node delted");
-		console.log(nodeContextMenuState);
-
-		
+		// removes the node
+		setElements((els) => removeElements([nodeContextMenuState['currNode']], els));
+		console.log("deleted node", nodeContextMenuState['currNode']);
+		//TODO: update database and also confirmation message
 
 		// close the context menu
 		setNodeContextMenuState(initialNodeContextMenuState);
 	}
 
 	function onEdgeDelete(){
-		console.log("edge delted");
-		console.log(edgeContextMenuState);
+		// get the edge id from the class name list of the parent
+		// i stored the id in the class name 
+		// since it's the only place I can store data in the html of a default edge
+		let currEdgeId = edgeContextMenuState['currEdge'].parentNode.classList.item(2);
+		
+		// loop through the elements until you find an id that matches currEdgeId
+		// this way you can remove the actual edge that is in elements
+		// for loop in order to break out as soon as edge is found
+		let i = 0;
+		for(i=0; i<elements.length; i++){
+			if(elements[i]['id'] == currEdgeId){		
+				// if id matches, remove the edge
+				setElements((els) => removeElements([elements[i]], els));
+				console.log("deleted edge", elements[i]);
+				//TODO: update database after removal
+				break;
+			}
+		}
 
 		// close the context menu
 		setEdgeContextMenuState(initialEdgeContextMenuState);
