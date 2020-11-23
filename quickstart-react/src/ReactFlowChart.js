@@ -176,9 +176,11 @@ let ReactFlowChart = props => {
 	}
 
 	var boardElements = [];
+
 	const nodeTypes = {
 		prettyNode: PrettyItemNode
 	};
+
 
 	// sets board elements
 	if (props?.boardData != null) {
@@ -377,6 +379,13 @@ let ReactFlowChart = props => {
 		//console.log(event);
 		//console.log(node);
 		//event.preventDefault();
+
+		event.preventDefault();
+
+		setContextMenuState({
+			mouseX: event.clientX - 2,
+			mouseY: event.clientY - 4,
+		});
 	}
 
 
@@ -405,14 +414,14 @@ let ReactFlowChart = props => {
 	};
 
 	const handleClose = () => {
-		console.log("hello");
+		console.log("context menu closed");
 		setContextMenuState(initialContextMenuState);
 	};
 
 	return (
 
 		<ReactFlow
-			onContextMenu={handleClick}
+			//onContextMenu={handleClick}
 			elements={elements}
 			nodeTypes={nodeTypes}
 			onElementClick={props?.onElementClick}
