@@ -16,7 +16,6 @@ import UIOverlay from "./components/UIOverlay";
 import ReactFlowChart from "./ReactFlowChart.js";
 
 
-
 const monday = mondaySdk();
 const nodeHelper = new NodeFunctions(monday);
 

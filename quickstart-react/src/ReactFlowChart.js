@@ -176,9 +176,11 @@ let ReactFlowChart = props => {
 	}
 
 	var boardElements = [];
+
 	const nodeTypes = {
 		prettyNode: PrettyItemNode
 	};
+
 
 	// sets board elements
 	if (props?.boardData != null) {
@@ -373,10 +375,17 @@ let ReactFlowChart = props => {
 	}
 
 	const onNodeContextMenu = (event, node) => {
-		console.log("hello does this work. yes it does");
-		console.log(event);
-		console.log(node);
+		//console.log("hello does this work. yes it does");
+		//console.log(event);
+		//console.log(node);
+		//event.preventDefault();
+
 		event.preventDefault();
+
+		setContextMenuState({
+			mouseX: event.clientX - 2,
+			mouseY: event.clientY - 4,
+		});
 	}
 
 
@@ -391,21 +400,28 @@ let ReactFlowChart = props => {
 	const [contextMenuState, setContextMenuState] = React.useState(initialContextMenuState);
 
 	const handleClick = (event) => {
+		console.log("CONTEXT MENU OPEN");
+		console.log(event.target);
+		console.log(event);
+
 		event.preventDefault();
+
 		setContextMenuState({
 			mouseX: event.clientX - 2,
 			mouseY: event.clientY - 4,
 		});
+
 	};
 
 	const handleClose = () => {
+		console.log("context menu closed");
 		setContextMenuState(initialContextMenuState);
 	};
 
 	return (
 
 		<ReactFlow
-			onContextMenu={handleClick}
+			//onContextMenu={handleClick}
 			elements={elements}
 			nodeTypes={nodeTypes}
 			onElementClick={props?.onElementClick}
@@ -431,7 +447,7 @@ let ReactFlowChart = props => {
 						: undefined
 				}
 			>
-				<MenuItem onClick={handleClose}>Copy</MenuItem>
+				<MenuItem onClick={handleClose}>Delete</MenuItem>
 				<MenuItem onClick={handleClose}>Print</MenuItem>
 				<MenuItem onClick={handleClose}>Highlight</MenuItem>
 				<MenuItem onClick={handleClose}>Email</MenuItem>
