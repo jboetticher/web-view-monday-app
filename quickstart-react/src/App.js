@@ -125,6 +125,7 @@ class App extends React.Component {
           filteredItems={this.state?.filteredItems}
           onElementClick={onElementClick}
           pathSettings={this.state.settings?.pathdisplay}
+          edgeGripSetting={this.state.settings?.edgeGrips}
           backgroundSettings={this.state.settings?.backgroundType}
           nodeHelper={nodeHelper}
           monday={monday}

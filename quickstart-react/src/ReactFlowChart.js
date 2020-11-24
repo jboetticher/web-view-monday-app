@@ -149,7 +149,8 @@ let ReactFlowChart = props => {
 				label: "jank",
 				labelStyle: { visibility: 'hidden' },
 				labelBgBorderRadius: '100%',
-				labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3' },
+				labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3', 
+								visibility: (props?.edgeGripSetting ? 'visible' : 'hidden') },
 				type: props?.pathSettings,
 				animated: true
 			};
@@ -260,21 +261,21 @@ let ReactFlowChart = props => {
 
 				// adds an animated connector to the next one if in same group
 				if (previousNodeId > 0 && previousGroupName == groupName) {
-					boardElements.push(
-						{
-							id: 'e' + previousNodeId + '-' + item['id'],
-							source: previousNodeId,
-							target: item['id'],
-							className: 'e' + previousNodeId + '-' + item['id'],
-							style: { stroke: '#fff', strokeWidth: '5px' },
-							type: props?.pathSettings,
-							label: "jank",
-							labelStyle: { visibility: 'hidden' },
-							labelBgBorderRadius: '100%',
-							labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3' },
-							animated: true
-						}
-					)
+					let newEdge = {
+						id: 'e' + previousNodeId + '-' + item['id'],
+						source: previousNodeId,
+						target: item['id'],
+						className: 'e' + previousNodeId + '-' + item['id'],
+						style: { stroke: '#fff', strokeWidth: '5px' },
+						type: props?.pathSettings,
+						label: "jank",
+						labelStyle: { visibility: 'hidden' },
+						labelBgBorderRadius: '100%',
+						labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3', 
+										visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')},
+						animated: true
+					};
+					boardElements.push(newEdge);
 				}
 
 				previousNodeId = item['id'];
@@ -330,7 +331,8 @@ let ReactFlowChart = props => {
 					label: "jank",
 					labelStyle: { visibility: 'hidden' },
 					labelBgBorderRadius: '100%',
-					labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3' },
+					labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3',
+									 visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')},
 				}, els);
 			}
 
