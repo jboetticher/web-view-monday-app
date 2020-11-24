@@ -146,6 +146,10 @@ let ReactFlowChart = props => {
 				targetHandle: connection['targetHandle'],
 				className: 'e' + connection['source'] + '-' + connection['target'],
 				style: { stroke: '#fff', strokeWidth: '5px' },
+				label: "jank",
+				labelStyle: { visibility: 'hidden' },
+				labelBgBorderRadius: '100%',
+				labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3' },
 				type: props?.pathSettings,
 				animated: true
 			};
@@ -181,7 +185,6 @@ let ReactFlowChart = props => {
 	const nodeTypes = {
 		prettyNode: PrettyItemNode
 	};
-
 
 	// sets/populates board elements
 	if (props?.boardData != null) {
@@ -264,8 +267,11 @@ let ReactFlowChart = props => {
 							target: item['id'],
 							className: 'e' + previousNodeId + '-' + item['id'],
 							style: { stroke: '#fff', strokeWidth: '5px' },
-							//type: 'step',
 							type: props?.pathSettings,
+							label: "jank",
+							labelStyle: { visibility: 'hidden' },
+							labelBgBorderRadius: '100%',
+							labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3' },
 							animated: true
 						}
 					)
@@ -315,7 +321,17 @@ let ReactFlowChart = props => {
 	const onConnect = (params) => {
 		setElements(function (els) {
 			if (els !== null) {
-				els = addEdge({ ...params, animated: true, type: props?.pathSettings, className: 'e' + params.source + '-' + params.target, style: { stroke: '#fff', strokeWidth: '5px' } }, els);
+				els = addEdge({
+					...params,
+					animated: true,
+					type: props?.pathSettings,
+					className: 'e' + params.source + '-' + params.target,
+					style: { stroke: '#fff', strokeWidth: '5px' },
+					label: "jank",
+					labelStyle: { visibility: 'hidden' },
+					labelBgBorderRadius: '100%',
+					labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3' },
+				}, els);
 			}
 
 			// update internal node data with new incoming connections
@@ -400,11 +416,23 @@ let ReactFlowChart = props => {
 		// prevent default context menu from firing
 		event.preventDefault();
 
+		//console.log(event.target);
+		//console.log(event.target.parentNode.parentNode.firstChild);
+
 		// if right clicked on an edge, activate edge menu
 		if (event.target.className['baseVal'] == "react-flow__edge-path") {
-
 			setEdgeContextMenuState({
+				// this currEdge is the path element
 				currEdge: event.target,
+				mouseX: event.clientX - 2,
+				mouseY: event.clientY - 4,
+			});
+		}
+		// if right clicked on an edge label, activate edge menu
+		else if (event.target.className['baseVal'] == "react-flow__edge-textbg") {
+			setEdgeContextMenuState({
+				// this currEdge is the path element label is on
+				currEdge: event.target.parentNode.parentNode.firstChild,
 				mouseX: event.clientX - 2,
 				mouseY: event.clientY - 4,
 			});
@@ -453,7 +481,6 @@ let ReactFlowChart = props => {
 				//Mutates the monday database.
 				props?.nodeHelper.DeleteItem(nodeContextMenuState['currNode'].id);
 
-				//@TODO: confirmation message
 			}
 		});
 	}
@@ -465,7 +492,7 @@ let ReactFlowChart = props => {
 		let currEdgeId = edgeContextMenuState['currEdge'].parentNode.classList.item(2);
 
 		// loop through the elements until you find an id that matches currEdgeId
-		// this way you can remove the actual edge that is in elements
+		// this way you can remove the actual edge that is in elements (we only have the html DOM element)
 		// for loop in order to break out as soon as edge is found
 		let i = 0;
 		for (i = 0; i < elements.length; i++) {
