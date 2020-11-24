@@ -127,6 +127,7 @@ class App extends React.Component {
           pathSettings={this.state.settings?.pathdisplay}
           backgroundSettings={this.state.settings?.backgroundType}
           nodeHelper={nodeHelper}
+          monday={monday}
         //boardElements={boardElements}
         //nodeTypes={nodeTypes}
         />

@@ -193,6 +193,24 @@ class NodeFunctions {
     }
 
     //#endregion
+
+    //#region Database Manipulation
+
+    DeleteItem(itemId) {
+        console.log(typeof(itemId));
+        console.log(itemId);
+        // delete item query
+        this.monday.api(`mutation ($itemId: Int) 
+        { 
+            delete_item (item_id: $itemId) { id } 
+        }`,
+            { variables: { itemId: parseInt(itemId) } }
+        ).then(res => {
+            //this.setState({ boardData: res.data });
+        });
+    }
+
+    //#endregion
 }
 
 export default NodeFunctions;

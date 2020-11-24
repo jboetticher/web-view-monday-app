@@ -401,14 +401,14 @@ let ReactFlowChart = props => {
 		event.preventDefault();
 
 		// if right clicked on an edge, activate edge menu
-		if(event.target.className['baseVal'] == "react-flow__edge-path"){
+		if (event.target.className['baseVal'] == "react-flow__edge-path") {
 
 			setEdgeContextMenuState({
 				currEdge: event.target,
 				mouseX: event.clientX - 2,
 				mouseY: event.clientY - 4,
 			});
-		}	
+		}
 
 	};
 
@@ -433,28 +433,43 @@ let ReactFlowChart = props => {
 		setNodeContextMenuState(initialNodeContextMenuState);
 	};
 
-	function onNodeDelete(){
-		// removes the node
-		setElements((els) => removeElements([nodeContextMenuState['currNode']], els));
-		console.log("deleted node", nodeContextMenuState['currNode']);
-		//TODO: update database and also confirmation message
+	function onNodeDelete() {
 
-		// close the context menu
-		setNodeContextMenuState(initialNodeContextMenuState);
+		props?.monday.execute("confirm", {
+			message: "Delete this item? " +
+				"It will be kept in your Recycle Bin for 30 days.",
+			confirmButton: "Delete",
+			cancelButton: "Cancel",
+			excludeCancelButton: false
+		}).then((res) => {
+			if (res.data["confirm"] === true) {
+				// removes the node
+				setElements((els) => removeElements([nodeContextMenuState['currNode']], els));
+				console.log("deleted node", nodeContextMenuState['currNode']);
+
+				// close the context menu
+				setNodeContextMenuState(initialNodeContextMenuState);
+
+				//Mutates the monday database.
+				props?.nodeHelper.DeleteItem(nodeContextMenuState['currNode'].id);
+
+				//@TODO: confirmation message
+			}
+		});
 	}
 
-	function onEdgeDelete(){
+	function onEdgeDelete() {
 		// get the edge id from the class name list of the parent
 		// i stored the id in the class name 
 		// since it's the only place I can store data in the html of a default edge
 		let currEdgeId = edgeContextMenuState['currEdge'].parentNode.classList.item(2);
-		
+
 		// loop through the elements until you find an id that matches currEdgeId
 		// this way you can remove the actual edge that is in elements
 		// for loop in order to break out as soon as edge is found
 		let i = 0;
-		for(i=0; i<elements.length; i++){
-			if(elements[i]['id'] == currEdgeId){		
+		for (i = 0; i < elements.length; i++) {
+			if (elements[i]['id'] == currEdgeId) {
 				// if id matches, remove the edge
 				setElements((els) => removeElements([elements[i]], els));
 				console.log("deleted edge", elements[i]);
