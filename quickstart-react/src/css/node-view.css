@@ -23,3 +23,7 @@
 .noClick {
     pointer-events: none;
  }
+
+ .selected.react-flow__node-prettyNode{
+    box-shadow: 0px 0px 10px 0px #DFF0FF !important;
+ }
