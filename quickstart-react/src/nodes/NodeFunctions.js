@@ -63,7 +63,8 @@ class NodeFunctions {
         var replaceIndex = -1;
         for (var i = 0; i < this.connections.length; i++) {
             if (this.connections[i].source == onConnectParams.source &&
-                this.connections[i].target == onConnectParams.target) {
+                this.connections[i].target == onConnectParams.target &&
+                this.connections[i].sourceHandle == onConnectParams.sourceHandle) {
                 replaceIndex = i;
                 break;
             }
@@ -92,24 +93,28 @@ class NodeFunctions {
     /* Removes a single connection between two nodes from monday.com
      * sourceId - the id of the source node
      * targetId - the id of the target node
+     * sourceHandleId - the handle id of the source node
      */
-    RemoveConnection(sourceId, targetId) {
+    RemoveConnection(sourceId, targetId, sourceHandleId) {
         // checks to see if the current array has one of those connections
         var replaceIndex = -1;
         for (var i = 0; i < this.connections.length; i++) {
             if (this.connections[i].source == sourceId &&
-                this.connections[i].target == targetId) {
+                this.connections[i].target == targetId && 
+                this.connections[i].sourceHandle == sourceHandleId) {
                 replaceIndex = i;
+                //console.log("REMOVING FROM DATABASE", this.connections[i]);
                 break;
             }
         }
-
+        
         // if the index isn't negative then it deletes
         if (replaceIndex >= 0) {
             // splices the target that was removed
-            var removed = this.connections.splice(1, i);
+            //console.log("BEFORE REMOVAL:", this.connections);
+            var removed = this.connections.splice(0, i);
             this.connections = removed;
-
+            //console.log("AFTER REMOVAL:", this.connections);
             // json stringify the current connections
             const jsonString = JSON.stringify(this.connections);
 

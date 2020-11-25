@@ -139,28 +139,28 @@ let ReactFlowChart = props => {
 		// add in all the saved connections
 		savedConnections.forEach(function (connection) {
 			let newEdge = {
-				id: 'e' + connection['source'] + '-' + connection['target'],
+				id: 'e' + connection['source'] + '_' + connection['sourceHandle'] + '-' + connection['target'],
 				source: connection['source'],
 				target: connection['target'],
 				sourceHandle: connection['sourceHandle'],
 				targetHandle: connection['targetHandle'],
-				className: 'e' + connection['source'] + '-' + connection['target'],
+				className: 'e' + connection['source'] + '_' + connection['sourceHandle'] + '-' + connection['target'],
 				style: { stroke: '#fff', strokeWidth: '5px' },
 				label: "jank",
 				labelStyle: { visibility: 'hidden' },
 				labelBgBorderRadius: '100%',
-				labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3', 
-								visibility: (props?.edgeGripSetting ? 'visible' : 'hidden') },
+				labelBgStyle: {
+					height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3',
+					visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')
+				},
 				type: props?.pathSettings,
 				animated: true
 			};
-
+			//console.log('edgeloaded:', newEdge);
 			//onlyNodes.push(newEdge);
 			currElements.push(newEdge);
 
 		});
-
-		//TODO: delete illegal/duplicate connections
 
 		return currElements;
 
@@ -262,17 +262,21 @@ let ReactFlowChart = props => {
 				// adds an animated connector to the next one if in same group
 				if (previousNodeId > 0 && previousGroupName == groupName) {
 					let newEdge = {
-						id: 'e' + previousNodeId + '-' + item['id'],
+						id: 'e' + previousNodeId + '_b' + '-' + item['id'],
 						source: previousNodeId,
 						target: item['id'],
-						className: 'e' + previousNodeId + '-' + item['id'],
+						sourceHandle: 'b',
+						targetHandle: 't',
+						className: 'e' + previousNodeId + '_b' + '-' + item['id'],
 						style: { stroke: '#fff', strokeWidth: '5px' },
 						type: props?.pathSettings,
 						label: "jank",
 						labelStyle: { visibility: 'hidden' },
 						labelBgBorderRadius: '100%',
-						labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3', 
-										visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')},
+						labelBgStyle: {
+							height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3',
+							visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')
+						},
 						animated: true
 					};
 					boardElements.push(newEdge);
@@ -292,10 +296,10 @@ let ReactFlowChart = props => {
 		// passes nodes info on their incoming connections
 		updateIncomingNodesData(boardElements);
 
-		console.log("-----------------------");
-		console.log(bdata);
+		console.log("----BOARD DATA LODAED-----");
+		//console.log(bdata);
 		console.log(boardElements);
-		console.log("-----------------------");
+		console.log("----------");
 	}
 
 	// elements are set to board elements for initial state
@@ -323,16 +327,22 @@ let ReactFlowChart = props => {
 		setElements(function (els) {
 			if (els !== null) {
 				els = addEdge({
-					...params,
+					id: 'e' + params.source + '_' + params.sourceHandle + '-' + params.target,
+					source: params.source,
+					target: params.target,
+					sourceHandle: params.sourceHandle,
+					targetHandle: params.targetHandle,
 					animated: true,
 					type: props?.pathSettings,
-					className: 'e' + params.source + '-' + params.target,
+					className: 'e' + params.source + '_' + params.sourceHandle + '-' + params.target,
 					style: { stroke: '#fff', strokeWidth: '5px' },
 					label: "jank",
 					labelStyle: { visibility: 'hidden' },
 					labelBgBorderRadius: '100%',
-					labelBgStyle: { height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3',
-									 visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')},
+					labelBgStyle: {
+						height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3',
+						visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')
+					},
 				}, els);
 			}
 
@@ -340,7 +350,7 @@ let ReactFlowChart = props => {
 			updateIncomingNodesData(els);
 
 			console.log(els);
-			console.log('onConnect', params)
+			//console.log('onConnect', params)
 			return els;
 		});
 
@@ -367,7 +377,7 @@ let ReactFlowChart = props => {
 	};
 
 	const onConnectStop = (event) => {
-		console.log('on connect stop', event);
+		//console.log('on connect stop', event);
 
 		//loop through all the current elements and replace target handles with bigger versions
 		setElements(function (els) {
@@ -386,7 +396,7 @@ let ReactFlowChart = props => {
 	};
 
 	const onNodeDragStop = (event, node) => {
-		console.log("onNodeDragStop nodes ", node);
+		//console.log("onNodeDragStop nodes ", node);
 		props?.nodeHelper.AddPosition(node);
 	}
 
@@ -475,7 +485,7 @@ let ReactFlowChart = props => {
 			if (res.data["confirm"] === true) {
 				// removes the node
 				setElements((els) => removeElements([nodeContextMenuState['currNode']], els));
-				console.log("deleted node", nodeContextMenuState['currNode']);
+				//console.log("deleted node", nodeContextMenuState['currNode']);
 
 				// close the context menu
 				setNodeContextMenuState(initialNodeContextMenuState);
@@ -497,12 +507,18 @@ let ReactFlowChart = props => {
 		// this way you can remove the actual edge that is in elements (we only have the html DOM element)
 		// for loop in order to break out as soon as edge is found
 		let i = 0;
+		//console.log("DELETING FROM", elements);
 		for (i = 0; i < elements.length; i++) {
 			if (elements[i]['id'] == currEdgeId) {
-				// if id matches, remove the edge
+				
+				// if id matches, remove the edge from the database
+				props?.nodeHelper.RemoveConnection(elements[i]['source'], elements[i]['target'], elements[i]['sourceHandle']);
+
+				// if id matches, remove the edge from elements
 				setElements((els) => removeElements([elements[i]], els));
-				console.log("deleted edge", elements[i]);
-				//TODO: update database after removal
+				//console.log("deleted edge", elements[i]);
+				
+
 				break;
 			}
 		}
