@@ -138,28 +138,11 @@ let ReactFlowChart = props => {
 
 		// add in all the saved connections
 		savedConnections.forEach(function (connection) {
-			/*let newEdge = {
-				id: 'e' + connection['source'] + '_' + connection['sourceHandle'] + '-' + connection['target'],
-				source: connection['source'],
-				target: connection['target'],
-				sourceHandle: connection['sourceHandle'],
-				targetHandle: connection['targetHandle'],
-				className: 'e' + connection['source'] + '_' + connection['sourceHandle'] + '-' + connection['target'],
-				style: { stroke: '#fff', strokeWidth: '5px' },
-				label: "jank",
-				labelStyle: { visibility: 'hidden' },
-				labelBgBorderRadius: '100%',
-				labelBgStyle: {
-					height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3',
-					visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')
-				},
-				type: props?.pathSettings,
-				animated: true
-			};*/
+			let newEdge = setUpNewEdge(connection['source'], connection['target'], connection['sourceHandle'], connection['targetHandle']);
+			
 			//console.log('edgeloaded:', newEdge);
 			//onlyNodes.push(newEdge);
-			//currElements.push(newEdge);
-			currElements.push(setUpNewEdge(connection['source'], connection['target'], connection['sourceHandle'], connection['targetHandle']));
+			currElements.push(newEdge);
 
 		});
 
@@ -288,25 +271,7 @@ let ReactFlowChart = props => {
 
 				// adds an animated connector to the next one if in same group
 				if (previousNodeId > 0 && previousGroupName == groupName) {
-					/*let newEdge = {
-						id: 'e' + previousNodeId + '_b' + '-' + item['id'],
-						source: previousNodeId,
-						target: item['id'],
-						sourceHandle: 'b',
-						targetHandle: 't',
-						className: 'e' + previousNodeId + '_b' + '-' + item['id'],
-						style: { stroke: '#fff', strokeWidth: '5px' },
-						type: props?.pathSettings,
-						label: "jank",
-						labelStyle: { visibility: 'hidden' },
-						labelBgBorderRadius: '100%',
-						labelBgStyle: {
-							height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3',
-							visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')
-						},
-						animated: true
-					};
-					boardElements.push(newEdge);*/
+
 					boardElements.push(setUpNewEdge(previousNodeId, item['id'], 'b', 't'));
 				}
 
@@ -354,25 +319,7 @@ let ReactFlowChart = props => {
 	const onConnect = (params) => {
 		setElements(function (els) {
 			if (els !== null) {
-				els = addEdge( setUpNewEdge(params.source, params.target, params.sourceHandle, params.targetHandle)
-					/*{
-					id: 'e' + params.source + '_' + params.sourceHandle + '-' + params.target,
-					source: params.source,
-					target: params.target,
-					sourceHandle: params.sourceHandle,
-					targetHandle: params.targetHandle,
-					animated: true,
-					type: props?.pathSettings,
-					className: 'e' + params.source + '_' + params.sourceHandle + '-' + params.target,
-					style: { stroke: '#fff', strokeWidth: '5px' },
-					label: "jank",
-					labelStyle: { visibility: 'hidden' },
-					labelBgBorderRadius: '100%',
-					labelBgStyle: {
-						height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3',
-						visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')
-					},
-				}*/, els);
+				els = addEdge( setUpNewEdge(params.source, params.target, params.sourceHandle, params.targetHandle), els);
 			}
 
 			// update internal node data with new incoming connections
