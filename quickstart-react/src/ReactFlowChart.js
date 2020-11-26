@@ -98,7 +98,7 @@ let ReactFlowChart = props => {
 
 		//if there was no saved positional data, return
 		if (savedPositions == undefined) return;
-
+		
 		//loop through current elements in board
 		currElements.forEach(function (element) {
 			// if the element is not a node, skip it
@@ -117,6 +117,7 @@ let ReactFlowChart = props => {
 
 		});
 
+		return currElements;
 	}
 
 	//returns an array of elements populated with saved connections
@@ -163,6 +164,8 @@ let ReactFlowChart = props => {
 			element['data']['outgoingNodes'] = getOutgoers(element, currElements);
 
 		});
+
+		return currElements;
 	}
 	
 	// returns a json edge element with the correct styling and data
@@ -281,13 +284,13 @@ let ReactFlowChart = props => {
 		});
 
 		// updates the positions of all the ndoes from saved data
-		loadPositions(boardElements);
+		boardElements = loadPositions(boardElements);
 
 		// adds in connections from saved data
 		boardElements = loadConnections(boardElements);
 
 		// passes nodes info on their incoming connections
-		updateIncomingNodesData(boardElements);
+		boardElements = updateIncomingNodesData(boardElements);
 
 		console.log("----BOARD DATA LODAED-----");
 		//console.log(bdata);
@@ -323,7 +326,7 @@ let ReactFlowChart = props => {
 			}
 
 			// update internal node data with new incoming connections
-			updateIncomingNodesData(els);
+			els = updateIncomingNodesData(els);
 
 			console.log(els);
 			//console.log('onConnect', params)
