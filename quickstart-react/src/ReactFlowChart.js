@@ -522,11 +522,16 @@ let ReactFlowChart = props => {
 		setEdgeContextMenuState(initialEdgeContextMenuState);
 	}
 
+	function GoToHighestPriority() {
+		var flowChartObj = flowChart.toObject();
+		flowChart.setTransform({x: 100, y: 100, zoom: flowChartObj.zoom});
+	}
+
 	var flowChart =
 		<ReactFlow
-			onContextMenu={onEdgeContextMenu}
 			elements={elements}
 			nodeTypes={nodeTypes}
+
 			onElementClick={props?.onElementClick}
 			onConnect={onConnect}
 			onConnectStart={onConnectStart}
@@ -534,7 +539,10 @@ let ReactFlowChart = props => {
 			onNodeDragStop={onNodeDragStop}
 			//onElementsRemove={onElementsRemove}
 			onNodeContextMenu={onNodeContextMenu}
+			onContextMenu={onEdgeContextMenu}
+
 			connectionLineComponent={CustomConnectionLine}
+			goToHighestPriority={GoToHighestPriority}
 		>
 			<Controls />
 			{background}
@@ -568,10 +576,6 @@ let ReactFlowChart = props => {
 			</Menu>
 
 		</ReactFlow>;
-
-	function GoToHighestPriority() {
-
-	}
 
 	return (flowChart);
 }

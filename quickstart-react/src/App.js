@@ -107,6 +107,18 @@ class App extends React.Component {
       }
     }
 
+    var reactFlowChart =
+      <ReactFlowChart
+        boardData={this.state.boardData?.boards}
+        filteredItems={this.state?.filteredItems}
+        onElementClick={onElementClick}
+        pathSettings={this.state.settings?.pathdisplay}
+        edgeGripSetting={this.state.settings?.edgeGrips}
+        backgroundSettings={this.state.settings?.backgroundType}
+        nodeHelper={nodeHelper}
+        monday={monday}
+      />;
+
     // note: adding a background threw a shit ton of errors for some reason whoops
     return (
       <div
@@ -118,22 +130,7 @@ class App extends React.Component {
         }}
       >
 
-
-
-        <ReactFlowChart
-          boardData={this.state.boardData?.boards}
-          filteredItems={this.state?.filteredItems}
-          onElementClick={onElementClick}
-          pathSettings={this.state.settings?.pathdisplay}
-          edgeGripSetting={this.state.settings?.edgeGrips}
-          backgroundSettings={this.state.settings?.backgroundType}
-          nodeHelper={nodeHelper}
-          monday={monday}
-        //boardElements={boardElements}
-        //nodeTypes={nodeTypes}
-        />
-
-
+        {reactFlowChart}
 
         <UIOverlay>
           <Button
@@ -141,6 +138,8 @@ class App extends React.Component {
             style={{ marginRight: "8px" }}
             onClick={() => {
               console.log("priority being found...");
+              console.log(reactFlowChart);
+              //reactFlowChart.goToHighestPriority();
             }}>
             Find Priority
           </Button>
