@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
-import ReactFlow, { useZoomPanHelper, useStoreState, useStoreActions } from 'react-flow-renderer';
+import { useZoomPanHelper, useStoreState } from 'react-flow-renderer';
 
 let FindPriorityButton = props => {
 
