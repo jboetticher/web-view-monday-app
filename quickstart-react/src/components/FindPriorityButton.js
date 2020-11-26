@@ -6,10 +6,22 @@ import ReactFlow, { useZoomPanHelper, useStoreState, useStoreActions } from 'rea
 let FindPriorityButton = props => {
 
     const { transform } = useZoomPanHelper();
-    const [nodes] = useStoreState((store) => store.nodes);
+    let [nodes, width, height] = useStoreState((store) => {
+        return [store.nodes, store.width, store.height];
+    } );
 
     function FindPriority() {
+        var highestPriorityIndex = 0;
+        var nodeCount = 0;
+        Object.entries(nodes).forEach(function(node, i) {
+            if(node[1].data.outgoingNodes.length > nodeCount) {
+                nodeCount = node[1].data.outgoingNodes.length;
+                highestPriorityIndex = i;
+            }
+        });
 
+        console.log(nodes[highestPriorityIndex]);
+        return nodes[highestPriorityIndex];
     }
 
     return (
@@ -17,8 +29,12 @@ let FindPriorityButton = props => {
             size="small"
             style={{ marginRight: "8px" }}
             onClick={(e) => {
-                transform({x: 100, y: 200, zoom: 1});
-                console.log(nodes);
+                var priority = FindPriority();
+                var repos = {
+                    x: -priority.position.x, //+ width / 2, 
+                    y: -priority.position.y, //+ height / 2, 
+                    zoom: 1};
+                transform(repos);
             }}>
             Find Priority
         </Button>
