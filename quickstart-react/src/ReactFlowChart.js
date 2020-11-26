@@ -178,37 +178,26 @@ let ReactFlowChart = props => {
 		});
 		//console.log(document.getElementsByClassName("react-flow__node"));
 
-		// i go into the actual html to change the number
-		// this is because the nodes only rerender off of specific circumstances
-		// shhhhh
+		//the point of the code below is a workaround for the node not re-rendering on data change
+		//loop through the html of the nodes
 		let i = 0;
 		let htmlNodes = document.getElementsByClassName("react-flow__node");
 		for (i = 0; i < htmlNodes.length; i++) {
+
+			//get id of the node from the class name
 			let htmlNodeId = htmlNodes[i].classList[2];
 
-			let j=0;
-			for(j=0; j<onlyNodes.length;j++){
-				if(htmlNodeId == onlyNodes[j]['id']){
+			let j = 0;
+			for (j = 0; j < onlyNodes.length; j++) {
+				//if id of html node matches the json data node, update the outgoingNodes counter
+				if (htmlNodeId == onlyNodes[j]['id']) {
 					let currLabel = htmlNodes[i].getElementsByClassName("MuiChip-label")[0];
 					currLabel.innerText = onlyNodes[j]['data']['outgoingNodes'].length + "";
 				}
 
 			}
 
-			//let currLabel = htmlNodes[i].getElementsByClassName("MuiChip-label")[0];
-			//console.log(htmlNodes[i].getElementsByClassName("MuiChip-label")[0]);
-
-
-			//console.log(htmlNodes[i].getElementsByClassName("MuiChip-label")[0].innerText);
-			//currLabel.innerText = elements['data']['outgoingNodes'].length;
 		}
-
-
-
-
-
-
-
 
 		return currElements;
 	}
@@ -386,40 +375,6 @@ let ReactFlowChart = props => {
 		props?.nodeHelper.AddConnection(params);
 	};
 
-	/*const onConnectStart = (event, { nodeId, handleType }) => {
-		console.log('on connect start', { nodeId, handleType });
-
-		//loop through all the current elements and replace target handles with bigger versions
-		setElements(function (els) {
-			els.forEach(function (elsItem) {
-				if (elsItem['type'] != "prettyNode") return;
-
-				elsItem['data']['isConnecting'] = true;
-				//console.log(elsItem['data']['isConnecting']);
-
-			});
-			return els;
-		});
-	};
-
-	const onConnectStop = (event) => {
-		//console.log('on connect stop', event);
-
-		//loop through all the current elements and replace target handles with bigger versions
-		setElements(function (els) {
-			els.forEach(function (elsItem) {
-				if (elsItem['type'] != "prettyNode") return;
-
-				elsItem['data']['isConnecting'] = false;
-				//elsItem['data']['groupColor'] = '#579bfc';
-				//elsItem['style']['background'] = '#579bfc';	
-				//console.log(elsItem);
-
-			});
-			return els;
-		});
-
-	};*/
 
 	const onNodeDragStop = (event, node) => {
 		//console.log("onNodeDragStop nodes ", node);
@@ -505,6 +460,7 @@ let ReactFlowChart = props => {
 		setNodeContextMenuState(initialNodeContextMenuState);
 	};
 
+	// called by the node context menu
 	function onNodeDelete() {
 
 		props?.monday.execute("confirm", {
@@ -515,20 +471,50 @@ let ReactFlowChart = props => {
 			excludeCancelButton: false
 		}).then((res) => {
 			if (res.data["confirm"] === true) {
-				// removes the node
-				setElements((els) => removeElements([nodeContextMenuState['currNode']], els));
+
+				// the node we are deleting (stored in an array of size 1)
+				let nodeToDelete = [nodeContextMenuState['currNode']];
+
+				// array to hold edges to be deleted
+				let edgesToDelete = [];
+				
+				// removes the node and attached edges
+				setElements(function (els) {
+
+					//let toDelete = [nodeContextMenuState['currNode']];
+					els.forEach(function (element) {
+						// if the element is an edge
+						if (element['type'] != 'prettyNode') {
+
+							// add to toDelete if it is connected to currNode
+							if (nodeToDelete[0]['id'] == element['source'] ||
+								nodeToDelete[0]['id'] == element['target']) {
+								edgesToDelete.push(element);
+								
+							}
+
+						}
+					});
+					//console.log("DELETING NODES AND EDGES", edgesToDelete.concat(nodeToDelete));
+					// concat the two arrays into a single array for deletion
+					return removeElements(edgesToDelete.concat(nodeToDelete), els);
+				});
 				//console.log("deleted node", nodeContextMenuState['currNode']);
 
 				// close the context menu
 				setNodeContextMenuState(initialNodeContextMenuState);
 
-				//Mutates the monday database.
+				// updates database to remove the connections
+				props?.nodeHelper.RemoveConnections(edgesToDelete);
+
+				//Mutates the monday database. (deletes the node)
 				props?.nodeHelper.DeleteItem(nodeContextMenuState['currNode'].id);
 
 			}
 		});
 	}
 
+	// called by the edge context menu
 	function onEdgeDelete() {
 		// get the edge id from the class name list of the parent
 		// i stored the id in the class name 
@@ -548,13 +534,12 @@ let ReactFlowChart = props => {
 
 				// if id matches, remove the edge from elements
 				// also update data
-				setElements(function(els){
+				setElements(function (els) {
 					els = removeElements([elements[i]], els);
 					els = updateOutgoingNodesData(els);
 					return els;
-				}); 
+				});
 				//console.log("deleted edge", elements[i]);
-
 
 				break;
 			}
@@ -591,8 +576,6 @@ let ReactFlowChart = props => {
 
 			onElementClick={props?.onElementClick}
 			onConnect={onConnect}
-			//onConnectStart={onConnectStart}
-			//onConnectStop={onConnectStop}
 			onNodeDragStop={onNodeDragStop}
 			//onElementsRemove={onElementsRemove}
 			onNodeContextMenu={onNodeContextMenu}

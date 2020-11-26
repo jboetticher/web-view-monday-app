@@ -100,20 +100,20 @@ class NodeFunctions {
         var replaceIndex = -1;
         for (var i = 0; i < this.connections.length; i++) {
             if (this.connections[i].source == sourceId &&
-                this.connections[i].target == targetId && 
+                this.connections[i].target == targetId &&
                 this.connections[i].sourceHandle == sourceHandleId) {
                 replaceIndex = i;
-                //console.log("REMOVING FROM DATABASE", this.connections[i]);
+                console.log("REMOVING FROM DATABASE", this.connections[i]);
                 break;
             }
         }
-        
+
         // if the index isn't negative then it deletes
         if (replaceIndex >= 0) {
             // splices the target that was removed
-            //console.log("BEFORE REMOVAL:", brem);
+            console.log("BEFORE REMOVAL:", this.connections);
             this.connections.splice(i, 1);
-            //console.log("AFTER REMOVAL:", this.connections);
+            console.log("AFTER REMOVAL:", this.connections);
             // json stringify the current connections
             const jsonString = JSON.stringify(this.connections);
 
@@ -125,6 +125,46 @@ class NodeFunctions {
                 this.QueryConnections();
             });
         }
+    }
+
+    /* Removes an array of connections from monday.com
+     * conArray - array of connections/edges to be removed
+     */
+    RemoveConnections(conArray) {
+        //console.log("REMOVING THESE CONNECTIONS", conArray);
+        // loop through all connections to be deleted
+        for (var c = 0; c < conArray.length; c++) {
+            // checks to see if the current array has one of those connections
+            var replaceIndex = -1;
+            for (var i = 0; i < this.connections.length; i++) {
+                if (this.connections[i].source == conArray[c]['source'] &&
+                    this.connections[i].target == conArray[c]['target'] &&
+                    this.connections[i].sourceHandle == conArray[c]['sourceHandle']) {
+                    replaceIndex = i;
+                    console.log("REMOVING FROM DATABASE", this.connections[i]);
+                    break;
+                }
+            }
+
+            // if the index isn't negative then it deletes
+            if (replaceIndex >= 0) {
+                // splices the target that was removed
+                console.log("BEFORE REMOVAL:", this.connections);
+                this.connections.splice(i, 1);
+                console.log("AFTER REMOVAL:", this.connections);
+            }
+        }
+
+        // json stringify the current connections
+        const jsonString = JSON.stringify(this.connections);
+
+        // save to monday.com persist as one call
+        this.monday.storage.instance.setItem('connection_objects', jsonString).then(res => {
+            console.log(res);
+            console.log(jsonString);
+
+            this.QueryConnections();
+        });
     }
 
     //#endregion
@@ -201,7 +241,7 @@ class NodeFunctions {
     //#region Database Manipulation
 
     DeleteItem(itemId) {
-        console.log(typeof(itemId));
+        console.log(typeof (itemId));
         console.log(itemId);
         // delete item query
         this.monday.api(`mutation ($itemId: Int) 
