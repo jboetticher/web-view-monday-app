@@ -128,26 +128,26 @@ let ReactFlowChart = props => {
 		if (savedConnections == undefined) return currElements;
 
 		// create an array of only nodes in the board
-		/*let onlyNodes = [];
+		let onlyNodes = [];
 		currElements.forEach(function(element){
 			// if the element is not a node, skip it
 			if(element['type'] == "prettyNode"){
 				onlyNodes.push(element);
 			}
-		});*/
+		});
 
 		// add in all the saved connections
 		savedConnections.forEach(function (connection) {
 			let newEdge = setUpNewEdge(connection['source'], connection['target'], connection['sourceHandle'], connection['targetHandle']);
 			
 			//console.log('edgeloaded:', newEdge);
-			//onlyNodes.push(newEdge);
-			currElements.push(newEdge);
+			onlyNodes.push(newEdge);
+			//currElements.push(newEdge);
 
 		});
 
-		return currElements;
-
+		//return currElements;
+		return onlyNodes;
 	}
 
 	// provides the nodes passed in with data from getIncomers()

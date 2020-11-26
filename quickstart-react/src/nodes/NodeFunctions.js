@@ -213,6 +213,8 @@ class NodeFunctions {
         ).then(res => {
             //this.setState({ boardData: res.data });
         });
+
+        // finds all of the edges and tries to de
     }
 
     //#endregion

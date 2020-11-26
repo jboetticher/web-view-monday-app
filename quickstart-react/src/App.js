@@ -118,7 +118,7 @@ class App extends React.Component {
         }}
       >
 
-        
+
 
         <ReactFlowChart
           boardData={this.state.boardData?.boards}
@@ -133,7 +133,7 @@ class App extends React.Component {
         //nodeTypes={nodeTypes}
         />
 
-        
+
 
         <UIOverlay>
           <Button
@@ -143,6 +143,14 @@ class App extends React.Component {
               console.log("priority being found...");
             }}>
             Find Priority
+          </Button>
+          <Button
+            size="small"
+            style={{ marginRight: "8px" }}
+            onClick={() => {
+              console.log("visualizing group priorities...");
+            }}>
+            Visualize Group Priorities
           </Button>
           <Button
             size="small" kind="secondary"
