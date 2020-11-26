@@ -401,6 +401,8 @@ let ReactFlowChart = props => {
 
 	//#endregion
 
+	//#region Menu Callbacks
+
 	// context menu handling
 	const initialEdgeContextMenuState = {
 		currEdge: null,
@@ -522,10 +524,25 @@ let ReactFlowChart = props => {
 		setEdgeContextMenuState(initialEdgeContextMenuState);
 	}
 
-	function GoToHighestPriority() {
+	//#endregion
+
+	//#region UI Callbacks
+
+	// subscribes to the go to highest priority event
+	/*
+	useEffect(() => {
+		console.log("the event changed");
+		//setElements(boardElements);
+	}, [props?.findPriorityEvent]);
+	*/
+
+	function GoToHighestPriority(event, element) {
+		console.log(flowChartObj);
 		var flowChartObj = flowChart.toObject();
 		flowChart.setTransform({x: 100, y: 100, zoom: flowChartObj.zoom});
 	}
+
+	//#endregion
 
 	var flowChart =
 		<ReactFlow

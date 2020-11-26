@@ -1,14 +1,16 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
 import Search from "monday-ui-react-core/dist/icons/Search";
 
-import { removeElements } from 'react-flow-renderer';
-import ItemNode from "./nodes/ItemNode.js";
+import { ReactFlowProvider } from 'react-flow-renderer';
+import { useZoomPanHelper } from 'react-flow-renderer';
 import PrettyItemNode from "./nodes/PrettyItemNode.js";
 import NodeFunctions from "./nodes/NodeFunctions.js";
 import "./css/node-view.css";
 
+import FindPriorityButton from "./components/FindPriorityButton.js";
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
 import UIOverlay from "./components/UIOverlay";
@@ -109,15 +111,21 @@ class App extends React.Component {
 
     var reactFlowChart =
       <ReactFlowChart
+        nodeHelper={nodeHelper}
+        monday={monday}
+
         boardData={this.state.boardData?.boards}
         filteredItems={this.state?.filteredItems}
-        onElementClick={onElementClick}
+
         pathSettings={this.state.settings?.pathdisplay}
         edgeGripSetting={this.state.settings?.edgeGrips}
         backgroundSettings={this.state.settings?.backgroundType}
-        nodeHelper={nodeHelper}
-        monday={monday}
+
+        onElementClick={onElementClick}
+
+        findPriorityEvent={this.state.findPriorityEvent}
       />;
+
 
     // note: adding a background threw a shit ton of errors for some reason whoops
     return (
@@ -130,54 +138,49 @@ class App extends React.Component {
         }}
       >
 
-        {reactFlowChart}
+        <ReactFlowProvider>
+          {reactFlowChart}
 
-        <UIOverlay>
-          <Button
-            size="small"
-            style={{ marginRight: "8px" }}
-            onClick={() => {
-              console.log("priority being found...");
-              console.log(reactFlowChart);
-              //reactFlowChart.goToHighestPriority();
-            }}>
-            Find Priority
-          </Button>
-          <Button
-            size="small"
-            style={{ marginRight: "8px" }}
-            onClick={() => {
-              console.log("visualizing group priorities...");
-            }}>
-            Visualize Group Priorities
-          </Button>
-          <Button
-            size="small" kind="secondary"
-            style={{ marginRight: "8px" }}
-            onClick={() => {
-            }}>
-            Recenter
-          </Button>
-          <Button
-            size="small" kind="secondary"
-            style={{ marginRight: "8px" }}
-            onClick={() => {
-              monday.execute("confirm", {
-                message: "Are you sure you want to reset the nodes? " +
-                  "You will lose all of the connections that you have made, and all of the original connections will be returned.",
-                confirmButton: "Confirm",
-                cancelButton: "Cancel",
-                excludeCancelButton: false
-              }).then((res) => {
-                if (res.data["confirm"] === true) {
-                  // do the reset here
-                }
-              });
-            }}
-            style={{ marginRight: "8px" }}>
-            Reset
-          </Button>
-        </UIOverlay>
+          <UIOverlay>
+
+            <FindPriorityButton />
+            <Button
+              size="small"
+              style={{ marginRight: "8px" }}
+              onClick={() => {
+                console.log("visualizing group priorities...");
+              }}>
+              Visualize Group Priorities
+            </Button>
+            <Button
+              size="small" kind="secondary"
+              style={{ marginRight: "8px" }}
+              onClick={() => {
+              }}>
+              Recenter
+            </Button>
+            <Button
+              size="small" kind="secondary"
+              style={{ marginRight: "8px" }}
+              onClick={() => {
+                monday.execute("confirm", {
+                  message: "Are you sure you want to reset the nodes? " +
+                    "You will lose all of the connections that you have made, and all of the original connections will be returned.",
+                  confirmButton: "Confirm",
+                  cancelButton: "Cancel",
+                  excludeCancelButton: false
+                }).then((res) => {
+                  if (res.data["confirm"] === true) {
+                    // do the reset here
+                  }
+                });
+              }}
+              style={{ marginRight: "8px" }}>
+              Reset
+            </Button>
+          </UIOverlay>
+        </ReactFlowProvider>
+
       </div >
     );
   }
