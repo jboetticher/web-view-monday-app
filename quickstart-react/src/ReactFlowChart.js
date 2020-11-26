@@ -97,8 +97,10 @@ let ReactFlowChart = props => {
 		let savedPositions = props?.nodeHelper.GetPositions();
 
 		//if there was no saved positional data, return
-		if (savedPositions == undefined) return;
+		if (savedPositions == undefined) return currElements;
 		
+		console.log("loading saved node positions of", currElements);
+
 		//loop through current elements in board
 		currElements.forEach(function (element) {
 			// if the element is not a node, skip it
@@ -128,6 +130,8 @@ let ReactFlowChart = props => {
 		//if there was no saved positional data, return
 		if (savedConnections == undefined) return currElements;
 
+		console.log("loading saved connections of", currElements);
+
 		// create an array of only nodes in the board
 		let onlyNodes = [];
 		currElements.forEach(function(element){
@@ -153,6 +157,8 @@ let ReactFlowChart = props => {
 
 	// provides the nodes passed in with data from getIncomers()
 	function updateIncomingNodesData(currElements) {
+
+		console.log("updating data of", currElements);
 
 		// loop through board data
 		currElements.forEach(function (element) {
@@ -206,6 +212,8 @@ let ReactFlowChart = props => {
 		let bdata = props?.boardData;
 		let filteredItems = props?.filteredItems;
 
+		console.log("DATA FROM PASSED PROPS", bdata);
+
 		// retrieves column data FOR JUST THE FIRST BOARD
 		var columnData = bdata[0]['columns'];
 
@@ -256,7 +264,7 @@ let ReactFlowChart = props => {
 							group: groupName, groupColor: item['group']['color'],
 							statusData: statusData,
 							columnValues: item['column_values'],
-							incomingNodes: [],
+							//incomingNodes: [],
 							isConnecting: false
 						},
 						style: {
@@ -283,6 +291,8 @@ let ReactFlowChart = props => {
 			});
 		});
 
+		console.log("ELEMENTS BEFORE LOADING SAVED DATA", boardElements);
+
 		// updates the positions of all the ndoes from saved data
 		boardElements = loadPositions(boardElements);
 
@@ -292,7 +302,7 @@ let ReactFlowChart = props => {
 		// passes nodes info on their incoming connections
 		boardElements = updateIncomingNodesData(boardElements);
 
-		console.log("----BOARD DATA LODAED-----");
+		console.log("----BOARD DATA LOADED-----");
 		//console.log(bdata);
 		console.log(boardElements);
 		console.log("----------");
