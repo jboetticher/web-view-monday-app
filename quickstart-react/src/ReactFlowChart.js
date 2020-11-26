@@ -8,9 +8,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 let ReactFlowChart = props => {
 
-	const [dab, setDab] = useState(5);
 	// this is an example of an infinite loop. The same thing happens again and again in the same frame
 	// dab exists -> renders -> dab is set -> renders -> dab is set-> ...
+	//const [dab, setDab] = useState(5);
 	// setDab(4);
 
 	// returns the right color based on the current filter
@@ -92,13 +92,15 @@ let ReactFlowChart = props => {
 	  return subitemArray;
 	}*/
 
+	//#region Loading
+
 	function loadPositions(currElements) {
 		//Get the saved data
 		let savedPositions = props?.nodeHelper.GetPositions();
 
 		//if there was no saved positional data, return
 		if (savedPositions == undefined) return;
-		
+
 		//loop through current elements in board
 		currElements.forEach(function (element) {
 			// if the element is not a node, skip it
@@ -130,9 +132,9 @@ let ReactFlowChart = props => {
 
 		// create an array of only nodes in the board
 		let onlyNodes = [];
-		currElements.forEach(function(element){
+		currElements.forEach(function (element) {
 			// if the element is not a node, skip it
-			if(element['type'] == "prettyNode"){
+			if (element['type'] == "prettyNode") {
 				onlyNodes.push(element);
 			}
 		});
@@ -140,7 +142,7 @@ let ReactFlowChart = props => {
 		// add in all the saved connections
 		savedConnections.forEach(function (connection) {
 			let newEdge = setUpNewEdge(connection['source'], connection['target'], connection['sourceHandle'], connection['targetHandle']);
-			
+
 			//console.log('edgeloaded:', newEdge);
 			onlyNodes.push(newEdge);
 			//currElements.push(newEdge);
@@ -150,6 +152,8 @@ let ReactFlowChart = props => {
 		//return currElements;
 		return onlyNodes;
 	}
+
+	//#endregion
 
 	// provides the nodes passed in with data from getIncomers()
 	function updateIncomingNodesData(currElements) {
@@ -167,9 +171,9 @@ let ReactFlowChart = props => {
 
 		return currElements;
 	}
-	
+
 	// returns a json edge element with the correct styling and data
-	function setUpNewEdge(source, target, sourceHandle, targetHandle){
+	function setUpNewEdge(source, target, sourceHandle, targetHandle) {
 		let newEdgeId = 'e' + source + '_' + sourceHandle + '-' + target;
 		let newEdge = {
 			id: newEdgeId,
@@ -189,11 +193,13 @@ let ReactFlowChart = props => {
 			labelBgStyle: {
 				height: '24.3594', fill: 'var(--color-mud_black)', stroke: 'white', strokeWidth: '3',
 				visibility: (props?.edgeGripSetting ? 'visible' : 'hidden')
-			},	
+			},
 		};
 
 		return newEdge;
 	}
+
+
 	var boardElements = [];
 
 	const nodeTypes = {
@@ -322,7 +328,7 @@ let ReactFlowChart = props => {
 	const onConnect = (params) => {
 		setElements(function (els) {
 			if (els !== null) {
-				els = addEdge( setUpNewEdge(params.source, params.target, params.sourceHandle, params.targetHandle), els);
+				els = addEdge(setUpNewEdge(params.source, params.target, params.sourceHandle, params.targetHandle), els);
 			}
 
 			// update internal node data with new incoming connections
@@ -489,14 +495,14 @@ let ReactFlowChart = props => {
 		//console.log("DELETING FROM", elements);
 		for (i = 0; i < elements.length; i++) {
 			if (elements[i]['id'] == currEdgeId) {
-				
+
 				// if id matches, remove the edge from the database
 				props?.nodeHelper.RemoveConnection(elements[i]['source'], elements[i]['target'], elements[i]['sourceHandle']);
 
 				// if id matches, remove the edge from elements
 				setElements((els) => removeElements([elements[i]], els));
 				//console.log("deleted edge", elements[i]);
-				
+
 
 				break;
 			}
@@ -506,8 +512,7 @@ let ReactFlowChart = props => {
 		setEdgeContextMenuState(initialEdgeContextMenuState);
 	}
 
-	return (
-
+	var flowChart =
 		<ReactFlow
 			onContextMenu={onEdgeContextMenu}
 			elements={elements}
@@ -552,9 +557,13 @@ let ReactFlowChart = props => {
 				<MenuItem onClick={onNodeDelete}>Delete Node</MenuItem>
 			</Menu>
 
-		</ReactFlow>
+		</ReactFlow>;
 
-	);
+	function GoToHighestPriority() {
+
+	}
+
+	return (flowChart);
 }
 
 export default ReactFlowChart;
