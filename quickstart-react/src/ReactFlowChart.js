@@ -160,11 +160,12 @@ let ReactFlowChart = props => {
 	//#endregion
 
 	// provides the nodes passed in with data from getIncomers()
-	function updateIncomingNodesData(currElements) {
+	function updateOutgoingNodesData(currElements) {
 
 		console.log("updating data of", currElements);
 
 		// loop through board data
+		let onlyNodes = [];
 		currElements.forEach(function (element) {
 
 			// if the element is not a node, skip it
@@ -172,8 +173,42 @@ let ReactFlowChart = props => {
 
 			//element['data']['incomingNodes'] = getIncomers(element, currElements);
 			element['data']['outgoingNodes'] = getOutgoers(element, currElements);
+			onlyNodes.push(element);
 
 		});
+		//console.log(document.getElementsByClassName("react-flow__node"));
+
+		// i go into the actual html to change the number
+		// this is because the nodes only rerender off of specific circumstances
+		// shhhhh
+		let i = 0;
+		let htmlNodes = document.getElementsByClassName("react-flow__node");
+		for (i = 0; i < htmlNodes.length; i++) {
+			let htmlNodeId = htmlNodes[i].classList[2];
+
+			let j=0;
+			for(j=0; j<onlyNodes.length;j++){
+				if(htmlNodeId == onlyNodes[j]['id']){
+					let currLabel = htmlNodes[i].getElementsByClassName("MuiChip-label")[0];
+					currLabel.innerText = onlyNodes[j]['data']['outgoingNodes'].length + "";
+				}
+
+			}
+
+			//let currLabel = htmlNodes[i].getElementsByClassName("MuiChip-label")[0];
+			//console.log(htmlNodes[i].getElementsByClassName("MuiChip-label")[0]);
+
+
+			//console.log(htmlNodes[i].getElementsByClassName("MuiChip-label")[0].innerText);
+			//currLabel.innerText = elements['data']['outgoingNodes'].length;
+		}
+
+
+
+
+
+
+
 
 		return currElements;
 	}
@@ -270,12 +305,13 @@ let ReactFlowChart = props => {
 						{
 							id: item['id'],
 							type: "prettyNode",
+							className: item['id'],
 							data: {
 								title: titleName,
 								group: groupName, groupColor: item['group']['color'],
 								statusData: statusData,
 								columnValues: item['column_values'],
-								//incomingNodes: [],
+								outgoingNodes: [],
 								isConnecting: false
 							},
 							style: {
@@ -302,7 +338,7 @@ let ReactFlowChart = props => {
 			databasedElements = loadConnections(databasedElements);
 
 			// passes nodes info on their incoming connections
-			databasedElements = updateIncomingNodesData(databasedElements);
+			databasedElements = updateOutgoingNodesData(databasedElements);
 
 			console.log("----BOARD DATA LOADED-----");
 			//console.log(bdata);
@@ -339,7 +375,7 @@ let ReactFlowChart = props => {
 			}
 
 			// update internal node data with new incoming connections
-			els = updateIncomingNodesData(els);
+			els = updateOutgoingNodesData(els);
 
 			console.log(els);
 			//console.log('onConnect', params)
@@ -507,7 +543,12 @@ let ReactFlowChart = props => {
 				props?.nodeHelper.RemoveConnection(elements[i]['source'], elements[i]['target'], elements[i]['sourceHandle']);
 
 				// if id matches, remove the edge from elements
-				setElements((els) => removeElements([elements[i]], els));
+				// also update data
+				setElements(function(els){
+					els = removeElements([elements[i]], els);
+					els = updateOutgoingNodesData(els);
+					return els;
+				}); 
 				//console.log("deleted edge", elements[i]);
 
 
