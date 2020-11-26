@@ -305,7 +305,8 @@ let ReactFlowChart = props => {
 
 	// sets/populates board elements
 	if (props?.boardData != null) {
-		// the board data and the items that should be highlighted by the filter
+		setInitialElements(props?.boardData);
+		/*// the board data and the items that should be highlighted by the filter
 		let bdata = props?.boardData;
 		let filteredItems = props?.filteredItems;
 
@@ -378,13 +379,13 @@ let ReactFlowChart = props => {
 				groupIndex[groupName] += 1;
 
 				// adds an animated connector to the next one if in same group
-				/*if (previousNodeId > 0 && previousGroupName == groupName) {
+				if (previousNodeId > 0 && previousGroupName == groupName) {
 
 					boardElements.push(setUpNewEdge(previousNodeId, item['id'], 'b', 't'));
 				}
 
 				previousNodeId = item['id'];
-				previousGroupName = groupName;*/
+				previousGroupName = groupName;
 			});
 		});
 
@@ -402,7 +403,7 @@ let ReactFlowChart = props => {
 		console.log("----BOARD DATA LOADED-----");
 		//console.log(bdata);
 		console.log(initialElements);
-		console.log("----------");
+		console.log("----------");*/
 	}
 
 	// elements are set to board elements for initial state
