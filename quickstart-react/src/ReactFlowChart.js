@@ -424,6 +424,10 @@ let ReactFlowChart = props => {
 	const onNodeDragStop = (event, node) => {
 		//console.log("onNodeDragStop nodes ", node);
 		props?.nodeHelper.AddPosition(node);
+		setElements(function(els) {
+			els = loadPositions(els);
+			return els;
+		});
 	}
 
 	const onElementsRemove = (elementsToRemove) => {
