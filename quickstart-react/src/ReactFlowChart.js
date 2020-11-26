@@ -206,212 +206,117 @@ let ReactFlowChart = props => {
 	}
 
 
-	var initialElements = [];
+
 
 	const nodeTypes = {
 		prettyNode: PrettyItemNode
 	};
 
-	function setInitialElements(initialData) {
-		let bdata = initialData;
-		let filteredItems = props?.filteredItems;
-
-		console.log("DATA FROM PASSED PROPS", bdata);
-
-		// retrieves column data FOR JUST THE FIRST BOARD
-		var columnData = bdata[0]['columns'];
-
-		//Goes into each board element in the JSON data array
-		//By the end of it, a complete node board will be populated with nodes and default connections
-		bdata.forEach(function (board, bIndex) {
-			if (board['name'].indexOf("Subitems of") == 1) return;
-			var previousNodeId = -1;
-			var previousGroupName = "";
-
-			// Adds an id number & index to the group ids
-			let groupIds = {};
-			let groupIndex = {};
-			let currentGroupId = 0;
-			board['items'].forEach(function (item, itIndex) {
-				let groupName = item['group']['title'];
-				if (!(groupName in groupIds)) {
-					groupIds[groupName] = currentGroupId;
-					groupIndex[groupName] = 0;
-					currentGroupId++;
-				}
-			});
-
-			//Goes into each item element in the JSON data
-			board['items'].forEach(function (item, itIndex) {
-
-				let groupName = item['group']['title'];
-				let titleName = item['name'];
-				let nodeBackgroundColor = nodeColorOnFilter(filteredItems, item['id']);
-
-				// gets status data
-				let statusData = statusColor(item['column_values'], columnData);
-
-				// gets subitems if the item has subitems
-				// item['column_values'][0]['text'] provides a text of the subitems
-				// if no subitems, value will be empty string
-				if (item['column_values'][0] != "") {
-					let subitems = item['column_values'][0]['text'];
-				}
-
-				// adds a node
-				initialElements.push(
-					{
-						id: item['id'],
-						type: "prettyNode",
-						data: {
-							title: titleName,
-							group: groupName, groupColor: item['group']['color'],
-							statusData: statusData,
-							columnValues: item['column_values'],
-							//incomingNodes: [],
-							isConnecting: false
-						},
-						style: {
-							padding: "16px",
-							borderRadius: "8px", //border: "4px solid", borderColor: item['group']['color'],
-							background: nodeBackgroundColor, //item['group']['color']
-							boxShadow: "0px 6px 20px -2px rgba(0, 0, 0, 0.2)"
-						},
-						position: { x: 325 * groupIds[groupName] + bIndex * 1000, y: 300 * groupIndex[groupName] }
-					}
-				);
-
-				// increments group index
-				groupIndex[groupName] += 1;
-			});
-		});
-
-		console.log("ELEMENTS BEFORE LOADING SAVED DATA", initialElements);
-
-		// updates the positions of all the ndoes from saved data
-		initialElements = loadPositions(initialElements);
-
-		// adds in connections from saved data
-		initialElements = loadConnections(initialElements);
-
-		// passes nodes info on their incoming connections
-		initialElements = updateIncomingNodesData(initialElements);
-
-		console.log("----BOARD DATA LOADED-----");
-		//console.log(bdata);
-		console.log(initialElements);
-		console.log("----------");
-	}
-
-	// sets/populates board elements
-	if (props?.boardData != null) {
-		setInitialElements(props?.boardData);
-		/*// the board data and the items that should be highlighted by the filter
-		let bdata = props?.boardData;
-		let filteredItems = props?.filteredItems;
-
-		console.log("DATA FROM PASSED PROPS", bdata);
-
-		// retrieves column data FOR JUST THE FIRST BOARD
-		var columnData = bdata[0]['columns'];
-
-		//Goes into each board element in the JSON data array
-		//By the end of it, a complete node board will be populated with nodes and default connections
-		bdata.forEach(function (board, bIndex) {
-			if (board['name'].indexOf("Subitems of") == 1) return;
-			var previousNodeId = -1;
-			var previousGroupName = "";
-
-			// Adds an id number & index to the group ids
-			let groupIds = {};
-			let groupIndex = {};
-			let currentGroupId = 0;
-			board['items'].forEach(function (item, itIndex) {
-				let groupName = item['group']['title'];
-				if (!(groupName in groupIds)) {
-					groupIds[groupName] = currentGroupId;
-					groupIndex[groupName] = 0;
-					currentGroupId++;
-				}
-			});
-
-			//Goes into each item element in the JSON data
-			board['items'].forEach(function (item, itIndex) {
-
-				let groupName = item['group']['title'];
-				let titleName = item['name'];
-				let nodeBackgroundColor = nodeColorOnFilter(filteredItems, item['id']);
-
-				// gets status data
-				let statusData = statusColor(item['column_values'], columnData);
-
-				// gets subitems if the item has subitems
-				// item['column_values'][0]['text'] provides a text of the subitems
-				// if no subitems, value will be empty string
-				if (item['column_values'][0] != "") {
-					let subitems = item['column_values'][0]['text'];
-				}
-
-				// adds a node
-				initialElements.push(
-					{
-						id: item['id'],
-						type: "prettyNode",
-						data: {
-							title: titleName,
-							group: groupName, groupColor: item['group']['color'],
-							statusData: statusData,
-							columnValues: item['column_values'],
-							//incomingNodes: [],
-							isConnecting: false
-						},
-						style: {
-							padding: "16px",
-							borderRadius: "8px", //border: "4px solid", borderColor: item['group']['color'],
-							background: nodeBackgroundColor, //item['group']['color']
-							boxShadow: "0px 6px 20px -2px rgba(0, 0, 0, 0.2)"
-						},
-						position: { x: 325 * groupIds[groupName] + bIndex * 1000, y: 300 * groupIndex[groupName] }
-					}
-				);
-
-				// increments group index
-				groupIndex[groupName] += 1;
-
-				// adds an animated connector to the next one if in same group
-				if (previousNodeId > 0 && previousGroupName == groupName) {
-
-					boardElements.push(setUpNewEdge(previousNodeId, item['id'], 'b', 't'));
-				}
-
-				previousNodeId = item['id'];
-				previousGroupName = groupName;
-			});
-		});
-
-		console.log("ELEMENTS BEFORE LOADING SAVED DATA", initialElements);
-
-		// updates the positions of all the ndoes from saved data
-		initialElements = loadPositions(initialElements);
-
-		// adds in connections from saved data
-		initialElements = loadConnections(initialElements);
-
-		// passes nodes info on their incoming connections
-		initialElements = updateIncomingNodesData(initialElements);
-
-		console.log("----BOARD DATA LOADED-----");
-		//console.log(bdata);
-		console.log(initialElements);
-		console.log("----------");*/
-	}
-
 	// elements are set to board elements for initial state
-	const [elements, setElements] = useState(initialElements);
+	const [elements, setElements] = useState([]);
+
+	function getDatabasedElements() {
+		// sets/populates board elements
+		if (props?.boardData != null) {
+			let bdata = props?.boardData;
+			let filteredItems = props?.filteredItems;
+
+			let databasedElements = [];
+
+			console.log("DATA FROM PASSED PROPS", bdata);
+
+			// retrieves column data FOR JUST THE FIRST BOARD
+			var columnData = bdata[0]['columns'];
+
+			//Goes into each board element in the JSON data array
+			//By the end of it, a complete node board will be populated with nodes and default connections
+			bdata.forEach(function (board, bIndex) {
+				if (board['name'].indexOf("Subitems of") == 1) return;
+				var previousNodeId = -1;
+				var previousGroupName = "";
+
+				// Adds an id number & index to the group ids
+				let groupIds = {};
+				let groupIndex = {};
+				let currentGroupId = 0;
+				board['items'].forEach(function (item, itIndex) {
+					let groupName = item['group']['title'];
+					if (!(groupName in groupIds)) {
+						groupIds[groupName] = currentGroupId;
+						groupIndex[groupName] = 0;
+						currentGroupId++;
+					}
+				});
+
+				//Goes into each item element in the JSON data
+				board['items'].forEach(function (item, itIndex) {
+
+					let groupName = item['group']['title'];
+					let titleName = item['name'];
+					let nodeBackgroundColor = nodeColorOnFilter(filteredItems, item['id']);
+
+					// gets status data
+					let statusData = statusColor(item['column_values'], columnData);
+
+					// gets subitems if the item has subitems
+					// item['column_values'][0]['text'] provides a text of the subitems
+					// if no subitems, value will be empty string
+					if (item['column_values'][0] != "") {
+						let subitems = item['column_values'][0]['text'];
+					}
+
+					// adds a node
+					databasedElements.push(
+						{
+							id: item['id'],
+							type: "prettyNode",
+							data: {
+								title: titleName,
+								group: groupName, groupColor: item['group']['color'],
+								statusData: statusData,
+								columnValues: item['column_values'],
+								//incomingNodes: [],
+								isConnecting: false
+							},
+							style: {
+								padding: "16px",
+								borderRadius: "8px", //border: "4px solid", borderColor: item['group']['color'],
+								background: nodeBackgroundColor, //item['group']['color']
+								boxShadow: "0px 6px 20px -2px rgba(0, 0, 0, 0.2)"
+							},
+							position: { x: 325 * groupIds[groupName] + bIndex * 1000, y: 300 * groupIndex[groupName] }
+						}
+					);
+
+					// increments group index
+					groupIndex[groupName] += 1;
+				});
+			});
+
+			console.log("ELEMENTS BEFORE LOADING SAVED DATA", databasedElements);
+
+			// updates the positions of all the ndoes from saved data
+			databasedElements = loadPositions(databasedElements);
+
+			// adds in connections from saved data
+			databasedElements = loadConnections(databasedElements);
+
+			// passes nodes info on their incoming connections
+			databasedElements = updateIncomingNodesData(databasedElements);
+
+			console.log("----BOARD DATA LOADED-----");
+			//console.log(bdata);
+			console.log(databasedElements);
+			console.log("----------");
+
+			return databasedElements;
+		}
+		return [];
+	}
 
 	// updates elements when props changes
 	useEffect(() => {
-		setElements(initialElements);
+		setElements(getDatabasedElements());
 	}, [props]);
 
 	// background settings
@@ -445,7 +350,7 @@ let ReactFlowChart = props => {
 		props?.nodeHelper.AddConnection(params);
 	};
 
-	const onConnectStart = (event, { nodeId, handleType }) => {
+	/*const onConnectStart = (event, { nodeId, handleType }) => {
 		console.log('on connect start', { nodeId, handleType });
 
 		//loop through all the current elements and replace target handles with bigger versions
@@ -478,7 +383,7 @@ let ReactFlowChart = props => {
 			return els;
 		});
 
-	};
+	};*/
 
 	const onNodeDragStop = (event, node) => {
 		//console.log("onNodeDragStop nodes ", node);
@@ -641,8 +546,8 @@ let ReactFlowChart = props => {
 
 			onElementClick={props?.onElementClick}
 			onConnect={onConnect}
-			onConnectStart={onConnectStart}
-			onConnectStop={onConnectStop}
+			//onConnectStart={onConnectStart}
+			//onConnectStop={onConnectStop}
 			onNodeDragStop={onNodeDragStop}
 			//onElementsRemove={onElementsRemove}
 			onNodeContextMenu={onNodeContextMenu}

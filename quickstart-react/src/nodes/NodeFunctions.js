@@ -103,7 +103,7 @@ class NodeFunctions {
                 this.connections[i].target == targetId && 
                 this.connections[i].sourceHandle == sourceHandleId) {
                 replaceIndex = i;
-                //console.log("REMOVING FROM DATABASE", this.connections[i]);
+                console.log("REMOVING FROM DATABASE", this.connections[i]);
                 break;
             }
         }
@@ -111,10 +111,10 @@ class NodeFunctions {
         // if the index isn't negative then it deletes
         if (replaceIndex >= 0) {
             // splices the target that was removed
-            //console.log("BEFORE REMOVAL:", this.connections);
-            var removed = this.connections.splice(0, i);
+            console.log("BEFORE REMOVAL:", this.connections);
+            var removed = this.connections.splice(i, 1);
             this.connections = removed;
-            //console.log("AFTER REMOVAL:", this.connections);
+            console.log("AFTER REMOVAL:", this.connections);
             // json stringify the current connections
             const jsonString = JSON.stringify(this.connections);
 

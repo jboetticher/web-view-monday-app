@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { Handle } from 'react-flow-renderer';
 import ChevronDown from "monday-ui-react-core/dist/icons/DropdownChevronDown";
 import ChevronUp from "monday-ui-react-core/dist/icons/DropdownChevronUp";
@@ -73,14 +73,7 @@ export default memo(({ data }) => {
     var fakeRightHandle = <div className='react-flow__handle-right react-flow__handle' style={{ background: 'var(--color-mud_black)', width: '10px', height: '10px', right: '-5px' }}></div>;
     var fakeBotHandle = <div className='react-flow__handle-bottom react-flow__handle' style={{ background: 'var(--color-mud_black)', width: '10px', height: '10px', bottom: '-5px' }}></div>;
 
-    // change what the handles look like if it is in connecting mode
-    // doesnt work so don't give up 
-    /*if (data?.isConnecting) {
-        targetStyle = { background: '#0071d9', width: '20px', height: '20px' };
-    }
-    else {
-        targetStyle = { background: '#0071d9', width: '10px', height: '10px' };
-    }*/
+
 
     return (
         <>
