@@ -20,3 +20,7 @@ body {
     vertical-align: middle;
     text-overflow: hidden;
 }
+
+.plot-graph {
+  padding-left: 15px;
+}

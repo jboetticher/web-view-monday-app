@@ -10,6 +10,8 @@ import PrettyItemNode from "./nodes/PrettyItemNode.js";
 import NodeFunctions from "./nodes/NodeFunctions.js";
 import "./css/node-view.css";
 
+import PriorityGraphs from "./components/PriorityGraphs.js";
+
 import FindPriorityButton from "./components/FindPriorityButton.js";
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
@@ -29,6 +31,7 @@ class App extends React.Component {
     this.state = {
       settings: {},
       name: "",
+      chartView: 0
     };
   }
 
@@ -109,7 +112,7 @@ class App extends React.Component {
       }
     }
 
-    var reactFlowChart =
+    var chartViewElement = 0 == this.state.chartView ?
       <ReactFlowChart
         nodeHelper={nodeHelper}
         monday={monday}
@@ -124,7 +127,9 @@ class App extends React.Component {
         onElementClick={onElementClick}
 
         findPriorityEvent={this.state.findPriorityEvent}
-      />;
+      />
+      : <PriorityGraphs />
+      ;
 
 
     // note: adding a background threw a shit ton of errors for some reason whoops
@@ -139,8 +144,7 @@ class App extends React.Component {
       >
 
         <ReactFlowProvider>
-          {reactFlowChart}
-
+          {chartViewElement}
           <UIOverlay>
 
             <FindPriorityButton />
@@ -148,16 +152,11 @@ class App extends React.Component {
               size="small"
               style={{ marginRight: "8px" }}
               onClick={() => {
-                console.log("visualizing group priorities...");
+                this.setState({chartView: this.state.chartView == 0 ? 1 : 0});
+                //this.render();
+                console.log("damn thing with the freaking render fernaggly", this.state.chartView);
               }}>
-              Visualize Group Priorities
-            </Button>
-            <Button
-              size="small" kind="secondary"
-              style={{ marginRight: "8px" }}
-              onClick={() => {
-              }}>
-              Recenter
+              {this.state.chartView == 0 ? "View Group Priorities" : "View With Nodes"}
             </Button>
             <Button
               size="small" kind="secondary"

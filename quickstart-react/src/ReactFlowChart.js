@@ -582,7 +582,6 @@ let ReactFlowChart = props => {
 			onContextMenu={onEdgeContextMenu}
 
 			connectionLineComponent={CustomConnectionLine}
-			goToHighestPriority={GoToHighestPriority}
 		>
 			<Controls />
 			{background}
