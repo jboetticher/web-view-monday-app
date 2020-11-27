@@ -240,7 +240,7 @@ class NodeFunctions {
 
     //#region Database Manipulation
 
-    DeleteItem(itemId) {
+    DeleteItem(itemId, callback) {
         console.log(typeof (itemId));
         console.log(itemId);
         // delete item query
@@ -250,6 +250,7 @@ class NodeFunctions {
         }`,
             { variables: { itemId: parseInt(itemId) } }
         ).then(res => {
+            callback();
             //this.setState({ boardData: res.data });
         });
 

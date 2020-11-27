@@ -76,6 +76,27 @@ class App extends React.Component {
     });
   }
 
+  boardDataQuery() {
+    console.log("APP CONTEXT", this.state);
+
+    // board info query
+    monday.api(`query ($boardIds: [Int]) 
+          { 
+            boards (ids:$boardIds) { 
+              name 
+              items { id name group {title color} column_values { title text } } 
+              columns {
+                title
+                settings_str
+              }
+            } 
+          }`,
+      { variables: { boardIds: this.state.context.boardIds } }
+    ).then(res => {
+      this.setState({ boardData: res.data });
+    });
+  }
+
   render() {
 
     // what to do when the user clicks on an element
@@ -109,10 +130,13 @@ class App extends React.Component {
       }
     }
 
+
+
     var reactFlowChart =
       <ReactFlowChart
         nodeHelper={nodeHelper}
         monday={monday}
+        boardDataQuery={this.boardDataQuery.bind(this)}
 
         boardData={this.state.boardData?.boards}
         filteredItems={this.state?.filteredItems}
