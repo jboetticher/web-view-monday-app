@@ -44,6 +44,38 @@ class App extends React.Component {
     monday.listen("context", res => {
       this.setState({ context: res.data });
 
+      nodeHelper.QueryConnectionsPromise().then(resConnections => {
+
+        console.log("Connection Promise Finished");
+        // set it up in nodeHelper, will require another functions like SetConnections(array)
+        nodeHelper.SetConnections(resConnections);
+
+        return nodeHelper.QueryPositionsPromise();
+      }).then(resPositions => {
+
+        console.log("Position Promise Finished");
+        // set it up in nodeHelper, will require another function like SetPositions(array)
+        nodeHelper.SetPositions(resPositions);
+
+        return monday.api(`query ($boardIds: [Int]) 
+        { 
+          boards (ids:$boardIds) { 
+            name 
+            items { id name group {title color} column_values { title text } } 
+            columns {
+              title
+              settings_str
+            }
+          } 
+        }`,
+          { variables: { boardIds: this.state.context.boardIds } }
+        );
+      }).then(resBoards => {
+        console.log("Monday Board Promise Finished");
+        this.setState({ boardData: resBoards.data });
+      });
+
+      /*
       // board info query
       monday.api(`query ($boardIds: [Int]) 
       { 
@@ -60,7 +92,7 @@ class App extends React.Component {
       ).then(res => {
         this.setState({ boardData: res.data });
       });
-
+      */
       console.log(this.state.context);
     });
 

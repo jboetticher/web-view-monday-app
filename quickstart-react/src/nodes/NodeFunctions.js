@@ -7,9 +7,11 @@ class NodeFunctions {
     constructor(mondaySdk) {
         this.monday = mondaySdk;
 
+        // querying now happens in app.js
+
         // Querying from monday.com
-        this.QueryConnections();
-        this.QueryPositions();
+        //this.QueryConnections();
+        //this.QueryPositions();
     }
 
     EventHasClass(event, className) {
@@ -30,26 +32,30 @@ class NodeFunctions {
      */
     QueryConnections() {
         this.monday.storage.instance.getItem('connection_objects').then(res => {
-            console.log(res);
-
-            if (res.data.value !== null) {
-                this.connections = JSON.parse(res.data.value);
-                console.log(this.connections);
-            }
-            else {
-                this.connections = [];
-                console.log(this.connections);
-            }
+            this.SetConnections(res);
         });
     }
 
+    SetConnections(res) {
+        console.log(res);
+
+        if (res.data.value !== null) {
+            this.connections = JSON.parse(res.data.value);
+            console.log(this.connections);
+        }
+        else {
+            this.connections = [];
+            console.log(this.connections);
+        }
+    }
+
     //returns the promise object
-    QueryConnectionsPromise(){
+    QueryConnectionsPromise() {
         return this.monday.storage.instance.getItem('connection_objects');
     }
 
     //returns the promise object
-    QueryPositionsPromise(){
+    QueryPositionsPromise() {
         return this.monday.storage.instance.getItem('node_positions');
     }
 
@@ -185,17 +191,21 @@ class NodeFunctions {
      */
     QueryPositions() {
         this.monday.storage.instance.getItem('node_positions').then(res => {
-            console.log(res);
-
-            if (res.data.value !== null) {
-                this.positions = JSON.parse(res.data.value);
-                console.log(this.positions);
-            }
-            else {
-                this.positions = [];
-                console.log(this.positions);
-            }
+            this.SetPositions(res);
         });
+    }
+
+    SetPositions(res) {
+        console.log(res);
+
+        if (res.data.value !== null) {
+            this.positions = JSON.parse(res.data.value);
+            console.log(this.positions);
+        }
+        else {
+            this.positions = [];
+            console.log(this.positions);
+        }
     }
 
     /* Returns the position data from monday.com in a object format.

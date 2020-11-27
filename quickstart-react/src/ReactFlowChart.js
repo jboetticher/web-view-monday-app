@@ -70,12 +70,12 @@ let ReactFlowChart = props => {
 
 	function loadPositions(currElements) {
 		//Get the saved data
-		let savedPositions /*= props?.nodeHelper.GetPositions()*/;
-		//let savedPositions = [];
+		let savedPositions = props?.nodeHelper.GetPositions();
+		/*let savedPositions = [];
 		props?.nodeHelper.QueryPositionsPromise().then(res => {
 			savedPositions = JSON.parse(res.data.value);
 			//console.log("me own positions", savedPositions);
-		});
+		});*/
 
 		//if there was no saved positional data, return
 		if (savedPositions == undefined) return currElements;
