@@ -66,32 +66,6 @@ let ReactFlowChart = props => {
 		else { return { status: "", color: "var(--color-ui_grey)" }; }
 	}
 
-	/* CURRENTLY UNABLE TO WORK DUE TO CONSTRAINTS WITH MONDAY API AND SUBITEMS 
-	// pass in the item and the board it is in, alogn with all the boardData
-	// returns an array that holds all the data about the subitems of an item
-	function getSubitems(boardData, board, parentItem){
-	  let subitemArray = [];
-
-	  let subitemBoard;
-	  boardData.forEach(function(board){
-		if (board['name'] == "Subitems of " + board['name']){
-		  subitemBoard = board;
-		}
-	  });
-
-	  let parentSubitemText = parentItem['column_values'][0]['text'];
-	  subitemBoard.forEach(function(subitem){
-	    
-		//if the parent subitem text contains the name of the subitem,
-		//then that subitem in the pool is a subitem of our parent
-		if (parentSubitemText.indexOf(subitem['name']) > 0){
-		  subitemArray.push(subitem);
-		}
-	  });
-
-	  return subitemArray;
-	}*/
-
 	//#region Loading
 
 	function loadPositions(currElements) {
@@ -229,7 +203,99 @@ let ReactFlowChart = props => {
 		return newEdge;
 	}
 
+	// takes in a boardData and returns an array of nodes and edges from react flow
+	function generateElements(bdata) {
+		//let bdata = props?.boardData;
+		let filteredItems = props?.filteredItems;
 
+		let gendElements = [];
+
+		// retrieves column data FOR JUST THE FIRST BOARD
+		var columnData = bdata[0]['columns'];
+
+		//Goes into each board element in the JSON data array
+		//By the end of it, a complete node board will be populated with nodes and default connections
+		bdata.forEach(function (board, bIndex) {
+			if (board['name'].indexOf("Subitems of") == 1) return;
+
+			// Adds an id number & index to the group ids
+			let groupIds = {};
+			let groupIndex = {};
+			let currentGroupId = 0;
+			board['items'].forEach(function (item, itIndex) {
+				let groupName = item['group']['title'];
+				if (!(groupName in groupIds)) {
+					groupIds[groupName] = currentGroupId;
+					groupIndex[groupName] = 0;
+					currentGroupId++;
+				}
+			});
+
+			//Goes into each item element in the JSON data
+			board['items'].forEach(function (item, itIndex) {
+
+				let groupName = item['group']['title'];
+				let titleName = item['name'];
+				let nodeBackgroundColor = nodeColorOnFilter(filteredItems, item['id']);
+
+				// gets status data
+				let statusData = statusColor(item['column_values'], columnData);
+
+				// gets subitems if the item has subitems
+				// item['column_values'][0]['text'] provides a text of the subitems
+				// if no subitems, value will be empty string
+				if (item['column_values'][0] != "") {
+					let subitems = item['column_values'][0]['text'];
+				}
+
+				// adds a node
+				gendElements.push(
+					{
+						id: item['id'],
+						type: "prettyNode",
+						className: item['id'],
+						data: {
+							title: titleName,
+							group: groupName, groupColor: item['group']['color'],
+							statusData: statusData,
+							columnValues: item['column_values'],
+							outgoingNodes: [],
+							isConnecting: false
+						},
+						style: {
+							padding: "16px",
+							borderRadius: "8px",
+							background: nodeBackgroundColor,
+							boxShadow: "0px 6px 20px -2px rgba(0, 0, 0, 0.2)"
+						},
+						position: { x: 325 * groupIds[groupName] + bIndex * 1000, y: 300 * groupIndex[groupName] }
+					}
+				);
+
+				// increments group index
+				groupIndex[groupName] += 1;
+			});
+		});
+
+		//console.log("ELEMENTS BEFORE LOADING SAVED DATA", databasedElements);
+
+		// updates the positions of all the ndoes from saved data
+		gendElements = loadPositions(gendElements);
+
+		// adds in connections from saved data
+		gendElements = loadConnections(gendElements);
+
+		// passes nodes info on their incoming connections
+		gendElements = updateOutgoingNodesData(gendElements);
+
+		//console.log("----BOARD DATA LOADED-----");
+		//console.log(bdata);
+		//console.log(databasedElements);
+		//console.log("----------");
+
+		console.log("GENERATED ELEMENTS", gendElements);
+		return gendElements;
+	}
 
 
 	const nodeTypes = {
@@ -239,109 +305,19 @@ let ReactFlowChart = props => {
 	// elements are set to board elements for initial state
 	const [elements, setElements] = useState([]);
 
+	//const [databasedBoardData, setDatabasedBoardData] = useState(props?.boardData);
+
 	function getDatabasedElements() {
 		// sets/populates board elements
 		if (props?.boardData != null) {
-			let bdata = props?.boardData;
-			let filteredItems = props?.filteredItems;
-
-			let databasedElements = [];
-
-			console.log("DATA FROM PASSED PROPS", bdata);
-
-			// retrieves column data FOR JUST THE FIRST BOARD
-			var columnData = bdata[0]['columns'];
-
-			//Goes into each board element in the JSON data array
-			//By the end of it, a complete node board will be populated with nodes and default connections
-			bdata.forEach(function (board, bIndex) {
-				if (board['name'].indexOf("Subitems of") == 1) return;
-				var previousNodeId = -1;
-				var previousGroupName = "";
-
-				// Adds an id number & index to the group ids
-				let groupIds = {};
-				let groupIndex = {};
-				let currentGroupId = 0;
-				board['items'].forEach(function (item, itIndex) {
-					let groupName = item['group']['title'];
-					if (!(groupName in groupIds)) {
-						groupIds[groupName] = currentGroupId;
-						groupIndex[groupName] = 0;
-						currentGroupId++;
-					}
-				});
-
-				//Goes into each item element in the JSON data
-				board['items'].forEach(function (item, itIndex) {
-
-					let groupName = item['group']['title'];
-					let titleName = item['name'];
-					let nodeBackgroundColor = nodeColorOnFilter(filteredItems, item['id']);
-
-					// gets status data
-					let statusData = statusColor(item['column_values'], columnData);
-
-					// gets subitems if the item has subitems
-					// item['column_values'][0]['text'] provides a text of the subitems
-					// if no subitems, value will be empty string
-					if (item['column_values'][0] != "") {
-						let subitems = item['column_values'][0]['text'];
-					}
-
-					// adds a node
-					databasedElements.push(
-						{
-							id: item['id'],
-							type: "prettyNode",
-							className: item['id'],
-							data: {
-								title: titleName,
-								group: groupName, groupColor: item['group']['color'],
-								statusData: statusData,
-								columnValues: item['column_values'],
-								outgoingNodes: [],
-								isConnecting: false
-							},
-							style: {
-								padding: "16px",
-								borderRadius: "8px", //border: "4px solid", borderColor: item['group']['color'],
-								background: nodeBackgroundColor, //item['group']['color']
-								boxShadow: "0px 6px 20px -2px rgba(0, 0, 0, 0.2)"
-							},
-							position: { x: 325 * groupIds[groupName] + bIndex * 1000, y: 300 * groupIndex[groupName] }
-						}
-					);
-
-					// increments group index
-					groupIndex[groupName] += 1;
-				});
-			});
-
-			console.log("ELEMENTS BEFORE LOADING SAVED DATA", databasedElements);
-
-			// updates the positions of all the ndoes from saved data
-			databasedElements = loadPositions(databasedElements);
-
-			// adds in connections from saved data
-			databasedElements = loadConnections(databasedElements);
-
-			// passes nodes info on their incoming connections
-			databasedElements = updateOutgoingNodesData(databasedElements);
-
-			console.log("----BOARD DATA LOADED-----");
-			//console.log(bdata);
-			console.log(databasedElements);
-			console.log("----------");
-
-			return databasedElements;
-		}
+			return generateElements(props?.boardData);
+		} 
 		return [];
 	}
 
 	// updates elements when props changes
 	useEffect(() => {
-		setElements(getDatabasedElements());
+		setElements(getDatabasedElements());	
 	}, [props]);
 
 	// background settings
@@ -379,7 +355,7 @@ let ReactFlowChart = props => {
 	const onNodeDragStop = (event, node) => {
 		//console.log("onNodeDragStop nodes ", node);
 		props?.nodeHelper.AddPosition(node);
-		setElements(function(els) {
+		setElements(function (els) {
 			els = loadPositions(els);
 			return els;
 		});
@@ -477,7 +453,7 @@ let ReactFlowChart = props => {
 
 				// array to hold edges to be deleted
 				let edgesToDelete = [];
-				
+
 				// removes the node and attached edges
 				setElements(function (els) {
 
@@ -490,7 +466,7 @@ let ReactFlowChart = props => {
 							if (nodeToDelete[0]['id'] == element['source'] ||
 								nodeToDelete[0]['id'] == element['target']) {
 								edgesToDelete.push(element);
-								
+
 							}
 
 						}
@@ -508,7 +484,10 @@ let ReactFlowChart = props => {
 				props?.nodeHelper.RemoveConnections(edgesToDelete);
 
 				//Mutates the monday database. (deletes the node)
-				props?.nodeHelper.DeleteItem(nodeContextMenuState['currNode'].id);
+				props?.nodeHelper.DeleteItem(nodeContextMenuState['currNode'].id, props?.boardDataQuery);
+
+				//update our boardData
+				
 
 			}
 		});

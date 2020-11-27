@@ -133,7 +133,13 @@ class App extends React.Component {
       }
     }
 
-	var chartViewElement = 0 == this.state.chartView ?
+<<<<<<< HEAD
+    var chartViewElement = 0 == this.state.chartView ?
+=======
+
+
+    var reactFlowChart =
+>>>>>>> c24e8084d5f9e858f94ba1c654ebf3d824595d1d
       <ReactFlowChart
         nodeHelper={nodeHelper}
         monday={monday}
@@ -149,7 +155,7 @@ class App extends React.Component {
         onElementClick={onElementClick}
 
         findPriorityEvent={this.state.findPriorityEvent}
-      />;
+      />
       : <PriorityGraphs />
       ;
 
@@ -166,7 +172,6 @@ class App extends React.Component {
       >
 
         <ReactFlowProvider>
-
           {chartViewElement}
           <UIOverlay>
 
