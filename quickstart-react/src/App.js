@@ -13,6 +13,7 @@ import "./css/node-view.css";
 import PriorityGraphs from "./components/PriorityGraphs.js";
 
 import FindPriorityButton from "./components/FindPriorityButton.js";
+import FindPriorityList from "./components/FindPriorityList.js";
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
 import UIOverlay from "./components/UIOverlay";
@@ -203,6 +204,7 @@ class App extends React.Component {
           {graphViewElement}
           <UIOverlay>
             <FindPriorityButton />
+            <FindPriorityList />
             <Button
               size="small"
               style={{ marginRight: "8px" }}
@@ -217,7 +219,7 @@ class App extends React.Component {
               onClick={() => {
                 monday.execute("confirm", {
                   message: "Are you sure you want to reset the nodes? " +
-                    "You will lose all of the connections that you have made, and all of the original connections will be returned.",
+                    "You will lose all changes you have made.",
                   confirmButton: "Confirm",
                   cancelButton: "Cancel",
                   excludeCancelButton: false
