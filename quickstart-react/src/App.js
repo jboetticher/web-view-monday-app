@@ -149,7 +149,7 @@ class App extends React.Component {
         onElementClick={onElementClick}
 
         findPriorityEvent={this.state.findPriorityEvent}
-      />;
+      />
       : <PriorityGraphs />
       ;
 
