@@ -205,6 +205,7 @@ let ReactFlowChart = props => {
 
 	// takes in a boardData and returns an array of nodes and edges from react flow
 	function generateElements(bdata) {
+		console.log("GENERATING ELEMENTS FROM", bdata);
 		//let bdata = props?.boardData;
 		let filteredItems = props?.filteredItems;
 
