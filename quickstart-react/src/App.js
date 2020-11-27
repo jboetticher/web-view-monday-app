@@ -193,7 +193,7 @@ class App extends React.Component {
                   excludeCancelButton: false
                 }).then((res) => {
                   if (res.data["confirm"] === true) {
-                    // do the reset here
+                    nodeHelper.ResetData();
                   }
                 });
               }}

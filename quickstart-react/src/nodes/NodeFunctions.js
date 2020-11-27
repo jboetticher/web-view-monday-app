@@ -257,6 +257,16 @@ class NodeFunctions {
         // finds all of the edges and tries to de
     }
 
+    ResetData() {
+        this.monday.storage.instance.setItem('node_positions', "").then(res => {
+            this.positions = [];
+        });
+
+        this.monday.storage.instance.setItem('connection_objects', "").then(res => {
+            this.connections = [];
+        });
+    }
+
     //#endregion
 }
 
