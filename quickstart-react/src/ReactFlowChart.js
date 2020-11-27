@@ -217,9 +217,11 @@ let ReactFlowChart = props => {
 		// retrieves column data FOR JUST THE FIRST BOARD
 		var columnData = bdata[0]['columns'];
 
-		//Goes into each board element in the JSON data array
-		//By the end of it, a complete node board will be populated with nodes and default connections
+		// Goes into each board element in the JSON data array
+		// By the end of it, a complete node board will be populated with nodes and saved data
+		// (the loop only runs once since there is only one board)
 		bdata.forEach(function (board, bIndex) {
+			// if the board is a subitems board, skip it
 			if (board['name'].indexOf("Subitems of") == 1) return;
 
 			// Adds an id number & index to the group ids
@@ -235,6 +237,9 @@ let ReactFlowChart = props => {
 				}
 			});
 
+			let col = 0;
+			let row = 0;
+			let colOffset = 0;
 			//Goes into each item element in the JSON data
 			board['items'].forEach(function (item, itIndex) {
 
@@ -248,9 +253,12 @@ let ReactFlowChart = props => {
 				// gets subitems if the item has subitems
 				// item['column_values'][0]['text'] provides a text of the subitems
 				// if no subitems, value will be empty string
-				if (item['column_values'][0] != "") {
-					let subitems = item['column_values'][0]['text'];
-				}
+				//if (item['column_values'][0] != "") {
+				//	let subitems = item['column_values'][0]['text'];
+				//}
+
+				col = groupIds[groupName] + colOffset;
+				row = groupIndex[groupName] % 5;
 
 				// adds a node
 				gendElements.push(
@@ -272,11 +280,14 @@ let ReactFlowChart = props => {
 							background: nodeBackgroundColor,
 							boxShadow: "0px 6px 20px -2px rgba(0, 0, 0, 0.2)"
 						},
-						position: { x: 325 * groupIds[groupName] + bIndex * 1000, y: 300 * groupIndex[groupName] }
+						position: { x: 325 * col + (bIndex * 1000), y: 300 * row }
 					}
 				);
 
 				// increments group index
+				if(row % 5 == 4){
+					colOffset += 1;
+				}
 				groupIndex[groupName] += 1;
 			});
 		});
