@@ -1,13 +1,21 @@
 import React from 'react';
 import { XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries, VerticalBarSeries } from 'react-vis';
+import { useZoomPanHelper, useStoreState } from 'react-flow-renderer';
 
 let PriorityGraph = props => {
+
+    let nodeState = useStoreState((store) => {
+        console.log(store);
+        return store;
+    });
 
     return (
         <div style={{
             position: "absolute",
             top: "0px", bottom: "0px", right: "0px", left: "0px",
-            paddingTop: "80px"
+            paddingTop: "80px",
+            zIndex: "50",
+            background: "var(--color-mud_black)"
         }}
         >
             <div style={{

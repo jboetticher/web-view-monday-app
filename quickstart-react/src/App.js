@@ -135,25 +135,10 @@ class App extends React.Component {
       }
     }
 
-	var chartViewElement = 0 == this.state.chartView ?
-      <ReactFlowChart
-        nodeHelper={nodeHelper}
-        monday={monday}
-        boardDataQuery={this.boardDataQuery.bind(this)}
-
-        boardData={this.state.boardData?.boards}
-        filteredItems={this.state?.filteredItems}
-
-        pathSettings={this.state.settings?.pathdisplay}
-        edgeGripSetting={this.state.settings?.edgeGrips}
-        backgroundSettings={this.state.settings?.backgroundType}
-
-        onElementClick={onElementClick}
-
-        findPriorityEvent={this.state.findPriorityEvent}
-      />
-      : <PriorityGraphs />
-      ;
+    var graphViewElement = 0 == this.state.chartView ? <div /> :
+      <PriorityGraphs 
+      
+      />;
 
 
     // note: adding a background threw a shit ton of errors for some reason whoops
@@ -166,20 +151,31 @@ class App extends React.Component {
           fontFamily: "Roboto, sans-serif"
         }}
       >
-
         <ReactFlowProvider>
+          <ReactFlowChart
+            nodeHelper={nodeHelper}
+            monday={monday}
+            boardDataQuery={this.boardDataQuery.bind(this)}
 
-          {chartViewElement}
+            boardData={this.state.boardData?.boards}
+            filteredItems={this.state?.filteredItems}
+
+            pathSettings={this.state.settings?.pathdisplay}
+            edgeGripSetting={this.state.settings?.edgeGrips}
+            backgroundSettings={this.state.settings?.backgroundType}
+
+            onElementClick={onElementClick}
+
+            findPriorityEvent={this.state.findPriorityEvent}
+          />
+          {graphViewElement}
           <UIOverlay>
-
             <FindPriorityButton />
             <Button
               size="small"
               style={{ marginRight: "8px" }}
               onClick={() => {
-                this.setState({chartView: this.state.chartView == 0 ? 1 : 0});
-                //this.render();
-                console.log("damn thing with the freaking render fernaggly", this.state.chartView);
+                this.setState({ chartView: this.state.chartView == 0 ? 1 : 0 });
               }}>
               {this.state.chartView == 0 ? "View Group Priorities" : "View With Nodes"}
             </Button>
