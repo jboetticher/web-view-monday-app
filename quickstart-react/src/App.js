@@ -71,9 +71,11 @@ class App extends React.Component {
     monday.listen("events", (res) => {
       switch (res["type"]) {
         case "new_items":
-          alert("NEW ITEM BRUH");
+          //alert("NEW ITEM BRUH");
+          this.boardDataQuery();
           break;
         case "change_column_value":
+          this.boardDataQuery();
           break;
       }
     });

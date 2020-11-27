@@ -109,26 +109,28 @@ let ReactFlowChart = props => {
 		console.log("loading saved connections of", currElements);
 
 		// create an array of only nodes in the board
-		let onlyNodes = [];
+		/*let onlyNodes = [];
 		currElements.forEach(function (element) {
 			// if the element is not a node, skip it
 			if (element['type'] == "prettyNode") {
 				onlyNodes.push(element);
 			}
-		});
+		});*/
 
 		// add in all the saved connections
 		savedConnections.forEach(function (connection) {
 			let newEdge = setUpNewEdge(connection['source'], connection['target'], connection['sourceHandle'], connection['targetHandle']);
 
 			//console.log('edgeloaded:', newEdge);
-			onlyNodes.push(newEdge);
-			//currElements.push(newEdge);
+			//onlyNodes.push(newEdge);
+			currElements.push(newEdge);
 
 		});
 
-		//return currElements;
-		return onlyNodes;
+		console.log("loaded saved connections and returning", currElements);
+
+		return currElements;
+		//return onlyNodes;
 	}
 
 	//#endregion
@@ -310,7 +312,7 @@ let ReactFlowChart = props => {
 
 	function getDatabasedElements() {
 		// sets/populates board elements
-		if (props?.boardData != null) {
+		if (props?.boardData != null && props?.nodeHelper.GetConnections() != null && props?.nodeHelper.GetPositions() != null ) {
 			return generateElements(props?.boardData);
 		} 
 		return [];
@@ -343,8 +345,8 @@ let ReactFlowChart = props => {
 			// update internal node data with new incoming connections
 			els = updateOutgoingNodesData(els);
 
-			console.log(els);
-			//console.log('onConnect', params)
+			//console.log(els);
+			console.log('connected', params, 'in', els);
 			return els;
 		});
 
