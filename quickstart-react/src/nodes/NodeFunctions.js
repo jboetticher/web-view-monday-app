@@ -43,6 +43,16 @@ class NodeFunctions {
         });
     }
 
+    //returns the promise object
+    QueryConnectionsPromise(){
+        return this.monday.storage.instance.getItem('connection_objects');
+    }
+
+    //returns the promise object
+    QueryPositionsPromise(){
+        return this.monday.storage.instance.getItem('node_positions');
+    }
+
     /* Returns the connection data from monday.com in a object format.
      */
     GetConnections() {

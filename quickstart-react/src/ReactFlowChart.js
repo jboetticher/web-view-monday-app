@@ -70,7 +70,12 @@ let ReactFlowChart = props => {
 
 	function loadPositions(currElements) {
 		//Get the saved data
-		let savedPositions = props?.nodeHelper.GetPositions();
+		let savedPositions /*= props?.nodeHelper.GetPositions()*/;
+		//let savedPositions = [];
+		props?.nodeHelper.QueryPositionsPromise().then(res => {
+			savedPositions = JSON.parse(res.data.value);
+			//console.log("me own positions", savedPositions);
+		});
 
 		//if there was no saved positional data, return
 		if (savedPositions == undefined) return currElements;
@@ -103,19 +108,15 @@ let ReactFlowChart = props => {
 		//Get the saved data
 		let savedConnections = props?.nodeHelper.GetConnections();
 
+		/*props?.nodeHelper.QueryConnectionsPromise().then(res => {
+			savedConnections = JSON.parse(res.data.value);
+			//console.log("me own connections", savedConnections);
+		}).then();*/
+
 		//if there was no saved positional data, return
 		if (savedConnections == undefined) return currElements;
 
 		console.log("loading saved connections of", currElements);
-
-		// create an array of only nodes in the board
-		/*let onlyNodes = [];
-		currElements.forEach(function (element) {
-			// if the element is not a node, skip it
-			if (element['type'] == "prettyNode") {
-				onlyNodes.push(element);
-			}
-		});*/
 
 		// add in all the saved connections
 		savedConnections.forEach(function (connection) {
@@ -312,14 +313,17 @@ let ReactFlowChart = props => {
 
 	function getDatabasedElements() {
 		// sets/populates board elements
-		if (props?.boardData != null && props?.nodeHelper.GetConnections() != null && props?.nodeHelper.GetPositions() != null ) {
+		if (props?.boardData != null /*&& props?.nodeHelper.GetConnections() != null && props?.nodeHelper.GetPositions() != null */) {
 			return generateElements(props?.boardData);
 		} 
+
 		return [];
+
 	}
 
 	// updates elements when props changes
 	useEffect(() => {
+		console.log("current props", props);
 		setElements(getDatabasedElements());	
 	}, [props]);
 

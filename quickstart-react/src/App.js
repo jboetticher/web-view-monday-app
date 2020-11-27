@@ -135,40 +135,6 @@ class App extends React.Component {
 
   render() {
 
-    // what to do when the user clicks on an element
-    /*function onElementClick(event, element) {
-
-      // checks for ignore node click
-      if (event == null) { return; }
-      try {
-        console.log(JSON.stringify(event));
-      }
-      catch {
-        console.log("spaghetti code oh yeah")
-        return;
-      }
-      if (nodeHelper.EventHasClass(event, "ignore-node-on-click")) {
-        console.log("Click detected, but ignoring.");
-        return;
-      }
-
-      // only do node actions if it's our node
-      if (typeof (element) === typeof (PrettyItemNode)) {
-        // monday.com FUCKING SUCKS BECAUSE THEIR API IS FUCKING BROKEN SINCE AUGUST AND THIS DOESN'T FUCKING WORK
-        //monday.execute('openItemCard', { itemId: element["id"], kind: 'columns' });
-
-        console.log('node actions happened i guess', event);
-
-        monday.execute('openItemCard', { itemId: element["id"], kind: 'columns' }).then(function () {
-          //console.log("i did it");
-          this.boardDataQuery();
-        });
-      }
-      else {
-        alert("OH");
-      }
-    }*/
-
     var graphViewElement = 0 == this.state.chartView ? <div /> :
       <PriorityGraphs
 
