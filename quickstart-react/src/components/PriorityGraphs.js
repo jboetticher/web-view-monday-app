@@ -32,7 +32,7 @@ let PriorityGraph = props => {
 
     return (
         <div style={{
-            position: "absolute",
+            position: "fixed",
             top: "0px", bottom: "0px", right: "0px", left: "0px",
             paddingTop: "45px",
             zIndex: "50",
@@ -74,9 +74,11 @@ let TotalDependenciesGraph = props => {
         groupTotalDependenciesCount[item['data']['group']] += item['data']['outgoingNodes'].length;
     });
 
+
     // formats it so that it's good for them vertical bar series
     var formattedData = [];
     Object.entries(groupTotalDependenciesCount).forEach(function (count, countIndex) {
+        console.log(count[0]);
         formattedData.push({
             x: countIndex + 1,
             y: count[1] + 1,
@@ -84,22 +86,23 @@ let TotalDependenciesGraph = props => {
         });
     });
 
+    let myValues = [{x: 12, y:12}, {x: 3, y:1}];
+
     return (
         <div className="plot-graph">
             <h3 style={{ textAlign: "center" }}>Total Dependencies</h3>
             <XYPlot
-                width={500}
-                height={500}
+                width={(window.innerWidth - 50) / 2}
+                height={300}
+                animation={{duration: 40}}
             >
-                <DiscreteColorLegend items={props?.colorLegend} style={{color: "#fff"}} />
+                <DiscreteColorLegend items={props?.colorLegend} style={{ fill:"#fff", color: "#fff" }} />
                 <HorizontalGridLines />
                 <VerticalBarSeries
                     colorType="literal"
-                    //colorRange={["#FF0000", "#00FF00", "#0000FF"]}
-                    //colorDomain={[0, 1, 2]}
                     data={formattedData}
                 />
-                <YAxis style={{fill: "#fff"}} />
+                <YAxis style={{ fill: "#fff" }} />
             </XYPlot>
         </div>
     );
@@ -150,15 +153,16 @@ let DependenciesPerNodeGraph = props => {
         <div className="plot-graph">
             <h3 style={{ textAlign: "center" }}>Dependencies Per Node</h3>
             <XYPlot
-                width={500}
-                height={500}
+                width={(window.innerWidth - 50) / 2}
+                height={300}
+                animation={{duration: 40}}
             >
                 <HorizontalGridLines />
                 <VerticalBarSeries
                     colorType="literal"
                     data={formattedData}
                 />
-                <YAxis style={{fill: "#fff"}} />
+                <YAxis style={{ fill: "#fff" }} />
             </XYPlot>
         </div>
     );
