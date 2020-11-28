@@ -13,7 +13,9 @@ import "./css/node-view.css";
 import PriorityGraphs from "./components/PriorityGraphs.js";
 
 import FindPriorityButton from "./components/FindPriorityButton.js";
-import FindPriorityList from "./components/FindPriorityList.js";
+import FindPriorityByGroupButton from "./components/FindPriorityByGroupButton.js";
+import FindPriorityByStatusButton from "./components/FindPriorityByStatusButton.js";
+
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
 import UIOverlay from "./components/UIOverlay";
@@ -204,9 +206,10 @@ class App extends React.Component {
           {graphViewElement}
           <UIOverlay>
             <FindPriorityButton />
-            <FindPriorityList />
+            <FindPriorityByGroupButton />
+            <FindPriorityByStatusButton />
             <Button
-              size="small"
+              size="sm"
               style={{ marginRight: "8px" }}
               onClick={() => {
                 this.setState({ chartView: this.state.chartView == 0 ? 1 : 0 });
@@ -214,7 +217,7 @@ class App extends React.Component {
               {this.state.chartView == 0 ? "View Group Priorities" : "View With Nodes"}
             </Button>
             <Button
-              size="small" kind="secondary"
+              size="sm" kind="secondary"
               style={{ marginRight: "8px" }}
               onClick={() => {
                 monday.execute("confirm", {

@@ -17,7 +17,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "monday-sdk-js": "^0.1.1",
-    "monday-ui-react-core": "0.0.17",
+    "monday-ui-react-core": "0.0.30",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-flow-renderer": "^8.0.0",
