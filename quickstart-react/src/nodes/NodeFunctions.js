@@ -215,8 +215,8 @@ class NodeFunctions {
     }
 
     /* 
-    * Adds and saves connections between two nodes.
-    * onConnectParams - the parameters that you get when a connection is made
+    * Adds and saves positions of passed in node.
+    * onNodeDragStopParams - node that was moved
     */
     AddPosition(onNodeDragStopParams) {
 
@@ -246,6 +246,52 @@ class NodeFunctions {
 
         // json stringify the current connections
         const jsonString = JSON.stringify(this.positions);
+
+        // save to monday.com persist
+        this.monday.storage.instance.setItem('node_positions', jsonString).then(res => {
+            console.log(res);
+            console.log(jsonString);
+
+            this.QueryPositions();
+        });
+    }
+
+    /* 
+    * Adds and saves positions of passed in nodes.
+    * movedNodes - array of nodes that were moved in a selection
+    */
+    AddPositions(movedNodes) {
+        // if it's null we ain't messing with it
+        if (movedNodes == null) { return; }
+        console.log("saving multiple positions ", movedNodes);
+
+        // loop through all moved nodes
+        for (var n = 0; n < movedNodes.length; n++) {
+            // checks to see if the current array has any of those positions
+            var replaceIndex = -1;
+            for (var i = 0; i < this.positions.length; i++) {
+                if (this.positions[i].id == movedNodes[n].id) {
+                    replaceIndex = i;
+                    break;
+                }
+            }
+
+            // add or replace to the current array of positions 
+            if (replaceIndex < 0) {
+                this.positions.push({
+                    "id": movedNodes[n].id,
+                    "position": movedNodes[n].position
+                });
+            }
+            else {
+                this.positions[i].position = movedNodes[n].position;
+            }
+        }
+
+        // json stringify the current connections
+        const jsonString = JSON.stringify(this.positions);
+
+        console.log("SAVING MULTIPLE POSITIONS", this.positions);
 
         // save to monday.com persist
         this.monday.storage.instance.setItem('node_positions', jsonString).then(res => {

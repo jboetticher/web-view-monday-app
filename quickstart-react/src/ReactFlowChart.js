@@ -379,9 +379,23 @@ let ReactFlowChart = props => {
 		});
 	}
 
-	const onElementsRemove = (elementsToRemove) => {
-		//setElements((els) => removeElements(elementsToRemove, els));
+	const onSelectionDragStop = (event, nodes) => {
+		//nodes.forEach(function(node){
+		//	props?.nodeHelper.AddPosition(node);
+		//});
+		console.log("SELECTION MOVED", nodes);
+
+		props?.nodeHelper.AddPositions(nodes);
+
+		setElements(function (els) {
+			els = loadPositions(els);
+			return els;
+		});
 	}
+
+	//const onElementsRemove = (elementsToRemove) => {
+		//setElements((els) => removeElements(elementsToRemove, els));
+	//}
 
 	//#endregion
 
@@ -577,6 +591,8 @@ let ReactFlowChart = props => {
 			//onElementsRemove={onElementsRemove}
 			onNodeContextMenu={onNodeContextMenu}
 			onContextMenu={onEdgeContextMenu}
+			//onSelectionDragStop={onSelectionDragStop}
+			multiSelectionKeyCode={0}
 
 			connectionLineComponent={CustomConnectionLine}
 		>
