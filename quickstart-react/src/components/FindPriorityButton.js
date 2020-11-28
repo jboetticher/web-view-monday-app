@@ -11,12 +11,20 @@ let FindPriorityButton = props => {
         return [store.nodes, store.width, store.height, store.transform];
     });
 
+    var groupNames = function(){
+        let nameSet = Set();
+        nodes.forEach(function(node){  
+            nameSet.add(node['data']['group']);
+        });
+        return nameSet;
+    }
+
     function FindPriority() {
         var highestPriorityIndex = 0;
         var nodeCount = 0;
-        Object.entries(nodes).forEach(function (node, i) {
-            if (node[1].data.outgoingNodes.length > nodeCount) {
-                nodeCount = node[1].data.outgoingNodes.length;
+        nodes.forEach(function (node, i) {
+            if (node['data']['outgoingNodes'].length > nodeCount) {
+                nodeCount = node['data']['outgoingNodes'].length;
                 highestPriorityIndex = i;
             }
         });
@@ -26,7 +34,7 @@ let FindPriorityButton = props => {
 
     return (
         <Button
-            size="small"
+            size="sm"
             style={{ marginRight: "8px" }}
             onClick={(e) => {
                 let priority = FindPriority();
