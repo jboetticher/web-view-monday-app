@@ -6,6 +6,9 @@ import CustomConnectionLine from "./nodes/CustomConnectionLine.js";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import { useZoomPanHelper, useStoreState, useStoreActions } from 'react-flow-renderer';
+import { LerpToNode } from "./components/LerpyDerpy.js";
+
 let ReactFlowChart = props => {
 
 	// this is an example of an infinite loop. The same thing happens again and again in the same frame
@@ -206,13 +209,52 @@ let ReactFlowChart = props => {
 		return newEdge;
 	}
 
+	// elements are set to board elements for initial state
+	const [elements, setElements] = useState([]);
+
+	// zoom pan helper business to pan to the added node
+	//const { transform } = useZoomPanHelper();
+    //let [nodes, width, height, currTransform] = useStoreState((store) => {
+    //    return [store.nodes, store.width, store.height, store.transform];
+    //});
+
+    //const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
+
+    //const selectPriority = (priorityNode) => {
+    //    setSelectedElements({ id: priorityNode.id, type: priorityNode.type });
+    //};
+
+	//returns the number of nodes present in the passed in elements
+	function getNodeCount(currElements){
+		let numNodes = 0;
+		currElements.forEach(function(element){
+			if (element['type'] == "prettyNode") {
+				numNodes++;
+			}
+		});
+		return numNodes;
+	}
+
+	//returns the index of the newly added node from a new bdata
+	function getAddedNodeIndex(bdata){
+		// checks if the boardData has an extra node added
+		if(getNodeCount(elements) == 0) return 0;
+
+		let lastAddedIndex = 0;
+		if(getNodeCount(elements) < bdata[0]['items'].length){
+			lastAddedIndex = bdata[0]['items'].length - 1;
+			console.log("node has been added with index", lastAddedIndex);
+		}
+		return lastAddedIndex;
+	}
+
 	// takes in a boardData and returns an array of nodes and edges from react flow
 	function generateElements(bdata) {
 		console.log("GENERATING ELEMENTS FROM", bdata);
 		//let bdata = props?.boardData;
 		let filteredItems = props?.filteredItems;
 
-		let gendElements = [];
+		let gendElements = [];	
 
 		// retrieves column data FOR JUST THE FIRST BOARD
 		var columnData = bdata[0]['columns'];
@@ -294,6 +336,16 @@ let ReactFlowChart = props => {
 
 		//console.log("ELEMENTS BEFORE LOADING SAVED DATA", databasedElements);
 
+		// pans to newly added node if its there
+		//let addedNodeIndex = getAddedNodeIndex(bdata);
+		//console.log(addedNodeIndex);
+		//if(addedNodeIndex > 0){
+		//	let addedNode = gendElements[addedNodeIndex];
+		//	console.log("the added node is", addedNode);
+		//	LerpToNode(addedNode, transform, 200, 200, transform);
+		//}
+		
+
 		// updates the positions of all the ndoes from saved data
 		gendElements = loadPositions(gendElements);
 
@@ -317,19 +369,16 @@ let ReactFlowChart = props => {
 		prettyNode: PrettyItemNode
 	};
 
-	// elements are set to board elements for initial state
-	const [elements, setElements] = useState([]);
-
+	
 	//const [databasedBoardData, setDatabasedBoardData] = useState(props?.boardData);
 
 	function getDatabasedElements() {
 		// sets/populates board elements
-		if (props?.boardData != null /*&& props?.nodeHelper.GetConnections() != null && props?.nodeHelper.GetPositions() != null */) {
+		if (props?.boardData != null) {
 			return generateElements(props?.boardData);
 		} 
 
 		return [];
-
 	}
 
 	// updates elements when props changes
@@ -535,9 +584,8 @@ let ReactFlowChart = props => {
 		// loop through the elements until you find an id that matches currEdgeId
 		// this way you can remove the actual edge that is in elements (we only have the html DOM element)
 		// for loop in order to break out as soon as edge is found
-		let i = 0;
 		//console.log("DELETING FROM", elements);
-		for (i = 0; i < elements.length; i++) {
+		for (var i = 0; i < elements.length; i++) {
 			if (elements[i]['id'] == currEdgeId) {
 
 				// if id matches, remove the edge from the database
