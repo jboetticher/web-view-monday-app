@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from "monday-ui-react-core/dist/Button.js";
 import "monday-ui-react-core/dist/Button.css";
-import { useZoomPanHelper, useStoreState } from 'react-flow-renderer';
+import { useZoomPanHelper, useStoreState, useStoreActions } from 'react-flow-renderer';
 import { LerpToNode } from "./LerpyDerpy.js";
 
 let FindPriorityButton = props => {
@@ -10,6 +10,12 @@ let FindPriorityButton = props => {
     let [nodes, width, height, currTransform] = useStoreState((store) => {
         return [store.nodes, store.width, store.height, store.transform];
     });
+
+    const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
+
+    const selectPriority = (priorityNode) => {
+        setSelectedElements({ id: priorityNode.id, type: priorityNode.type });
+    };
 
     var groupNames = function(){
         let nameSet = Set();
@@ -39,6 +45,7 @@ let FindPriorityButton = props => {
             onClick={(e) => {
                 let priority = FindPriority();
                 LerpToNode(priority, currTransform, width, height, transform);
+                {selectPriority(priority)}
             }}>
             Find Priority
         </Button>
