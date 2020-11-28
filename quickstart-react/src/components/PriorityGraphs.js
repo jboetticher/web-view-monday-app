@@ -2,23 +2,71 @@ import React from 'react';
 import { XYPlot, XAxis, YAxis, HorizontalGridLines, DiscreteColorLegend, VerticalBarSeries } from 'react-vis';
 import { useZoomPanHelper, useStoreState } from 'react-flow-renderer';
 
-let TotalDependenciesGraph = props => {
+let PriorityGraph = props => {
 
-    var nodeStates = {};
+    let nodeState = useStoreState((store) => {
+        return store;
+    });
 
     // gets the groups
     let groupIds = {};
-    let groupTotalDependenciesCount = {};
     let groupColors = [];
     let currentGroupId = 0;
-    props?.nodeState.nodes.forEach(function (item, itIndex) {
+    nodeState.nodes.forEach(function (item, itIndex) {
         let groupName = item['data']['group'];
         if (!(groupName in groupIds)) {
             groupIds[groupName] = currentGroupId;
             currentGroupId++;
-            groupTotalDependenciesCount[groupName] = 0;
             groupColors.push(item['data']['groupColor'])
         }
+    });
+
+    var colorLegend = [];
+    Object.entries(groupIds).forEach((group, groupIndex) => {
+        colorLegend.push({
+            title: group[0],
+            color: groupColors[groupIndex],
+        })
+    });
+    //console.log(colorLegend);
+
+    return (
+        <div style={{
+            position: "absolute",
+            top: "0px", bottom: "0px", right: "0px", left: "0px",
+            paddingTop: "45px",
+            zIndex: "50",
+            background: "var(--color-mud_black)"
+        }}
+        >
+            <div style={{
+                display: "flex",
+                color: "#fff"
+            }}>
+                <TotalDependenciesGraph
+                    nodeState={nodeState}
+                    groupColors={groupColors}
+                    colorLegend={colorLegend}
+                    groupIds={groupIds} />
+                <DependenciesPerNodeGraph
+                    nodeState={nodeState}
+                    groupColors={groupColors}
+                    colorLegend={colorLegend}
+                    groupIds={groupIds}
+                />
+            </div>
+
+        </div>
+    );
+}
+
+let TotalDependenciesGraph = props => {
+
+    var nodeStates = {};
+
+    let groupTotalDependenciesCount = [];
+    Object.entries(props?.groupIds).forEach(function (groupId, gIndex) {
+        groupTotalDependenciesCount[groupId[0]] = 0;
     });
 
     // adds the total number of outgoing conenctions to each group
@@ -32,11 +80,9 @@ let TotalDependenciesGraph = props => {
         formattedData.push({
             x: countIndex + 1,
             y: count[1] + 1,
-            color: groupColors[countIndex]
+            color: props?.groupColors[countIndex]
         });
     });
-    console.log("WHY IS IT GONE", formattedData);
-
 
     return (
         <div className="plot-graph">
@@ -45,16 +91,7 @@ let TotalDependenciesGraph = props => {
                 width={500}
                 height={500}
             >
-                <DiscreteColorLegend items={[
-                    {
-                        title: "bitch",
-                        color: "#FF0000"
-                    },
-                    {
-                        title: "bruh",
-                        color: "#00FF00"
-                    }
-                ]} />
+                <DiscreteColorLegend items={props?.colorLegend} style={{color: "#fff"}} />
                 <HorizontalGridLines />
                 <VerticalBarSeries
                     colorType="literal"
@@ -62,50 +99,67 @@ let TotalDependenciesGraph = props => {
                     //colorDomain={[0, 1, 2]}
                     data={formattedData}
                 />
-                <XAxis />
-                <YAxis />
+                <YAxis style={{fill: "#fff"}} />
             </XYPlot>
         </div>
     );
 }
 
-let PriorityGraph = props => {
+let DependenciesPerNodeGraph = props => {
 
-    let nodeState = useStoreState((store) => {
-        return store;
+    let groupTotalDependenciesCount = [];
+    let groupTotalNumber = [];
+    Object.entries(props?.groupIds).forEach(function (groupId, gIndex) {
+        groupTotalNumber[groupId[0]] = 0.0;
+        groupTotalDependenciesCount[groupId[0]] = 0.0;
     });
 
-    return (
-        <div style={{
-            position: "absolute",
-            top: "0px", bottom: "0px", right: "0px", left: "0px",
-            paddingTop: "80px",
-            zIndex: "50",
-            background: "var(--color-mud_black)"
-        }}
-        >
-            <div style={{
-                display: "flex"
-            }}>
-                <TotalDependenciesGraph nodeState={nodeState} />
-                <div className="plot-graph">
-                    <h3 style={{ textAlign: "center" }}>Dependencies Per Item</h3>
-                    <XYPlot
-                        width={500}
-                        height={500}>
-                        <HorizontalGridLines />
-                        <VerticalBarSeries
-                            data={[
-                                { x: 1, y: 2 },
-                                { x: 2, y: 5 },
-                                { x: 3, y: 12 }
-                            ]} />
-                        <XAxis />
-                        <YAxis />
-                    </XYPlot>
-                </div>
-            </div>
+    console.log(groupTotalDependenciesCount);
 
+    // adds the total number of outgoing conenctions to each group
+    props?.nodeState.nodes.forEach(function (item, itIndex) {
+        groupTotalNumber[item['data']['group']] += 1;
+        groupTotalDependenciesCount[item['data']['group']] += item['data']['outgoingNodes'].length;
+    });
+
+    console.log(groupTotalDependenciesCount);
+    console.log(groupTotalNumber);
+
+    // gets average of each connection
+    let groupAverage = [];
+    Object.entries(groupTotalDependenciesCount).forEach(function (dependencies, dependenciesIndex) {
+        console.log("pog", groupTotalNumber[dependencies[0]]);
+        groupAverage.push(dependencies[1] / groupTotalNumber[dependencies[0]]);
+    });
+
+    console.log("groupAverage", groupAverage);
+
+    // formats it so that it's good for them vertical bar series
+    var formattedData = [];
+    groupAverage.forEach(function (average, averageIndex) {
+        formattedData.push({
+            x: averageIndex + 1,
+            y: average,
+            color: props?.groupColors[averageIndex]
+        });
+    });
+
+    console.log("formattedData", formattedData);
+
+    return (
+        <div className="plot-graph">
+            <h3 style={{ textAlign: "center" }}>Dependencies Per Node</h3>
+            <XYPlot
+                width={500}
+                height={500}
+            >
+                <HorizontalGridLines />
+                <VerticalBarSeries
+                    colorType="literal"
+                    data={formattedData}
+                />
+                <YAxis style={{fill: "#fff"}} />
+            </XYPlot>
         </div>
     );
 }
