@@ -28,7 +28,6 @@ let PriorityGraph = props => {
             color: groupColors[groupIndex],
         })
     });
-    //console.log(colorLegend);
 
     return (
         <div style={{
@@ -81,7 +80,7 @@ let TotalDependenciesGraph = props => {
         console.log(count[0]);
         formattedData.push({
             x: countIndex + 1,
-            y: count[1] + 1,
+            y: count[1],
             color: props?.groupColors[countIndex]
         });
     });

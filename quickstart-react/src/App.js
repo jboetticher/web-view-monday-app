@@ -210,6 +210,7 @@ class App extends React.Component {
             <FindPriorityByStatusButton />
             <Button
               size="sm"
+              kind={Button.kinds.SECONDARY}
               style={{ marginRight: "8px" }}
               onClick={() => {
                 this.setState({ chartView: this.state.chartView == 0 ? 1 : 0 });

@@ -24,3 +24,7 @@ body {
 .plot-graph {
   padding-left: 15px;
 }
+
+.rv-discrete-color-legend-item {
+  color: #fff !important;
+}
