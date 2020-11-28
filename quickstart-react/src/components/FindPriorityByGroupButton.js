@@ -14,7 +14,7 @@ let FindPriorityByGroupButton = props => {
 
     const { transform } = useZoomPanHelper();
     let [nodes, width, height, currTransform] = useStoreState((store) => {
-        console.log(store);
+        //console.log(store);
         return [store.nodes, store.width, store.height, store.transform];
     });
 
