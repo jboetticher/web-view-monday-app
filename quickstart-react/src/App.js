@@ -188,7 +188,6 @@ class App extends React.Component {
       >
         <ReactFlowProvider>
           <AddedNodePanner>
-              monday={monday}
           </AddedNodePanner>
           <ReactFlowChart
             nodeHelper={nodeHelper}
