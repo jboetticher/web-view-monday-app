@@ -17,14 +17,6 @@ let FindPriorityButton = props => {
         setSelectedElements({ id: priorityNode.id, type: priorityNode.type });
     };
 
-    var groupNames = function(){
-        let nameSet = Set();
-        nodes.forEach(function(node){  
-            nameSet.add(node['data']['group']);
-        });
-        return nameSet;
-    }
-
     function FindPriority() {
         var highestPriorityIndex = 0;
         var nodeCount = 0;
