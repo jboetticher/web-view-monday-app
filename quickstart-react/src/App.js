@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import "./App.css";
 import mondaySdk from "monday-sdk-js";
 import Search from "monday-ui-react-core/dist/icons/Search";
@@ -21,6 +20,7 @@ import "monday-ui-react-core/dist/Button.css";
 import UIOverlay from "./components/UIOverlay";
 
 import ReactFlowChart from "./ReactFlowChart.js";
+import AddedNodePanner from "./components/AddedNodePanner.js";
 
 
 const monday = mondaySdk();
@@ -187,6 +187,9 @@ class App extends React.Component {
         }}
       >
         <ReactFlowProvider>
+          <AddedNodePanner>
+              monday={monday}
+          </AddedNodePanner>
           <ReactFlowChart
             nodeHelper={nodeHelper}
             monday={monday}
