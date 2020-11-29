@@ -20,7 +20,6 @@ import "monday-ui-react-core/dist/Button.css";
 import UIOverlay from "./components/UIOverlay";
 
 import ReactFlowChart from "./ReactFlowChart.js";
-import AddedNodePanner from "./components/AddedNodePanner.js";
 
 
 const monday = mondaySdk();
@@ -50,14 +49,14 @@ class App extends React.Component {
 
       nodeHelper.QueryConnectionsPromise().then(resConnections => {
 
-        console.log("Connection Promise Finished");
+        //console.log("Connection Promise Finished");
         // set it up in nodeHelper, will require another functions like SetConnections(array)
         nodeHelper.SetConnections(resConnections);
 
         return nodeHelper.QueryPositionsPromise();
       }).then(resPositions => {
 
-        console.log("Position Promise Finished");
+        //console.log("Position Promise Finished");
         // set it up in nodeHelper, will require another function like SetPositions(array)
         nodeHelper.SetPositions(resPositions);
 
@@ -75,7 +74,7 @@ class App extends React.Component {
           { variables: { boardIds: this.state.context.boardIds } }
         );
       }).then(resBoards => {
-        console.log("Monday Board Promise Finished");
+        //console.log("Monday Board Promise Finished");
         this.setState({ boardData: resBoards.data });
       });
 
@@ -97,7 +96,7 @@ class App extends React.Component {
         this.setState({ boardData: res.data });
       });
       */
-      console.log(this.state.context);
+      //console.log(this.state.context);
     });
 
     monday.listen("itemIds", (res) => {
@@ -108,7 +107,7 @@ class App extends React.Component {
       switch (res["type"]) {
         case "new_items":
           //alert("NEW ITEM BRUH");
-          console.log("gimme the res", res);
+          //console.log("gimme the res", res);
           this.boardDataQuery();
           this.setState({addedId: res.data.itemIds[0]});
           break;
@@ -120,7 +119,7 @@ class App extends React.Component {
   }
 
   boardDataQuery() {
-    console.log("APP CONTEXT", this.state);
+    //console.log("APP CONTEXT", this.state);
 
     // board info query
     monday.api(`query ($boardIds: [Int]) 
@@ -138,7 +137,7 @@ class App extends React.Component {
     ).then(res => {
       this.setState({ boardData: res.data });
     }).then (res => {
-      console.log("finished updating board data");
+      //console.log("finished updating board data");
     });
   }
 
@@ -148,23 +147,23 @@ class App extends React.Component {
     // checks for ignore node click
     if (event == null) { return; }
     try {
-      console.log(JSON.stringify(event));
+      //console.log(JSON.stringify(event));
     }
     catch {
-      console.log("spaghetti code oh yeah")
+      //console.log("spaghetti code oh yeah")
       return;
     }
     if (nodeHelper.EventHasClass(event, "ignore-node-on-click")) {
-      console.log("Click detected, but ignoring.");
+      //console.log("Click detected, but ignoring.");
       return;
     }
 
     // only do node actions if it's our node
     if (typeof (element) === typeof (PrettyItemNode)) {
-      // monday.com FUCKING SUCKS BECAUSE THEIR API IS FUCKING BROKEN SINCE AUGUST AND THIS DOESN'T FUCKING WORK
+      // monday.com [redacted]
       //monday.execute('openItemCard', { itemId: element["id"], kind: 'columns' });
 
-      console.log('node actions happened i guess', event);
+      //console.log('node actions happened i guess', event);
 
       monday.execute('openItemCard', { itemId: element["id"], kind: 'columns' }).then(this.boardDataQuery.bind(this));
     }

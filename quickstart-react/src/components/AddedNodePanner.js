@@ -1,7 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import mondaySdk from "monday-sdk-js";
-
-import { ReactFlowProvider } from 'react-flow-renderer';
 import { useZoomPanHelper, useStoreState, useStoreActions } from 'react-flow-renderer';
 import { LerpToNode } from "./LerpyDerpy.js";
 
@@ -19,31 +16,17 @@ let AddedNodePanner = props => {
     };
 
     useEffect(() => {
-        console.log("bro im panning here", nodes);
-        console.log("these be our props in the panner", props);
+        //console.log("bro im panning here", nodes);
+        //console.log("these be our props in the panner", props);
         if (nodes.length !== 0) {
             panToNode(props.addedNode);
         }
     }, [props.addedNode]);
 
     function panToNode(node) {
-        console.log("i am now going to pan to the node guys");
-        //let priority = FindAddedNode(props.addedId);
+        //console.log("i am now going to pan to the node guys");
         LerpToNode(node, currTransform, width, height, transform);
         selectPriority(node);
-    }
-
-    function FindAddedNode(addedId) {
-        var addedIndex = 0;
-
-        for (var i = 0; i < nodes.length; i++) {
-            if (nodes[i]['id'] == addedId) {
-                addedIndex = i;
-                break;
-            }
-        }
-
-        return nodes[addedIndex];
     }
 
     return (

@@ -6,8 +6,6 @@ import CustomConnectionLine from "./nodes/CustomConnectionLine.js";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import { useZoomPanHelper, useStoreState, useStoreActions } from 'react-flow-renderer';
-import { LerpToNode } from "./components/LerpyDerpy.js";
 import AddedNodePanner from "./components/AddedNodePanner.js";
 
 let ReactFlowChart = props => {
@@ -75,16 +73,11 @@ let ReactFlowChart = props => {
 	function loadPositions(currElements) {
 		//Get the saved data
 		let savedPositions = props?.nodeHelper.GetPositions();
-		/*let savedPositions = [];
-		props?.nodeHelper.QueryPositionsPromise().then(res => {
-			savedPositions = JSON.parse(res.data.value);
-			//console.log("me own positions", savedPositions);
-		});*/
 
 		//if there was no saved positional data, return
 		if (savedPositions == undefined) return currElements;
 
-		console.log("loading saved node positions of", currElements);
+		//console.log("loading saved node positions of", currElements);
 
 		//loop through current elements in board
 		currElements.forEach(function (element) {
@@ -112,27 +105,21 @@ let ReactFlowChart = props => {
 		//Get the saved data
 		let savedConnections = props?.nodeHelper.GetConnections();
 
-		/*props?.nodeHelper.QueryConnectionsPromise().then(res => {
-			savedConnections = JSON.parse(res.data.value);
-			//console.log("me own connections", savedConnections);
-		}).then();*/
-
 		//if there was no saved positional data, return
 		if (savedConnections == undefined) return currElements;
 
-		console.log("loading saved connections of", currElements);
+		//console.log("loading saved connections of", currElements);
 
 		// add in all the saved connections
 		savedConnections.forEach(function (connection) {
 			let newEdge = setUpNewEdge(connection['source'], connection['target'], connection['sourceHandle'], connection['targetHandle']);
 
 			//console.log('edgeloaded:', newEdge);
-			//onlyNodes.push(newEdge);
 			currElements.push(newEdge);
 
 		});
 
-		console.log("loaded saved connections and returning", currElements);
+		//console.log("loaded saved connections and returning", currElements);
 
 		return currElements;
 		//return onlyNodes;
@@ -144,7 +131,7 @@ let ReactFlowChart = props => {
 	// provides the nodes passed in with data from getIncomers()
 	function updateOutgoingNodesData(currElements) {
 
-		console.log("updating data of", currElements);
+		//console.log("updating data of", currElements);
 
 		// loop through board data
 		let onlyNodes = [];
@@ -268,7 +255,7 @@ let ReactFlowChart = props => {
 
 	// takes in a boardData and returns an array of nodes and edges from react flow
 	function generateElements(bdata) {
-		console.log("GENERATING ELEMENTS FROM", bdata);
+		//console.log("GENERATING ELEMENTS FROM", bdata);
 		//let bdata = props?.boardData;
 		let filteredItems = props?.filteredItems;
 
@@ -354,12 +341,12 @@ let ReactFlowChart = props => {
 
 		//console.log("ELEMENTS BEFORE LOADING SAVED DATA", databasedElements);
 
-		// pans to newly added node if its there
+		// saves what the newly added node is so the panner can pan to it
 		let addedNodeIndex = getAddedNodeIndex(bdata);
-		console.log("index of added node", addedNodeIndex);
+		//console.log("index of added node", addedNodeIndex);
 		if (addedNodeIndex > -1) {
 			let addedNode = gendElements[addedNodeIndex];
-			console.log("the added node is", addedNode);
+			//console.log("the added node is", addedNode);
 			setAddedNode(addedNode);
 			//LerpToNode(addedNode, transform, 200, 200, transform);
 		}
@@ -379,7 +366,7 @@ let ReactFlowChart = props => {
 		//console.log(databasedElements);
 		//console.log("----------");
 
-		console.log("GENERATED ELEMENTS", gendElements);
+		//console.log("GENERATED ELEMENTS", gendElements);
 		return gendElements;
 	}
 
@@ -402,7 +389,7 @@ let ReactFlowChart = props => {
 
 	// updates elements when props changes
 	useEffect(() => {
-		console.log("current props", props);
+		//console.log("current props", props);
 		setElements(getDatabasedElements());
 	}, [props]);
 
@@ -429,7 +416,7 @@ let ReactFlowChart = props => {
 			els = updateOutgoingNodesData(els);
 
 			//console.log(els);
-			console.log('connected', params, 'in', els);
+			//console.log('connected', params, 'in', els);
 			return els;
 		});
 
@@ -451,7 +438,7 @@ let ReactFlowChart = props => {
 		//nodes.forEach(function(node){
 		//	props?.nodeHelper.AddPosition(node);
 		//});
-		console.log("SELECTION MOVED", nodes);
+		//console.log("SELECTION MOVED", nodes);
 
 		props?.nodeHelper.AddPositions(nodes);
 
@@ -531,7 +518,7 @@ let ReactFlowChart = props => {
 
 	// close the context menu when clicked away
 	const defaultClose = () => {
-		console.log("context menu closed");
+		//console.log("context menu closed");
 		setEdgeContextMenuState(initialEdgeContextMenuState);
 		setNodeContextMenuState(initialNodeContextMenuState);
 	};
@@ -640,7 +627,7 @@ let ReactFlowChart = props => {
 	*/
 
 	function GoToHighestPriority(event, element) {
-		console.log(flowChartObj);
+		//console.log(flowChartObj);
 		var flowChartObj = flowChart.toObject();
 		flowChart.setTransform({ x: 100, y: 100, zoom: flowChartObj.zoom });
 	}

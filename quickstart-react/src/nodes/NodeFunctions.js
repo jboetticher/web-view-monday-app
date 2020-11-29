@@ -37,15 +37,15 @@ class NodeFunctions {
     }
 
     SetConnections(res) {
-        console.log(res);
+        //console.log(res);
 
         if (res.data.value !== null) {
             this.connections = JSON.parse(res.data.value);
-            console.log(this.connections);
+            //console.log(this.connections);
         }
         else {
             this.connections = [];
-            console.log(this.connections);
+            //console.log(this.connections);
         }
     }
 
@@ -73,7 +73,7 @@ class NodeFunctions {
 
         // if it's null we ain't messing with it
         if (onConnectParams == null) { return; }
-        console.log("saving connections ", onConnectParams);
+        //console.log("saving connections ", onConnectParams);
 
         // checks to see if the current array has any of those connections
         var replaceIndex = -1;
@@ -99,8 +99,8 @@ class NodeFunctions {
 
         // save to monday.com persist
         this.monday.storage.instance.setItem('connection_objects', jsonString).then(res => {
-            console.log(res);
-            console.log(jsonString);
+            //console.log(res);
+            //console.log(jsonString);
 
             this.QueryConnections();
         });
@@ -119,7 +119,7 @@ class NodeFunctions {
                 this.connections[i].target == targetId &&
                 this.connections[i].sourceHandle == sourceHandleId) {
                 replaceIndex = i;
-                console.log("REMOVING FROM DATABASE", this.connections[i]);
+                //console.log("REMOVING FROM DATABASE", this.connections[i]);
                 break;
             }
         }
@@ -127,16 +127,16 @@ class NodeFunctions {
         // if the index isn't negative then it deletes
         if (replaceIndex >= 0) {
             // splices the target that was removed
-            console.log("BEFORE REMOVAL:", this.connections);
+            //console.log("BEFORE REMOVAL:", this.connections);
             this.connections.splice(i, 1);
-            console.log("AFTER REMOVAL:", this.connections);
+            //console.log("AFTER REMOVAL:", this.connections);
             // json stringify the current connections
             const jsonString = JSON.stringify(this.connections);
 
             // save to monday.com persist
             this.monday.storage.instance.setItem('connection_objects', jsonString).then(res => {
-                console.log(res);
-                console.log(jsonString);
+                //console.log(res);
+                //console.log(jsonString);
 
                 this.QueryConnections();
             });
@@ -165,9 +165,9 @@ class NodeFunctions {
             // if the index isn't negative then it deletes
             if (replaceIndex >= 0) {
                 // splices the target that was removed
-                console.log("BEFORE REMOVAL:", this.connections);
+                //console.log("BEFORE REMOVAL:", this.connections);
                 this.connections.splice(i, 1);
-                console.log("AFTER REMOVAL:", this.connections);
+                //console.log("AFTER REMOVAL:", this.connections);
             }
         }
 
@@ -176,8 +176,8 @@ class NodeFunctions {
 
         // save to monday.com persist as one call
         this.monday.storage.instance.setItem('connection_objects', jsonString).then(res => {
-            console.log(res);
-            console.log(jsonString);
+            //console.log(res);
+            //console.log(jsonString);
 
             this.QueryConnections();
         });
@@ -196,15 +196,15 @@ class NodeFunctions {
     }
 
     SetPositions(res) {
-        console.log(res);
+        //console.log(res);
 
         if (res.data.value !== null) {
             this.positions = JSON.parse(res.data.value);
-            console.log(this.positions);
+            //console.log(this.positions);
         }
         else {
             this.positions = [];
-            console.log(this.positions);
+            //console.log(this.positions);
         }
     }
 
@@ -222,7 +222,7 @@ class NodeFunctions {
 
         // if it's null we ain't messing with it
         if (onNodeDragStopParams == null) { return; }
-        console.log("saving positions ", onNodeDragStopParams);
+        //console.log("saving positions ", onNodeDragStopParams);
 
         // checks to see if the current array has any of those positions
         var replaceIndex = -1;
@@ -249,8 +249,8 @@ class NodeFunctions {
 
         // save to monday.com persist
         this.monday.storage.instance.setItem('node_positions', jsonString).then(res => {
-            console.log(res);
-            console.log(jsonString);
+            //console.log(res);
+            //console.log(jsonString);
 
             this.QueryPositions();
         });
@@ -263,7 +263,7 @@ class NodeFunctions {
     AddPositions(movedNodes) {
         // if it's null we ain't messing with it
         if (movedNodes == null) { return; }
-        console.log("saving multiple positions ", movedNodes);
+        //console.log("saving multiple positions ", movedNodes);
 
         // loop through all moved nodes
         for (var n = 0; n < movedNodes.length; n++) {
@@ -291,12 +291,12 @@ class NodeFunctions {
         // json stringify the current connections
         const jsonString = JSON.stringify(this.positions);
 
-        console.log("SAVING MULTIPLE POSITIONS", this.positions);
+        //console.log("SAVING MULTIPLE POSITIONS", this.positions);
 
         // save to monday.com persist
         this.monday.storage.instance.setItem('node_positions', jsonString).then(res => {
-            console.log(res);
-            console.log(jsonString);
+            //console.log(res);
+            //console.log(jsonString);
 
             this.QueryPositions();
         });
@@ -307,8 +307,8 @@ class NodeFunctions {
     //#region Database Manipulation
 
     DeleteItem(itemId, callback) {
-        console.log(typeof (itemId));
-        console.log(itemId);
+        //console.log(typeof (itemId));
+        //console.log(itemId);
         // delete item query
         this.monday.api(`mutation ($itemId: Int) 
         { 
