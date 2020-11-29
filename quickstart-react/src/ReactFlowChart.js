@@ -127,7 +127,7 @@ let ReactFlowChart = props => {
 
 	//#endregion
 
-	
+
 	// provides the nodes passed in with data from getIncomers()
 	function updateOutgoingNodesData(currElements) {
 
@@ -235,11 +235,11 @@ let ReactFlowChart = props => {
 			//console.log("node has been added with index", lastAddedIndex);
 
 			for (var i = 0; i < bdata[0]['items'].length; i++) {
-				if(i == bdata[0]['items'].length - 1){
+				if (i == bdata[0]['items'].length - 1) {
 					lastAddedIndex = i;
 					break;
 				}
-				else if(elements[i]['id'] != bdata[0]['items'][i]['id']){
+				else if (elements[i]['id'] != bdata[0]['items'][i]['id']) {
 					lastAddedIndex = i;
 					break;
 				}
@@ -251,7 +251,7 @@ let ReactFlowChart = props => {
 	}
 
 	// tracks node of the most recently added new node, if any
-	const[addedNode, setAddedNode] = useState(null);
+	const [addedNode, setAddedNode] = useState(null);
 
 	// takes in a boardData and returns an array of nodes and edges from react flow
 	function generateElements(bdata) {
@@ -526,6 +526,7 @@ let ReactFlowChart = props => {
 	// called by the node context menu
 	function onNodeDelete() {
 
+		var toDelete = [];
 		props?.monday.execute("confirm", {
 			message: "Delete this item? " +
 				"It will be kept in your Recycle Bin for 30 days.",
@@ -541,28 +542,22 @@ let ReactFlowChart = props => {
 				// array to hold edges to be deleted
 				let edgesToDelete = [];
 
-				// removes the node and attached edges
-				setElements(function (els) {
+				//let toDelete = [nodeContextMenuState['currNode']];
+				elements.forEach(function (element) {
+					// if the element is an edge
+					if (element['type'] != 'prettyNode') {
 
-					//let toDelete = [nodeContextMenuState['currNode']];
-					els.forEach(function (element) {
-						// if the element is an edge
-						if (element['type'] != 'prettyNode') {
-
-							// add to toDelete if it is connected to currNode
-							if (nodeToDelete[0]['id'] == element['source'] ||
-								nodeToDelete[0]['id'] == element['target']) {
-								edgesToDelete.push(element);
-
-							}
+						// add to toDelete if it is connected to currNode
+						if (nodeToDelete[0]['id'] == element['source'] ||
+							nodeToDelete[0]['id'] == element['target']) {
+							edgesToDelete.push(element);
 
 						}
-					});
-					//console.log("DELETING NODES AND EDGES", edgesToDelete.concat(nodeToDelete));
-					// concat the two arrays into a single array for deletion
-					return removeElements(edgesToDelete.concat(nodeToDelete), els);
+
+					}
 				});
-				//console.log("deleted node", nodeContextMenuState['currNode']);
+
+				toDelete = edgesToDelete.concat(nodeToDelete);
 
 				// close the context menu
 				setNodeContextMenuState(initialNodeContextMenuState);
@@ -573,10 +568,15 @@ let ReactFlowChart = props => {
 				//Mutates the monday database. (deletes the node)
 				props?.nodeHelper.DeleteItem(nodeContextMenuState['currNode'].id, props?.boardDataQuery);
 
-				//update our boardData
-
-
+				//console.log("deleted node", nodeContextMenuState['currNode']);
 			}
+		}).then((res) => {
+			// removes the node and attached edges
+			/*setElements(function (els) {
+				//console.log("DELETING NODES AND EDGES", edgesToDelete.concat(nodeToDelete));
+				// concat the two arrays into a single array for deletion
+				return removeElements(toDelete, els);
+			});*/
 		});
 	}
 
