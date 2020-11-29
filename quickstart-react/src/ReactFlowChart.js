@@ -235,7 +235,7 @@ let ReactFlowChart = props => {
 			//console.log("node has been added with index", lastAddedIndex);
 
 			for (var i = 0; i < bdata[0]['items'].length; i++) {
-				if(elements[i]['id'] == null){
+				if(i == bdata[0]['items'].length - 1){
 					lastAddedIndex = i;
 					break;
 				}
