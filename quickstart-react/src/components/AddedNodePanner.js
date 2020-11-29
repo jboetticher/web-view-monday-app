@@ -1,47 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import mondaySdk from "monday-sdk-js";
 
 import { ReactFlowProvider } from 'react-flow-renderer';
 import { useZoomPanHelper, useStoreState, useStoreActions } from 'react-flow-renderer';
 import { LerpToNode } from "./LerpyDerpy.js";
 
-const mondaysdk = mondaySdk();
-
-class AddedNodePanner extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            monday: props?.monday
-        }
-
-    }
-
-
-
-    componentDidMount() {
-       mondaysdk.listen("events", (res) => {
-            switch (res["type"]) {
-                case "new_items":
-                    //panToNode();
-                    break;
-            }
-        });
-    }
-
-    //panToNode() {
-    //    console.log("yay i added a node");
-    //}
-
-    render() {
-        return (
-            <Panner>
-            </Panner>
-        );
-    }
-}
-export default AddedNodePanner;
-
-let Panner = props => {
+let AddedNodePanner = props => {
 
     const { transform } = useZoomPanHelper();
     let [nodes, width, height, currTransform] = useStoreState((store) => {
@@ -54,10 +18,32 @@ let Panner = props => {
         setSelectedElements({ id: priorityNode.id, type: priorityNode.type });
     };
 
-    function panToNode() {
-        //let priority = FindPriority();
-        LerpToNode(nodes[nodes.length-1], currTransform, width, height, transform);
-        selectPriority(nodes[nodes.length-1]);
+    useEffect(() => {
+        console.log("bro im panning here", nodes);
+        console.log("these be our props in the panner", props);
+        if (nodes.length !== 0) {
+            panToNode(props.addedNode);
+        }
+    }, [props.addedNode]);
+
+    function panToNode(node) {
+        console.log("i am now going to pan to the node guys");
+        //let priority = FindAddedNode(props.addedId);
+        LerpToNode(node, currTransform, width, height, transform);
+        selectPriority(node);
+    }
+
+    function FindAddedNode(addedId) {
+        var addedIndex = 0;
+
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i]['id'] == addedId) {
+                addedIndex = i;
+                break;
+            }
+        }
+
+        return nodes[addedIndex];
     }
 
     return (
@@ -65,4 +51,5 @@ let Panner = props => {
     );
 }
 
-export { Panner };
+export { AddedNodePanner };
+export default AddedNodePanner;

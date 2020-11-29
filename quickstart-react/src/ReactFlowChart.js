@@ -8,6 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import { useZoomPanHelper, useStoreState, useStoreActions } from 'react-flow-renderer';
 import { LerpToNode } from "./components/LerpyDerpy.js";
+import AddedNodePanner from "./components/AddedNodePanner.js";
 
 let ReactFlowChart = props => {
 
@@ -139,6 +140,7 @@ let ReactFlowChart = props => {
 
 	//#endregion
 
+	
 	// provides the nodes passed in with data from getIncomers()
 	function updateOutgoingNodesData(currElements) {
 
@@ -214,20 +216,20 @@ let ReactFlowChart = props => {
 
 	// zoom pan helper business to pan to the added node
 	//const { transform } = useZoomPanHelper();
-    //let [nodes, width, height, currTransform] = useStoreState((store) => {
-    //    return [store.nodes, store.width, store.height, store.transform];
-    //});
+	//let [nodes, width, height, currTransform] = useStoreState((store) => {
+	//    return [store.nodes, store.width, store.height, store.transform];
+	//});
 
-    //const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
+	//const setSelectedElements = useStoreActions((actions) => actions.setSelectedElements);
 
-    //const selectPriority = (priorityNode) => {
-    //    setSelectedElements({ id: priorityNode.id, type: priorityNode.type });
-    //};
+	//const selectPriority = (priorityNode) => {
+	//    setSelectedElements({ id: priorityNode.id, type: priorityNode.type });
+	//};
 
 	//returns the number of nodes present in the passed in elements
-	function getNodeCount(currElements){
+	function getNodeCount(currElements) {
 		let numNodes = 0;
-		currElements.forEach(function(element){
+		currElements.forEach(function (element) {
 			if (element['type'] == "prettyNode") {
 				numNodes++;
 			}
@@ -236,17 +238,33 @@ let ReactFlowChart = props => {
 	}
 
 	//returns the index of the newly added node from a new bdata
-	function getAddedNodeIndex(bdata){
+	function getAddedNodeIndex(bdata) {
 		// checks if the boardData has an extra node added
-		if(getNodeCount(elements) == 0) return 0;
+		if (getNodeCount(elements) == 0) return -1;
 
-		let lastAddedIndex = 0;
-		if(getNodeCount(elements) < bdata[0]['items'].length){
-			lastAddedIndex = bdata[0]['items'].length - 1;
-			console.log("node has been added with index", lastAddedIndex);
+		let lastAddedIndex = -1;
+		if (getNodeCount(elements) < bdata[0]['items'].length) {
+			//lastAddedIndex = bdata[0]['items'].length - 1;
+			//console.log("node has been added with index", lastAddedIndex);
+
+			for (var i = 0; i < bdata[0]['items'].length; i++) {
+				if(elements[i]['id'] == null){
+					lastAddedIndex = i;
+					break;
+				}
+				else if(elements[i]['id'] != bdata[0]['items'][i]['id']){
+					lastAddedIndex = i;
+					break;
+				}
+			}
 		}
+
+
 		return lastAddedIndex;
 	}
+
+	// tracks node of the most recently added new node, if any
+	const[addedNode, setAddedNode] = useState(null);
 
 	// takes in a boardData and returns an array of nodes and edges from react flow
 	function generateElements(bdata) {
@@ -254,7 +272,7 @@ let ReactFlowChart = props => {
 		//let bdata = props?.boardData;
 		let filteredItems = props?.filteredItems;
 
-		let gendElements = [];	
+		let gendElements = [];
 
 		// retrieves column data FOR JUST THE FIRST BOARD
 		var columnData = bdata[0]['columns'];
@@ -327,7 +345,7 @@ let ReactFlowChart = props => {
 				);
 
 				// increments group index
-				if(row % 5 == 4){
+				if (row % 5 == 4) {
 					colOffset += 1;
 				}
 				groupIndex[groupName] += 1;
@@ -337,14 +355,15 @@ let ReactFlowChart = props => {
 		//console.log("ELEMENTS BEFORE LOADING SAVED DATA", databasedElements);
 
 		// pans to newly added node if its there
-		//let addedNodeIndex = getAddedNodeIndex(bdata);
-		//console.log(addedNodeIndex);
-		//if(addedNodeIndex > 0){
-		//	let addedNode = gendElements[addedNodeIndex];
-		//	console.log("the added node is", addedNode);
-		//	LerpToNode(addedNode, transform, 200, 200, transform);
-		//}
-		
+		let addedNodeIndex = getAddedNodeIndex(bdata);
+		console.log("index of added node", addedNodeIndex);
+		if (addedNodeIndex > -1) {
+			let addedNode = gendElements[addedNodeIndex];
+			console.log("the added node is", addedNode);
+			setAddedNode(addedNode);
+			//LerpToNode(addedNode, transform, 200, 200, transform);
+		}
+
 
 		// updates the positions of all the ndoes from saved data
 		gendElements = loadPositions(gendElements);
@@ -369,14 +388,14 @@ let ReactFlowChart = props => {
 		prettyNode: PrettyItemNode
 	};
 
-	
+
 	//const [databasedBoardData, setDatabasedBoardData] = useState(props?.boardData);
 
 	function getDatabasedElements() {
 		// sets/populates board elements
 		if (props?.boardData != null) {
 			return generateElements(props?.boardData);
-		} 
+		}
 
 		return [];
 	}
@@ -384,7 +403,7 @@ let ReactFlowChart = props => {
 	// updates elements when props changes
 	useEffect(() => {
 		console.log("current props", props);
-		setElements(getDatabasedElements());	
+		setElements(getDatabasedElements());
 	}, [props]);
 
 	// background settings
@@ -443,7 +462,7 @@ let ReactFlowChart = props => {
 	}
 
 	//const onElementsRemove = (elementsToRemove) => {
-		//setElements((els) => removeElements(elementsToRemove, els));
+	//setElements((els) => removeElements(elementsToRemove, els));
 	//}
 
 	//#endregion
@@ -568,7 +587,7 @@ let ReactFlowChart = props => {
 				props?.nodeHelper.DeleteItem(nodeContextMenuState['currNode'].id, props?.boardDataQuery);
 
 				//update our boardData
-				
+
 
 			}
 		});
@@ -675,6 +694,7 @@ let ReactFlowChart = props => {
 				<MenuItem onClick={onNodeDelete}>Delete Node</MenuItem>
 			</Menu>
 
+			<AddedNodePanner addedNode={addedNode} />
 		</ReactFlow>;
 
 	return (flowChart);

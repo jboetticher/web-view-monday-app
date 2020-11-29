@@ -34,7 +34,8 @@ class App extends React.Component {
     this.state = {
       settings: {},
       name: "",
-      chartView: 0
+      chartView: 0,
+      itemChange: 0
     };
   }
 
@@ -107,7 +108,9 @@ class App extends React.Component {
       switch (res["type"]) {
         case "new_items":
           //alert("NEW ITEM BRUH");
+          console.log("gimme the res", res);
           this.boardDataQuery();
+          this.setState({addedId: res.data.itemIds[0]});
           break;
         case "change_column_value":
           this.boardDataQuery();
@@ -134,6 +137,8 @@ class App extends React.Component {
       { variables: { boardIds: this.state.context.boardIds } }
     ).then(res => {
       this.setState({ boardData: res.data });
+    }).then (res => {
+      console.log("finished updating board data");
     });
   }
 
@@ -187,8 +192,7 @@ class App extends React.Component {
         }}
       >
         <ReactFlowProvider>
-          <AddedNodePanner>
-          </AddedNodePanner>
+          
           <ReactFlowChart
             nodeHelper={nodeHelper}
             monday={monday}
@@ -239,6 +243,7 @@ class App extends React.Component {
               Reset
             </Button>
           </UIOverlay>
+          {/*<AddedNodePanner addedId={this.state?.addedId} />*/}
         </ReactFlowProvider>
 
       </div >
